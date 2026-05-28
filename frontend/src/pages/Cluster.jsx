@@ -42,6 +42,12 @@ const Cluster = () => {
     const [hostnameProgressStatus, setHostnameProgressStatus] = useState('pending'); // pending, running, success, error
     const [hostnameProgressMessage, setHostnameProgressMessage] = useState('');
 
+    // Status do Modal de Remoção (Delete)
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedNodeToDelete, setSelectedNodeToDelete] = useState(null);
+    const [deleteProgressStatus, setDeleteProgressStatus] = useState('idle'); // idle, running, success, error
+    const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
+
     useEffect(() => {
         if (selectedServer) {
             setParentIp(selectedServer.host);
@@ -207,10 +213,11 @@ const Cluster = () => {
         }
     };
 
-    const handleRemoveNode = async (nodeId) => {
-        if (!confirm("Tem certeza que deseja remover este nó do cluster? Isso fará com que o nó saia do Swarm.")) {
-            return;
-        }
+    const handleRemoveNode = async () => {
+        if (!selectedNodeToDelete) return;
+
+        setDeleteProgressStatus('running');
+        setDeleteErrorMessage('');
 
         try {
             const res = await fetch('http://localhost:8005/api/cluster/nodes/remove', {
@@ -220,19 +227,22 @@ const Cluster = () => {
                     parent_host: selectedServer.host,
                     parent_username: selectedServer.username,
                     parent_password: selectedServer.password,
-                    node_id: nodeId
+                    node_id: selectedNodeToDelete.node_id
                 })
             });
             
             if (res.ok) {
-                alert("Processo de remoção iniciado! Aguarde alguns segundos e atualize a lista.");
+                setDeleteProgressStatus('success');
                 setTimeout(fetchClusterData, 3000);
             } else {
                 const data = await res.json();
-                alert(`Erro ao remover nó: ${data.detail}`);
+                setDeleteProgressStatus('error');
+                setDeleteErrorMessage(data.detail || 'Ocorreu um erro ao tentar remover o nó do cluster.');
             }
         } catch (err) {
             console.error("Erro ao remover nó:", err);
+            setDeleteProgressStatus('error');
+            setDeleteErrorMessage('Erro de comunicação com o servidor.');
         }
     };
 
@@ -429,7 +439,12 @@ const Cluster = () => {
                                                         </td>
                                                         <td className="p-4 text-right">
                                                             <button
-                                                                onClick={() => handleRemoveNode(node.node_id)}
+                                                                onClick={() => {
+                                                                    setSelectedNodeToDelete(node);
+                                                                    setDeleteProgressStatus('idle');
+                                                                    setDeleteErrorMessage('');
+                                                                    setShowDeleteModal(true);
+                                                                }}
                                                                 className="p-2 text-slate-500 hover:text-red-400 transition-colors hover:bg-red-500/10 rounded-lg active:scale-95"
                                                                 title="Remover do Cluster"
                                                             >
@@ -773,6 +788,87 @@ const Cluster = () => {
                                 Fechar Painel
                             </button>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Confirmação de Remoção de Servidor */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
+                    <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
+                        
+                        {/* Status/Warning Icon */}
+                        <div className="flex justify-center mb-6">
+                            {deleteProgressStatus === 'idle' ? (
+                                <div className="p-4 rounded-full bg-red-500/10 text-red-400 animate-pulse">
+                                    <Trash2 size={36} />
+                                </div>
+                            ) : deleteProgressStatus === 'running' ? (
+                                <div className="p-4 rounded-full bg-blue-500/10 text-blue-400">
+                                    <Loader2 size={36} className="animate-spin" />
+                                </div>
+                            ) : deleteProgressStatus === 'success' ? (
+                                <div className="p-4 rounded-full bg-emerald-500/10 text-emerald-400">
+                                    <CheckCircle2 size={36} />
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-full bg-red-500/10 text-red-400">
+                                    <ShieldAlert size={36} />
+                                </div>
+                            )}
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white mb-2">
+                            {deleteProgressStatus === 'idle' ? 'Remover do Cluster' :
+                             deleteProgressStatus === 'running' ? 'Removendo Nó' :
+                             deleteProgressStatus === 'success' ? 'Remoção Iniciada' : 'Erro ao Remover'}
+                        </h3>
+                        
+                        <p className="text-sm text-slate-400 mb-8 max-w-xs mx-auto leading-relaxed">
+                            {deleteProgressStatus === 'idle' && (
+                                <>
+                                    Tem certeza que deseja remover o servidor <strong className="text-white">{selectedNodeToDelete?.name}</strong> ({selectedNodeToDelete?.host}) do cluster? Isso fará com que o nó saia do Swarm.
+                                </>
+                            )}
+                            {deleteProgressStatus === 'running' && 'Processando a remoção do nó no Swarm e atualizando o banco de dados...'}
+                            {deleteProgressStatus === 'success' && 'O processo de remoção foi iniciado com sucesso no background! A lista será atualizada em breve.'}
+                            {deleteProgressStatus === 'error' && deleteErrorMessage}
+                        </p>
+
+                        <div className="flex gap-3">
+                            {deleteProgressStatus === 'idle' && (
+                                <>
+                                    <button
+                                        onClick={() => setShowDeleteModal(false)}
+                                        className="flex-1 px-4 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold hover:bg-slate-700 transition-all text-sm active:scale-95"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={handleRemoveNode}
+                                        className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-500 transition-all text-sm active:scale-95 shadow-lg shadow-red-600/20"
+                                    >
+                                        Confirmar Remoção
+                                    </button>
+                                </>
+                            )}
+                            {(deleteProgressStatus === 'success' || deleteProgressStatus === 'error') && (
+                                <button
+                                    onClick={() => {
+                                        setShowDeleteModal(false);
+                                        fetchClusterData();
+                                    }}
+                                    className={`w-full px-4 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm ${
+                                        deleteProgressStatus === 'success' 
+                                        ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-600/20' 
+                                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                    }`}
+                                >
+                                    Fechar
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
