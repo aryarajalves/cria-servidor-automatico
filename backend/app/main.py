@@ -1282,6 +1282,43 @@ async def get_cluster_status_endpoint(parent_host: str, parent_username: str, pa
         from app.installer import check_swarm_active, get_swarm_nodes_real_status
         logger.info(f"Verificando status real do Swarm para o pai: {parent_host}")
         
+        # Verifica se o host atual é um nó filho de algum outro cluster no banco
+        from app.database import get_db_path
+        import sqlite3
+        is_child = False
+        parent_info = None
+        
+        try:
+            conn = sqlite3.connect(get_db_path(), timeout=20)
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT cn.parent_host, cn.role, s.name 
+                FROM cluster_nodes cn
+                LEFT JOIN servers s ON s.host = cn.parent_host
+                WHERE cn.node_id = (SELECT id FROM servers WHERE host = ?)
+            ''', (parent_host,))
+            row = cursor.fetchone()
+            conn.close()
+            
+            if row:
+                is_child = True
+                parent_info = {
+                    "parent_host": row[0],
+                    "role": row[1],
+                    "parent_name": row[2] or row[0]
+                }
+        except Exception as dberr:
+            logger.error(f"Erro ao verificar se o host é filho: {dberr}")
+
+        # Se for filho, não precisamos checar se o swarm está ativo ou buscar nós reais
+        if is_child:
+            return {
+                "swarm_active": False,
+                "real_nodes": [],
+                "is_child": True,
+                "parent_info": parent_info
+            }
+        
         # Executa em thread separada para não travar
         swarm_active = await asyncio.to_thread(check_swarm_active, parent_host, parent_username, parent_password)
         real_nodes = []
@@ -1290,13 +1327,17 @@ async def get_cluster_status_endpoint(parent_host: str, parent_username: str, pa
             
         return {
             "swarm_active": swarm_active,
-            "real_nodes": real_nodes
+            "real_nodes": real_nodes,
+            "is_child": False,
+            "parent_info": None
         }
     except Exception as e:
         logger.error(f"Erro ao consultar status real do Swarm: {e}")
         return {
             "swarm_active": False,
             "real_nodes": [],
+            "is_child": False,
+            "parent_info": None,
             "error": str(e)
         }
 

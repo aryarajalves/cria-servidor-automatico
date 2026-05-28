@@ -12,6 +12,8 @@ const Cluster = () => {
     const [dbNodes, setDbNodes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [isChildNode, setIsChildNode] = useState(false);
+    const [parentInfo, setParentInfo] = useState(null);
     
     // Status do Modal de Adição
     const [showAddModal, setShowAddModal] = useState(false);
@@ -65,18 +67,26 @@ const Cluster = () => {
         if (!selectedServer) return;
         setIsRefreshing(true);
         try {
-            // 1. Buscar nós cadastrados no banco
-            const dbNodesRes = await fetch(`http://localhost:8005/api/cluster/nodes?parent_host=${selectedServer.host}`);
-            const dbNodesData = await dbNodesRes.json();
-            setDbNodes(Array.isArray(dbNodesData) ? dbNodesData : []);
-
-            // 2. Buscar status real do Swarm
+            // 1. Buscar status real do Swarm
             const statusRes = await fetch(
                 `http://localhost:8005/api/cluster/status?parent_host=${selectedServer.host}&parent_username=${selectedServer.username}&parent_password=${encodeURIComponent(selectedServer.password)}`
             );
             const statusData = await statusRes.json();
+            
+            const childStatus = statusData.is_child || false;
+            setIsChildNode(childStatus);
+            setParentInfo(statusData.parent_info || null);
             setSwarmActive(statusData.swarm_active);
             setRealNodes(statusData.real_nodes || []);
+
+            // 2. Buscar nós cadastrados no banco (apenas se não for filho)
+            if (!childStatus) {
+                const dbNodesRes = await fetch(`http://localhost:8005/api/cluster/nodes?parent_host=${selectedServer.host}`);
+                const dbNodesData = await dbNodesRes.json();
+                setDbNodes(Array.isArray(dbNodesData) ? dbNodesData : []);
+            } else {
+                setDbNodes([]);
+            }
         } catch (err) {
             console.error("Erro ao buscar dados do cluster:", err);
         } finally {
@@ -224,181 +234,203 @@ const Cluster = () => {
                 </button>
             </div>
 
-            {/* Banner de Status do Swarm */}
-            {!swarmActive ? (
-                <div className="bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="flex items-start gap-4">
-                        <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
-                            <ShieldAlert size={28} />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-white">Docker Swarm Inativo no Servidor Pai</h3>
-                            <p className="text-slate-400 text-sm mt-1">
-                                Para criar um cluster, você precisa inicializar o Docker Swarm neste servidor ativo para transformá-lo em um Manager/Leader.
-                            </p>
+            {/* Banner de Nó Filho (Aviso e Bloqueio) */}
+            {isChildNode ? (
+                <div className="bg-gradient-to-r from-red-500/10 via-rose-500/10 to-pink-500/10 border border-red-500/20 rounded-2xl p-8 flex flex-col items-center text-center gap-6 animate-in fade-in duration-300">
+                    <div className="p-4 rounded-full bg-red-500/10 text-red-400">
+                        <ShieldAlert size={48} />
+                    </div>
+                    <div className="max-w-md">
+                        <h3 className="text-xl font-bold text-white mb-2">Este servidor é um Nó Filho</h3>
+                        <p className="text-slate-400 text-sm leading-relaxed">
+                            O servidor ativo <span className="text-red-400 font-bold">{selectedServer?.name}</span> já faz parte de outro cluster Swarm como um <span className="text-white font-bold">{parentInfo?.role?.toUpperCase()}</span>. Não é permitido gerenciar ou iniciar outro cluster a partir dele.
+                        </p>
+                        <div className="mt-6 p-4 bg-slate-900 border border-white/5 rounded-xl text-left space-y-2">
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Informações do Servidor Pai:</p>
+                            <p className="text-sm font-semibold text-white">Nome: <span className="text-blue-400">{parentInfo?.parent_name}</span></p>
+                            <p className="text-sm font-semibold text-white">IP/Host: <span className="text-blue-400">{parentInfo?.parent_host}</span></p>
                         </div>
                     </div>
-                    <button
-                        onClick={handleInitSwarm}
-                        disabled={isActivatingSwarm}
-                        className="w-full md:w-auto px-6 py-3 rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
-                    >
-                        {isActivatingSwarm ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                Inicializando Swarm...
-                            </>
-                        ) : (
-                            <>
-                                <Play size={18} />
-                                Inicializar Swarm Manager
-                            </>
-                        )}
-                    </button>
                 </div>
             ) : (
-                <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border border-emerald-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="flex items-start gap-4">
-                        <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                            <CheckCircle2 size={28} />
+                <>
+                    {/* Banner de Status do Swarm */}
+                    {!swarmActive ? (
+                        <div className="bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                                    <ShieldAlert size={28} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white">Docker Swarm Inativo no Servidor Pai</h3>
+                                    <p className="text-slate-400 text-sm mt-1">
+                                        Para criar um cluster, você precisa inicializar o Docker Swarm neste servidor ativo para transformá-lo em um Manager/Leader.
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleInitSwarm}
+                                disabled={isActivatingSwarm}
+                                className="w-full md:w-auto px-6 py-3 rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                            >
+                                {isActivatingSwarm ? (
+                                    <>
+                                        <Loader2 size={18} className="animate-spin" />
+                                        Inicializando Swarm...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Play size={18} />
+                                        Inicializar Swarm Manager
+                                    </>
+                                )}
+                            </button>
                         </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-white">Docker Swarm Ativo & Pronto</h3>
-                            <p className="text-slate-400 text-sm mt-1">
-                                O nó principal está ativo. Agora você pode adicionar nós Workers ou Managers adicionais para escalar sua infraestrutura.
-                            </p>
+                    ) : (
+                        <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border border-emerald-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                            <div className="flex items-start gap-4">
+                                <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                                    <CheckCircle2 size={28} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white">Docker Swarm Ativo & Pronto</h3>
+                                    <p className="text-slate-400 text-sm mt-1">
+                                        O nó principal está ativo. Agora você pode adicionar nós Workers ou Managers adicionais para escalar sua infraestrutura.
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setShowAddModal(true)}
+                                className="w-full md:w-auto px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"
+                            >
+                                <Plus size={18} />
+                                Adicionar Servidor ao Cluster
+                            </button>
                         </div>
-                    </div>
-                    <button
-                        onClick={() => setShowAddModal(true)}
-                        className="w-full md:w-auto px-6 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20 font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"
-                    >
-                        <Plus size={18} />
-                        Adicionar Servidor ao Cluster
-                    </button>
-                </div>
-            )}
+                    )}
 
-            {/* Listas de Nós do Cluster */}
-            {swarmActive && (
-                <div className="grid grid-cols-1 gap-8">
-                    {/* Nós Configurados no Painel */}
-                    <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
-                        <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                            <h3 className="font-bold text-lg text-white flex items-center gap-2">
-                                <Server size={18} className="text-blue-400" />
-                                Nós Vinculados no Painel ({dbNodes.length})
-                            </h3>
-                            <span className="text-xs text-slate-500 italic">Lista local de servidores gerenciados no cluster</span>
-                        </div>
-                        
-                        {dbNodes.length > 0 ? (
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="border-b border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-900/80">
-                                            <th className="p-4">Nome do Servidor</th>
-                                            <th className="p-4">IP / Host</th>
-                                            <th className="p-4">Papel no Cluster</th>
-                                            <th className="p-4">Cadastrado em</th>
-                                            <th className="p-4 text-right">Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5 text-sm">
-                                        {dbNodes.map((node) => (
-                                            <tr key={node.node_id} className="hover:bg-white/[0.02] transition-colors">
-                                                <td className="p-4 font-bold text-white">{node.name}</td>
-                                                <td className="p-4 text-slate-400">{node.host}</td>
-                                                <td className="p-4">
-                                                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                                                        node.role === 'manager' 
-                                                        ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' 
-                                                        : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                    }`}>
-                                                        {node.role.toUpperCase()}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4 text-slate-500 text-xs">
-                                                    {new Date(node.created_at).toLocaleDateString()}
-                                                </td>
-                                                <td className="p-4 text-right">
-                                                    <button
-                                                        onClick={() => handleRemoveNode(node.node_id)}
-                                                        className="p-2 text-slate-500 hover:text-red-400 transition-colors hover:bg-red-500/10 rounded-lg active:scale-95"
-                                                        title="Remover do Cluster"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                    {/* Listas de Nós do Cluster */}
+                    {swarmActive && (
+                        <div className="grid grid-cols-1 gap-8">
+                            {/* Nós Configurados no Painel */}
+                            <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
+                                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                    <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                                        <Server size={18} className="text-blue-400" />
+                                        Nós Vinculados no Painel ({dbNodes.length})
+                                    </h3>
+                                    <span className="text-xs text-slate-500 italic">Lista local de servidores gerenciados no cluster</span>
+                                </div>
+                                
+                                {dbNodes.length > 0 ? (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-900/80">
+                                                    <th className="p-4">Nome do Servidor</th>
+                                                    <th className="p-4">IP / Host</th>
+                                                    <th className="p-4">Papel no Cluster</th>
+                                                    <th className="p-4">Cadastrado em</th>
+                                                    <th className="p-4 text-right">Ações</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5 text-sm">
+                                                {dbNodes.map((node) => (
+                                                    <tr key={node.node_id} className="hover:bg-white/[0.02] transition-colors">
+                                                        <td className="p-4 font-bold text-white">{node.name}</td>
+                                                        <td className="p-4 text-slate-400">{node.host}</td>
+                                                        <td className="p-4">
+                                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                                node.role === 'manager' 
+                                                                ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' 
+                                                                : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                            }`}>
+                                                                {node.role.toUpperCase()}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-4 text-slate-500 text-xs">
+                                                            {new Date(node.created_at).toLocaleDateString()}
+                                                        </td>
+                                                        <td className="p-4 text-right">
+                                                            <button
+                                                                onClick={() => handleRemoveNode(node.node_id)}
+                                                                className="p-2 text-slate-500 hover:text-red-400 transition-colors hover:bg-red-500/10 rounded-lg active:scale-95"
+                                                                title="Remover do Cluster"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center text-slate-500 italic">
+                                        Nenhum servidor filho configurado neste cluster localmente. Use o botão acima para adicionar.
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            <div className="p-8 text-center text-slate-500 italic">
-                                Nenhum servidor filho configurado neste cluster localmente. Use o botão acima para adicionar.
-                            </div>
-                        )}
-                    </div>
 
-                    {/* Status do Docker Swarm Real */}
-                    <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
-                        <div className="p-6 border-b border-white/5 flex items-center justify-between">
-                            <h3 className="font-bold text-lg text-white flex items-center gap-2">
-                                <Network size={18} className="text-emerald-400" />
-                                Topologia Real do Swarm ({realNodes.length})
-                            </h3>
-                            <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-bold bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                                Live Swarm
-                            </span>
+                            {/* Status do Docker Swarm Real */}
+                            <div className="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
+                                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                    <h3 className="font-bold text-lg text-white flex items-center gap-2">
+                                        <Network size={18} className="text-emerald-400" />
+                                        Topologia Real do Swarm ({realNodes.length})
+                                    </h3>
+                                    <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-bold bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                        Live Swarm
+                                    </span>
+                                </div>
+                                
+                                {realNodes.length > 0 ? (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-900/80">
+                                                    <th className="p-4">ID Swarm</th>
+                                                    <th className="p-4">Hostname</th>
+                                                    <th className="p-4">Status</th>
+                                                    <th className="p-4">Disponibilidade</th>
+                                                    <th className="p-4">Gerenciador</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5 text-sm">
+                                                {realNodes.map((node, idx) => (
+                                                    <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                                                        <td className="p-4 font-mono text-xs text-slate-500">{node.id}</td>
+                                                        <td className="p-4 font-bold text-white">{node.hostname}</td>
+                                                        <td className="p-4">
+                                                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                                                                node.status === 'Ready' 
+                                                                ? 'bg-emerald-500/10 text-emerald-400' 
+                                                                : 'bg-red-500/10 text-red-400'
+                                                            }`}>
+                                                                {node.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-4 text-slate-400">{node.availability}</td>
+                                                        <td className="p-4">
+                                                            <span className="text-xs font-semibold text-slate-300">
+                                                                {node.manager_status || 'Worker'}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <div className="p-8 text-center text-slate-500 italic">
+                                        Nenhuma informação do Swarm real obtida. Verifique o status da VPS.
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        
-                        {realNodes.length > 0 ? (
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="border-b border-white/5 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-900/80">
-                                            <th className="p-4">ID Swarm</th>
-                                            <th className="p-4">Hostname</th>
-                                            <th className="p-4">Status</th>
-                                            <th className="p-4">Disponibilidade</th>
-                                            <th className="p-4">Gerenciador</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5 text-sm">
-                                        {realNodes.map((node, idx) => (
-                                            <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                                                <td className="p-4 font-mono text-xs text-slate-500">{node.id}</td>
-                                                <td className="p-4 font-bold text-white">{node.hostname}</td>
-                                                <td className="p-4">
-                                                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                                                        node.status === 'Ready' 
-                                                        ? 'bg-emerald-500/10 text-emerald-400' 
-                                                        : 'bg-red-500/10 text-red-400'
-                                                    }`}>
-                                                        {node.status}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4 text-slate-400">{node.availability}</td>
-                                                <td className="p-4">
-                                                    <span className="text-xs font-semibold text-slate-300">
-                                                        {node.manager_status || 'Worker'}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        ) : (
-                            <div className="p-8 text-center text-slate-500 italic">
-                                Nenhuma informação do Swarm real obtida. Verifique o status da VPS.
-                            </div>
-                        )}
-                    </div>
-                </div>
+                    )}
+                </>
             )}
 
             {/* Modal de Adicionar Servidor ao Cluster */}
