@@ -537,12 +537,20 @@ async def system_status(credentials: ServerCredentials):
             stack_credentials = response_data["stack_credentials"]
             stack_versions = response_data["stack_versions"]
             
-            # 1. Inject versions for standard detected/active stacks
+            # 1. Inject versions and fallback domains for standard detected/active stacks
             for s_name in detected_stacks:
+                # Version
                 ver_key = f"stack_version_{s_name}"
                 ver = db_settings.get(ver_key)
                 if ver:
                     stack_versions[s_name] = ver
+                
+                # Fallback URL if inspect failed/timed out
+                if s_name not in stack_urls or not stack_urls[s_name]:
+                    stored_domain = db_settings.get(f"stack_domain_{s_name}")
+                    if stored_domain:
+                        domains = [d.strip() for d in stored_domain.split(",") if d.strip()]
+                        stack_urls[s_name] = domains
             
             # 2. Inject external stacks
             for key, val in db_settings.items():
@@ -551,14 +559,17 @@ async def system_status(credentials: ServerCredentials):
                     if s_name not in detected_stacks:
                         detected_stacks.append(s_name)
                     
-                    # Get external URL
+                    # Get external URL (fallback to stack_domain if set)
                     url_key = f"external_urls_{s_name}"
-                    ext_url = db_settings.get(url_key)
+                    ext_url = db_settings.get(url_key) or db_settings.get(f"stack_domain_{s_name}")
                     if ext_url:
                         if s_name not in stack_urls:
                             stack_urls[s_name] = []
-                        if ext_url not in stack_urls[s_name]:
-                            stack_urls[s_name].append(ext_url)
+                        # Split in case it has multiple values
+                        ext_domains = [d.strip() for d in ext_url.split(",") if d.strip()]
+                        for d in ext_domains:
+                            if d not in stack_urls[s_name]:
+                                stack_urls[s_name].append(d)
                             
                     # Get external credentials
                     creds = get_stack_credentials(credentials.host, s_name)
@@ -907,6 +918,9 @@ def trigger_install_chatwoot(request: ChatwootInstallRequest, background_tasks: 
     Faz o deploy das stacks do Chatwoot (Admin e Sidekiq) em um servidor remoto.
     """
     try:
+        from app.database import save_setting
+        save_setting("stack_domain_chatwoot_admin", request.chatwoot_base_url, request.host)
+        
         # Verifica se a stack já existe (incluindo nomes dinâmicos com prefixo)
         from app.installer import get_active_stacks
         active_stacks = get_active_stacks(request.host, request.username, request.password)
@@ -1016,6 +1030,9 @@ def trigger_install_ai_agent_manager(request: AIAgentManagerInstallRequest, back
     Faz o deploy da stack do Gerente de Agente de IA em um servidor remoto.
     """
     try:
+        from app.database import save_setting
+        save_setting("stack_domain_agentes", f"{request.domain_backend},{request.domain_frontend}", request.host)
+        
         from app.installer import get_active_stacks
         active_stacks = get_active_stacks(request.host, request.username, request.password)
         
@@ -1054,6 +1071,9 @@ def install_zapvoice_endpoint(request: ZapVoiceRequest, background_tasks: Backgr
     Endpoint para instalar o ZapVoice em background.
     """
     try:
+        from app.database import save_setting
+        save_setting("stack_domain_zapvoice", request.chatwoot_base_url, request.host)
+        
         install_status['zapvoice'] = {'status': 'pending', 'message': 'Iniciando instalação do ZapVoice...'}
         background_tasks.add_task(run_generic_install_task, 'zapvoice', install_zapvoice, 
                                  request.host, request.username, request.password, 
@@ -1072,6 +1092,9 @@ def install_gerenciador_whatsapp_endpoint(request: GerenciadorWhatsAppInstallReq
     Endpoint para instalar o Gerenciador Grupo WhatsApp em background.
     """
     try:
+        from app.database import save_setting
+        save_setting("stack_domain_gerenciador_whatsapp", f"{request.backend_domain},{request.frontend_domain}", request.host)
+        
         # Tenta buscar a senha do Postgres se não for enviada
         if not request.postgres_password:
             try:
@@ -1111,13 +1134,15 @@ def trigger_uninstall_stack(request: UninstallStackRequest, background_tasks: Ba
             save_setting(f"external_installed_{request.stack_id}", "false", request.host)
             save_setting(f"external_urls_{request.stack_id}", "", request.host)
             save_setting(f"external_version_{request.stack_id}", "", request.host)
+            save_setting(f"stack_domain_{request.stack_id}", "", request.host)
             delete_stack_credentials(request.host, request.stack_id)
             install_status[request.stack_id] = {'status': 'success', 'message': f'Associação externa de {request.stack_id} removida.'}
             return {"message": f"Associação externa de {request.stack_id} removida com sucesso."}
             
         from app.installer import uninstall_stack
-        # Clear version setting in database
+        # Clear version and domain setting in database
         save_setting(f"stack_version_{request.stack_id}", "", request.host)
+        save_setting(f"stack_domain_{request.stack_id}", "", request.host)
         logger.info(f"SOLICITAÇÃO DE DESINSTALAÇÃO: Stack={request.stack_id}, Name={request.stack_name} no Host={request.host}")
         install_status[request.stack_id] = {'status': 'pending', 'message': f'Iniciando desinstalação de {request.stack_id}...'}
         
@@ -1147,6 +1172,10 @@ async def update_stack_domain_endpoint(request: StackDomainUpdateRequest):
     Atualiza o domínio configurado nas labels e variáveis de ambiente de uma stack.
     """
     try:
+        from app.database import save_setting
+        # Persist domain update in sqlite database
+        save_setting(f"stack_domain_{request.stack_name}", request.new_domain, request.host)
+        
         from app.installer import update_stack_domain
         import asyncio
         logger.info(f"POST /update-stack-domain recebido para stack '{request.stack_name}'")

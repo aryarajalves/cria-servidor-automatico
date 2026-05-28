@@ -445,6 +445,67 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
             )}
 
             {/* URLs Section */}
+            {isInstalled && (!urls || urls.length === 0) && (
+                <div className="mb-4 relative z-10">
+                    <div className="flex flex-col gap-2">
+                        {editingUrlIdx === 'new' ? (
+                            <div className="bg-slate-950/80 border border-blue-500/30 rounded-lg p-2 space-y-2 animate-in fade-in duration-200">
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[9px] text-blue-400/70 uppercase font-black tracking-widest">Definir Link/Domínio</span>
+                                    <input 
+                                        type="text"
+                                        value={editUrlValue}
+                                        onChange={(e) => setEditUrlValue(e.target.value)}
+                                        className="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 w-full"
+                                        placeholder="ex: painel.meudominio.com"
+                                        disabled={updatingDomain}
+                                    />
+                                </div>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={async () => {
+                                            if (!editUrlValue.trim()) return;
+                                            setUpdatingDomain(true);
+                                            try {
+                                                await onUpdateDomain(getActualStackName(stack.stackName), '', editUrlValue.trim());
+                                                setEditingUrlIdx(null);
+                                            } catch (e) {
+                                                console.error(e);
+                                            } finally {
+                                                setUpdatingDomain(false);
+                                            }
+                                        }}
+                                        disabled={updatingDomain}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold py-1.5 rounded transition-colors disabled:opacity-50"
+                                    >
+                                        {updatingDomain ? "Salvando..." : "Salvar"}
+                                    </button>
+                                    <button 
+                                        onClick={() => setEditingUrlIdx(null)}
+                                        disabled={updatingDomain}
+                                        className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold py-1.5 rounded transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    setEditingUrlIdx('new');
+                                    setEditUrlValue('');
+                                }}
+                                className="flex items-center justify-center gap-2 text-xs transition-colors bg-blue-500/5 hover:bg-blue-500/10 px-3 py-2 rounded-lg border border-dashed border-blue-500/20 hover:border-blue-500/40 text-blue-400 font-bold uppercase tracking-wider w-full"
+                            >
+                                <Globe size={14} />
+                                Definir Link/Domínio
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* URLs Section */}
             {isInstalled && urls && urls.length > 0 && (
                 <div className="mb-4 relative z-10">
                     <div className="flex flex-col gap-2">
