@@ -486,10 +486,10 @@ const Cluster = () => {
                                 <input
                                     type="text"
                                     value={parentIp}
-                                    onChange={(e) => setParentIp(e.target.value)}
+                                    disabled
                                     required
                                     placeholder="Ex: 172.20.0.1 ou IP Público"
-                                    className="w-full bg-slate-800 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    className="w-full bg-slate-800/50 border border-white/5 rounded-xl px-4 py-3 text-sm text-slate-400 cursor-not-allowed focus:outline-none"
                                 />
                             </div>
 
