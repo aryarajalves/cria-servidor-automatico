@@ -8,6 +8,14 @@ venv/
 env/
 .env.*/
 *.pyc
+node_modules/
+**/node_modules/
+
+# Bancos de dados locais
+*.db
+backend/database.db
+backend/settings.db
+settings.db
 
 # Caches e artefatos do Python
 __pycache__/
