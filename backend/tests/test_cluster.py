@@ -6,6 +6,8 @@ import sys
 
 # Adiciona o diretório backend ao path para os imports funcionarem
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if "/" in sys.path:
+    sys.path.remove("/")
 
 from app.main import app
 from app.database import init_db, add_server, delete_server, get_cluster_nodes
@@ -102,3 +104,63 @@ def test_api_add_node(mock_add_db, mock_get_server, mock_join, mock_tokens, mock
     response = client.post("/api/cluster/nodes", json=payload)
     assert response.status_code == 200
     assert response.json()["status"] == "success"
+
+@patch("app.installer.change_swarm_node_hostname")
+def test_api_change_hostname(mock_change_hostname):
+    payload = {
+        "parent_host": "10.0.0.1",
+        "parent_username": "root",
+        "parent_password": "pass",
+        "node_swarm_id": "node-123",
+        "old_hostname": "vps-old",
+        "new_hostname": "vps-new"
+    }
+    
+    response = client.post("/api/cluster/nodes/change-hostname", json=payload)
+    assert response.status_code == 200
+    assert response.json()["status"] == "success"
+    # Como roda em background, validamos se iniciou
+    assert "iniciado com sucesso" in response.json()["message"]
+
+@patch("app.installer.get_ssh_client")
+@patch("app.installer.run_ssh_command")
+@patch("app.database.get_servers")
+def test_change_swarm_node_hostname_success(mock_get_servers, mock_run_ssh, mock_get_ssh):
+    from app.installer import change_swarm_node_hostname
+    
+    # Configura o mock do banco de dados
+    mock_get_servers.return_value = [
+        {"host": "10.0.0.2", "username": "root", "password": "pass", "name": "Servidor Teste"}
+    ]
+    
+    # Mock do SSH Client
+    mock_client = MagicMock()
+    mock_get_ssh.return_value = mock_client
+    
+    # Mock de comandos SSH
+    # 1. docker node inspect -> retorna o IP 10.0.0.2
+    # 2. hostnamectl set-hostname, sed, systemctl restart docker
+    mock_run_ssh.side_effect = [
+        "10.0.0.2", # IP do inspect
+        "", # set-hostname
+        "", # sed
+        ""  # restart docker
+    ]
+    
+    res = change_swarm_node_hostname(
+        parent_host="10.0.0.1",
+        parent_username="root",
+        parent_password="pass",
+        node_swarm_id="node-123",
+        old_hostname="vps-old",
+        new_hostname="vps-new"
+    )
+    
+    assert res["status"] == "success"
+    assert "Hostname alterado com sucesso" in res["message"]
+    
+    # Garante que rodou os comandos no target
+    mock_run_ssh.assert_any_call(mock_client, "sudo hostnamectl set-hostname vps-new")
+    mock_run_ssh.assert_any_call(mock_client, "sudo sed -i 's/vps-old/vps-new/g' /etc/hosts")
+    mock_run_ssh.assert_any_call(mock_client, "sudo systemctl restart docker")
+

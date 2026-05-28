@@ -1392,4 +1392,89 @@ def get_swarm_nodes_real_status(host, username, password):
     finally:
         client.close()
 
+def change_swarm_node_hostname(parent_host, parent_username, parent_password, node_swarm_id, old_hostname, new_hostname):
+    """
+    Descobre o IP e credenciais do nó do Swarm, conecta via SSH e altera o hostname.
+    """
+    from app.database import get_servers
+    
+    # 1. Descobrir o IP do nó usando docker node inspect no pai
+    node_ip = None
+    client_parent = get_ssh_client(parent_host, parent_username, parent_password)
+    try:
+        try:
+            # Tenta obter o IP do nó via inspect
+            cmd_ip = f"docker node inspect {node_swarm_id} --format '{{{{.Status.Addr}}}}'"
+            node_ip = run_ssh_command(client_parent, cmd_ip, log_command=False).strip()
+            # Se retornar loopback ou vazio, ignora
+            if node_ip in ["", "127.0.0.1", "0.0.0.0"]:
+                node_ip = None
+        except Exception as e:
+            logger.warning(f"Erro ao obter IP do nó Swarm via inspect: {e}")
+    finally:
+        client_parent.close()
+
+    # 2. Buscar no banco o servidor VPS correspondente
+    servers_list = get_servers()
+    target_server = None
+    
+    # Se encontramos um IP válido, procura pelo host correspondente
+    if node_ip:
+        for s in servers_list:
+            if s["host"] == node_ip:
+                target_server = s
+                break
+
+    # Se não encontrou pelo IP (ou inspect falhou), faz fallback procurando pelo hostname antigo
+    if not target_server:
+        # Se for o pai ativo
+        try:
+            # Verifica se o hostname do pai coincide
+            client_parent_test = get_ssh_client(parent_host, parent_username, parent_password)
+            parent_real_hostname = run_ssh_command(client_parent_test, "hostname").strip()
+            client_parent_test.close()
+            if parent_real_hostname == old_hostname:
+                target_server = {
+                    "host": parent_host,
+                    "username": parent_username,
+                    "password": parent_password
+                }
+        except:
+            pass
+
+    if not target_server:
+        # Varre os servidores cadastrados testando a conexão SSH e o hostname
+        for s in servers_list:
+            try:
+                client_test = get_ssh_client(s["host"], s["username"], s["password"], timeout=10)
+                current_host = run_ssh_command(client_test, "hostname").strip()
+                client_test.close()
+                if current_host == old_hostname:
+                    target_server = s
+                    break
+            except Exception as test_err:
+                logger.warning(f"Falha ao checar hostname no host {s['host']}: {test_err}")
+
+    if not target_server:
+        raise Exception(f"Não foi possível localizar o servidor correspondente ao hostname '{old_hostname}' no banco de dados.")
+
+    # 3. Conectar na VPS selecionada e alterar o hostname
+    client_target = get_ssh_client(target_server["host"], target_server["username"], target_server["password"])
+    try:
+        logger.info(f"Alterando hostname de {target_server['host']} de '{old_hostname}' para '{new_hostname}'...")
+        
+        # 3.1 Define o novo hostname
+        run_ssh_command(client_target, f"sudo hostnamectl set-hostname {new_hostname}")
+        
+        # 3.2 Atualiza o /etc/hosts
+        run_ssh_command(client_target, f"sudo sed -i 's/{old_hostname}/{new_hostname}/g' /etc/hosts")
+        
+        # 3.3 Reinicia o daemon do Docker para relatar o novo hostname ao Swarm imediatamente
+        run_ssh_command(client_target, "sudo systemctl restart docker")
+        
+        return {"status": "success", "message": f"Hostname alterado com sucesso para '{new_hostname}'."}
+    finally:
+        client_target.close()
+
+
 

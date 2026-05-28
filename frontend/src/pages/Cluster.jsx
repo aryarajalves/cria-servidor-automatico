@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useServer } from '../context/ServerContext';
 import { 
     Network, Server, Play, ShieldAlert, CheckCircle2, 
-    X, Plus, Trash2, RefreshCw, Loader2, HelpCircle 
+    X, Plus, Trash2, RefreshCw, Loader2, HelpCircle, Edit 
 } from 'lucide-react';
 
 const Cluster = () => {
@@ -30,6 +30,17 @@ const Cluster = () => {
     
     // Status de ativação do swarm no pai
     const [isActivatingSwarm, setIsActivatingSwarm] = useState(false);
+
+    // Edição de Hostname
+    const [editingNodeId, setEditingNodeId] = useState(null);
+    const [editingOldHostname, setEditingOldHostname] = useState('');
+    const [newHostnameValue, setNewHostnameValue] = useState('');
+    const [isChangingHostname, setIsChangingHostname] = useState(false);
+
+    // Status do Modal de Progresso do Hostname
+    const [showHostnameProgressModal, setShowHostnameProgressModal] = useState(false);
+    const [hostnameProgressStatus, setHostnameProgressStatus] = useState('pending'); // pending, running, success, error
+    const [hostnameProgressMessage, setHostnameProgressMessage] = useState('');
 
     useEffect(() => {
         if (selectedServer) {
@@ -63,6 +74,31 @@ const Cluster = () => {
         }
         return () => clearInterval(interval);
     }, [showProgressModal, progressStatus]);
+
+    // Polling do progresso de alteração de hostname
+    useEffect(() => {
+        let interval;
+        if (showHostnameProgressModal && (hostnameProgressStatus === 'running' || hostnameProgressStatus === 'pending')) {
+            interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`http://localhost:8005/install-status/cluster-hostname`);
+                    const data = await res.json();
+                    if (data && data.status) {
+                        setHostnameProgressStatus(data.status);
+                        setHostnameProgressMessage(data.message || 'Processando...');
+                        
+                        if (data.status === 'success' || data.status === 'error') {
+                            clearInterval(interval);
+                            fetchClusterData();
+                        }
+                    }
+                } catch (err) {
+                    console.error("Erro no polling de status do hostname:", err);
+                }
+            }, 2000);
+        }
+        return () => clearInterval(interval);
+    }, [showHostnameProgressModal, hostnameProgressStatus]);
 
     const fetchClusterData = async () => {
         if (!selectedServer) return;
@@ -197,6 +233,45 @@ const Cluster = () => {
             }
         } catch (err) {
             console.error("Erro ao remover nó:", err);
+        }
+    };
+
+    const handleUpdateHostnameSubmit = async (e) => {
+        e.preventDefault();
+        if (!newHostnameValue || !editingNodeId) return;
+
+        setIsChangingHostname(true);
+        setHostnameProgressStatus('pending');
+        setHostnameProgressMessage('Enviando solicitação de alteração de hostname...');
+        setShowHostnameProgressModal(true);
+        setEditingNodeId(null);
+
+        try {
+            const res = await fetch('http://localhost:8005/api/cluster/nodes/change-hostname', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    parent_host: selectedServer.host,
+                    parent_username: selectedServer.username,
+                    parent_password: selectedServer.password,
+                    node_swarm_id: editingNodeId,
+                    old_hostname: editingOldHostname,
+                    new_hostname: newHostnameValue
+                })
+            });
+
+            if (res.ok) {
+                setHostnameProgressStatus('running');
+            } else {
+                const data = await res.json();
+                setHostnameProgressStatus('error');
+                setHostnameProgressMessage(data.detail || 'Erro ao processar alteração de hostname.');
+            }
+        } catch (err) {
+            setHostnameProgressStatus('error');
+            setHostnameProgressMessage('Erro na comunicação com a API.');
+        } finally {
+            setIsChangingHostname(false);
         }
     };
 
@@ -402,7 +477,37 @@ const Cluster = () => {
                                                 {realNodes.map((node, idx) => (
                                                     <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
                                                         <td className="p-4 font-mono text-xs text-slate-500">{node.id}</td>
-                                                        <td className="p-4 font-bold text-white">{node.hostname}</td>
+                                                        <td className="p-4 font-bold text-white">
+                                                            {editingNodeId === node.id ? (
+                                                                <form onSubmit={handleUpdateHostnameSubmit} className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="text"
+                                                                        value={newHostnameValue}
+                                                                        onChange={(e) => setNewHostnameValue(e.target.value)}
+                                                                        required
+                                                                        className="bg-slate-800 border border-white/10 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-blue-500"
+                                                                        placeholder="Novo hostname..."
+                                                                    />
+                                                                    <button type="submit" className="p-1 text-emerald-400 hover:text-emerald-300 font-bold text-xs bg-emerald-500/10 rounded border border-emerald-500/20 active:scale-95">Salvar</button>
+                                                                    <button type="button" onClick={() => setEditingNodeId(null)} className="p-1 text-slate-400 hover:text-white font-bold text-xs bg-slate-800 rounded border border-white/5 active:scale-95">Cancelar</button>
+                                                                </form>
+                                                            ) : (
+                                                                <div className="flex items-center gap-2.5 group/host">
+                                                                    <span>{node.hostname}</span>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setEditingNodeId(node.id);
+                                                                            setEditingOldHostname(node.hostname);
+                                                                            setNewHostnameValue(node.hostname);
+                                                                        }}
+                                                                        className="p-1 text-slate-500 hover:text-blue-400 opacity-0 group-hover/host:opacity-100 transition-opacity hover:bg-blue-500/10 rounded active:scale-95"
+                                                                        title="Editar Hostname"
+                                                                    >
+                                                                        <Edit size={12} className="inline" />
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </td>
                                                         <td className="p-4">
                                                             <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                                                                 node.status === 'Ready' 
@@ -611,6 +716,56 @@ const Cluster = () => {
                                 }}
                                 className={`w-full px-4 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm ${
                                     progressStatus === 'success' 
+                                    ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-600/20' 
+                                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                                }`}
+                            >
+                                Fechar Painel
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Progresso de Alteração de Hostname */}
+            {showHostnameProgressModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
+                    <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
+                        {/* Status Icon */}
+                        <div className="flex justify-center mb-6">
+                            {hostnameProgressStatus === 'pending' || hostnameProgressStatus === 'running' ? (
+                                <div className="p-4 rounded-full bg-blue-500/10 text-blue-400 relative">
+                                    <Loader2 size={36} className="animate-spin" />
+                                </div>
+                            ) : hostnameProgressStatus === 'success' ? (
+                                <div className="p-4 rounded-full bg-emerald-500/10 text-emerald-400">
+                                    <CheckCircle2 size={36} />
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-full bg-red-500/10 text-red-400">
+                                    <ShieldAlert size={36} />
+                                </div>
+                            )}
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white mb-2">
+                            {hostnameProgressStatus === 'pending' || hostnameProgressStatus === 'running' ? 'Alterando Hostname' :
+                             hostnameProgressStatus === 'success' ? 'Sucesso!' : 'Falha na Alteração'}
+                        </h3>
+                        
+                        <p className="text-sm text-slate-400 mb-8 max-w-xs mx-auto leading-relaxed">
+                            {hostnameProgressMessage}
+                        </p>
+
+                        {(hostnameProgressStatus === 'success' || hostnameProgressStatus === 'error') && (
+                            <button
+                                onClick={() => {
+                                    setShowHostnameProgressModal(false);
+                                    fetchClusterData();
+                                }}
+                                className={`w-full px-4 py-3 rounded-xl font-bold transition-all active:scale-95 text-sm ${
+                                    hostnameProgressStatus === 'success' 
                                     ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-600/20' 
                                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                                 }`}

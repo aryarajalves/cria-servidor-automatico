@@ -1462,6 +1462,51 @@ def remove_cluster_node_endpoint(req: ClusterNodeRemoveRequest, background_tasks
         logger.error(f"Falha ao iniciar remoção do nó: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+class ClusterNodeChangeHostnameRequest(BaseModel):
+    parent_host: str
+    parent_username: str
+    parent_password: str
+    node_swarm_id: str
+    old_hostname: str
+    new_hostname: str
+
+def run_cluster_node_change_hostname_task(req: ClusterNodeChangeHostnameRequest):
+    install_status['cluster-hostname'] = {'status': 'running', 'message': 'Iniciando processo de alteração de hostname...'}
+    try:
+        from app.installer import change_swarm_node_hostname
+        logger.info(f"[CLUSTER] Alterando hostname do nó Swarm {req.node_swarm_id} de '{req.old_hostname}' para '{req.new_hostname}'")
+        
+        change_swarm_node_hostname(
+            req.parent_host, 
+            req.parent_username, 
+            req.parent_password, 
+            req.node_swarm_id, 
+            req.old_hostname, 
+            req.new_hostname
+        )
+        
+        install_status['cluster-hostname'] = {
+            'status': 'success', 
+            'message': f"Hostname do servidor alterado para '{req.new_hostname}' com sucesso!"
+        }
+        logger.info(f"[CLUSTER] Hostname alterado com sucesso para o nó {req.node_swarm_id}")
+    except Exception as e:
+        logger.error(f"[CLUSTER] Erro ao alterar hostname do nó: {e}")
+        install_status['cluster-hostname'] = {'status': 'error', 'message': str(e)}
+
+@app.post("/api/cluster/nodes/change-hostname")
+def change_cluster_node_hostname_endpoint(req: ClusterNodeChangeHostnameRequest, background_tasks: BackgroundTasks):
+    """
+    Inicia a task assíncrona para alterar o hostname de um servidor do cluster Swarm.
+    """
+    try:
+        install_status['cluster-hostname'] = {'status': 'pending', 'message': 'Preparando alteração de hostname...'}
+        background_tasks.add_task(run_cluster_node_change_hostname_task, req)
+        return {"status": "success", "message": "Processo de alteração de hostname iniciado com sucesso no background."}
+    except Exception as e:
+        logger.error(f"Falha ao iniciar alteração de hostname: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/{full_path:path}")
 def read_root(full_path: str = ""):
     return FileResponse(os.path.join(static_dir, "index.html"))
