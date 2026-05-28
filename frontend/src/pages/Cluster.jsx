@@ -403,7 +403,7 @@ const Cluster = () => {
 
             {/* Modal de Adicionar Servidor ao Cluster */}
             {showAddModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
                     <div className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="p-6 border-b border-white/5 flex items-center justify-between">
@@ -541,7 +541,7 @@ const Cluster = () => {
 
             {/* Modal de Progresso da Instalação / Adesão */}
             {showProgressModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
                     <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
                         {/* Status Icon */}
