@@ -121,3 +121,27 @@ def update_cf_record(req: DNSRecordUpdateRequest):
     except Exception as e:
         logger.error(f"Error updating record: {e}")
         raise HTTPException(status_code=400, detail=str(e))
+
+class SSLCheckRequest(BaseModel):
+    domain: str
+
+@router.post("/cloudflare/check-ssl")
+def check_domain_ssl(req: SSLCheckRequest):
+    import socket
+    import ssl
+    domain = req.domain.strip()
+    # Remove prefixo de protocolo se o usuário enviou com http:// ou https://
+    domain = domain.replace("https://", "").replace("http://", "").split("/")[0].split(":")[0]
+    
+    try:
+        context = ssl.create_default_context()
+        with socket.create_connection((domain, 443), timeout=4) as sock:
+            with context.wrap_socket(sock, server_hostname=domain) as ssock:
+                cert = ssock.getpeercert()
+                return {"valid": True, "message": "SSL ativo e funcionando corretamente!"}
+    except ssl.SSLError as e:
+        logger.warning(f"SSL validation failed for {domain}: {e}")
+        return {"valid": False, "message": f"Erro de validação SSL: {getattr(e, 'reason', str(e))}"}
+    except Exception as e:
+        logger.warning(f"Connection failed for check SSL on {domain}: {e}")
+        return {"valid": False, "message": f"Não foi possível conectar de forma segura (HTTPS): {str(e)}"}

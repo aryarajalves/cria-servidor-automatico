@@ -4,6 +4,7 @@ import os
 DB_NAME = "settings.db"
 
 def get_db_path():
+    db_name = "test_settings.db" if "PYTEST_CURRENT_TEST" in os.environ or os.getenv("TESTING") == "true" else DB_NAME
     # Prioritizes /app/data if running in Docker
     data_dir = "/app/data"
     if not os.path.exists(data_dir):
@@ -14,7 +15,7 @@ def get_db_path():
     if not os.path.exists(data_dir):
         os.makedirs(data_dir, exist_ok=True)
         
-    return os.path.join(data_dir, DB_NAME)
+    return os.path.join(data_dir, db_name)
 
 def init_db():
     conn = sqlite3.connect(get_db_path(), timeout=20)

@@ -122,8 +122,8 @@ def test_api_change_hostname(mock_change_hostname):
     # Como roda em background, validamos se iniciou
     assert "iniciado com sucesso" in response.json()["message"]
 
-@patch("app.installer.get_ssh_client")
-@patch("app.installer.run_ssh_command")
+@patch("app.services.docker_swarm.get_ssh_client")
+@patch("app.services.docker_swarm.run_ssh_command")
 @patch("app.database.get_servers")
 def test_change_swarm_node_hostname_success(mock_get_servers, mock_run_ssh, mock_get_ssh):
     from app.installer import change_swarm_node_hostname

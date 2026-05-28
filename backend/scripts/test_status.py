@@ -1,0 +1,1 @@
+from app.installer import get_full_system_status; import logging; import time; logging.basicConfig(level=logging.INFO); start = time.time(); print(get_full_system_status('5.161.93.41', 'root', 'HareHare@03')); print(f'Duration: {time.time() - start}s')

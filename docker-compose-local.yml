@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    container_name: autoserver-backend
+    ports:
+      - "8005:8000"
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./stacks_backups:/app/stacks_backups
+      - /app/__pycache__
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: autoserver-frontend
+    ports:
+      - "5505:5505"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8005
+    command: npm run dev -- --host --port 5505

@@ -1,0 +1,125 @@
+version: "3.7"
+
+services:
+
+  # =============================================================
+  # BACKEND - FastAPI (API REST)
+  # =============================================================
+  backend:
+    image: aryarajalves/gerenciador-zap-grupo:backend-1.4.3
+    environment:
+
+      # --- Banco de Dados ---
+      # String de conexão com o PostgreSQL (formato: postgresql://user:senha@host:porta/db)
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/zapgroup
+
+      # --- Armazenamento de Mídia (Backblaze S3) ---
+      # ID da chave de acesso (Key ID) da sua conta Backblaze B2
+      - S3_ACCESS_KEY_ID=0047daba280ace40000000016
+      # Chave secreta de acesso correspondente ao Key ID acima
+      - S3_SECRET_ACCESS_KEY=K004/CnTC2q6BMPl00avkBM/9ItRC2w
+      # Nome do bucket onde as mídias serão armazenadas
+      - S3_BUCKET_NAME=zap-group
+      # URL do endpoint S3 do Backblaze (varia por região)
+      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      # Região do bucket Backblaze (ex: us-west-004)
+      - S3_REGION=us-west-004
+
+      - REDIS_URL=redis://redis:6379
+
+      # --- Segurança da API ---
+      # Chave secreta usada para assinar os tokens JWT.
+      # ⚠️  OBRIGATÓRIO: mínimo 32 caracteres. O servidor recusará subir se for menor!
+      - API_SECRET={API_SECRET}
+      # Origens permitidas para CORS (separadas por vírgula). Apenas esses domínios podem chamar a API pelo navegador.
+      - ALLOWED_ORIGINS=https://{BACKEND_DOMAIN},https://{FRONTEND_DOMAIN}
+      # Hosts confiáveis para o servidor (separados por vírgula). Evita ataques de Host Header Injection.
+      - ALLOWED_HOSTS={BACKEND_DOMAIN},{FRONTEND_DOMAIN}
+
+      # --- Super Admin (Primeiro Acesso) ---
+      # Email do administrador principal. Usado para criar a conta inicial ao subir o sistema.
+      - SUPER_ADMIN_EMAIL={SUPER_ADMIN_EMAIL}
+      # Senha do administrador principal. Altere após o primeiro login!
+      - SUPER_ADMIN_PASSWORD={SUPER_ADMIN_PASSWORD}
+
+      # --- URL Pública do Frontend ---
+      # Endereço do painel web (usado em links internos e configurações de CORS)
+      - VITE_API_URL=https://{BACKEND_DOMAIN}
+
+    networks:
+      - network_swarm_public
+    volumes:
+      # Persistência de dados locais (logs, arquivos temporários, etc.)
+      - app_data:/app/data
+
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.backend_zap_grupo.rule=Host(`{BACKEND_DOMAIN}`)
+        - traefik.http.routers.backend_zap_grupo.entrypoints=websecure
+        - traefik.http.routers.backend_zap_grupo.tls.certresolver=letsencryptresolver
+        - traefik.http.services.backend_zap_grupo.loadbalancer.server.port=8000
+
+  # =============================================================
+  # FRONTEND - React (Interface Web)
+  # =============================================================
+  frontend:
+    image: aryarajalves/gerenciador-zap-grupo:frontend-1.4.3
+    environment:
+
+      # --- Banco de Dados ---
+      # String de conexão com o PostgreSQL (formato: postgresql://user:senha@host:porta/db)
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/zapgroup
+
+      # --- Armazenamento de Mídia (Backblaze S3) ---
+      # ID da chave de acesso (Key ID) da sua conta Backblaze B2
+      - S3_ACCESS_KEY_ID=0047daba280ace40000000016
+      # Chave secreta de acesso correspondente ao Key ID acima
+      - S3_SECRET_ACCESS_KEY=K004/CnTC2q6BMPl00avkBM/9ItRC2w
+      # Nome do bucket onde as mídias serão armazenadas
+      - S3_BUCKET_NAME=zap-group
+      # URL do endpoint S3 do Backblaze (varia por região)
+      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      # Região do bucket Backblaze (ex: us-west-004)
+      - S3_REGION=us-west-004
+
+      - REDIS_URL=redis://redis:6379
+
+      # --- Segurança da API ---
+      # Chave secreta usada para assinar os tokens JWT.
+      # ⚠️  OBRIGATÓRIO: mínimo 32 caracteres. O servidor recusará subir se for menor!
+      - API_SECRET={API_SECRET}
+      # Origens permitidas para CORS (separadas por vírgula). Apenas esses domínios podem chamar a API pelo navegador.
+      - ALLOWED_ORIGINS=https://{BACKEND_DOMAIN},https://{FRONTEND_DOMAIN}
+      # Hosts confiáveis para o servidor (separados por vírgula). Evita ataques de Host Header Injection.
+      - ALLOWED_HOSTS={BACKEND_DOMAIN},{FRONTEND_DOMAIN}
+
+      # --- Super Admin (Primeiro Acesso) ---
+      # Email do administrador principal. Usado para criar a conta inicial ao subir o sistema.
+      - SUPER_ADMIN_EMAIL={SUPER_ADMIN_EMAIL}
+      # Senha do administrador principal. Altere após o primeiro login!
+      - SUPER_ADMIN_PASSWORD={SUPER_ADMIN_PASSWORD}
+
+      # --- URL Pública do Frontend ---
+      # Endereço do painel web (usado em links internos e configurações de CORS)
+      - VITE_API_URL=https://{BACKEND_DOMAIN}
+
+    networks:
+      - network_swarm_public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.frontend_zap_grupo.rule=Host(`{FRONTEND_DOMAIN}`)
+        - traefik.http.routers.frontend_zap_grupo.entrypoints=websecure
+        - traefik.http.routers.frontend_zap_grupo.priority=1
+        - traefik.http.routers.frontend_zap_grupo.tls.certresolver=letsencryptresolver
+        - traefik.http.services.frontend_zap_grupo.loadbalancer.server.port=80
+
+networks:
+  network_swarm_public:
+    name: network_swarm_public
+    external: true
+
+volumes:
+  app_data:
+    name: projeto_whatsapp_data

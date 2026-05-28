@@ -1,0 +1,144 @@
+version: "3.8"
+
+services:
+  # ==========================================
+  # SERVIÇO PRINCIPAL (Backend + Frontend)
+  # ==========================================
+  zapvoice_app:
+    image: aryarajalves/zap-voice-funil-api-oficial-zap:backend-3.8.5
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    networks:
+      - network_swarm_public
+    volumes:
+      - zapvoice_uploads:/app/static/uploads
+    environment:
+      # === Configuração Base e Segurança ===
+      - PORT=8000 
+      # URL de conexão com o banco de dados PostgreSQL
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/zapvoice
+      # Chave mestra de segurança para criptografar os tokens de login (JWT)
+      - SECRET_KEY={Secret_Key}
+      # Domínios permitidos para acessar a API
+      - CORS_ORIGINS=https://{BaseUrl_ZapVoice}
+      # === Frontend Runtime Config ===
+      - VITE_API_URL=https://{BaseUrl_ZapVoice}/api
+      - VITE_WS_URL=wss://{BaseUrl_ZapVoice}/ws
+      - WHATSAPP_VERIFY_TOKEN=zapvoice_webhook_2026
+      # === RabbitMQ (Fila de Mensagens) ===
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER={Usuario_Rabbit}
+      - RABBITMQ_PASSWORD={Senha_Rabbit}
+      - RABBITMQ_VHOST=N8N
+      - RABBITMQ_PREFETCH_COUNT=100
+      - RABBITMQ_MESSAGE_DELAY=10
+      # === Storage (S3 / Backblaze - Armazenamento de Arquivos) ===
+      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - S3_ACCESS_KEY=0047daba280ace40000000019
+      - S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - S3_BUCKET_NAME=zap-voice
+      - S3_REGION=us-west-004
+      - S3_PUBLIC_URL=https://zap-voice.s3.us-west-004.backblazeb2.com
+      # === Autenticação e Registro ===
+      - USER_TABLE_NAME=users
+      - REGISTER_API_KEY=4d59bd72-26d9-428f-8f88-d2a8bd96bb70
+      - SUPER_ADMIN_EMAIL=aryarajmarketing@gmail.com
+      - SUPER_ADMIN_PASSWORD=1b2af304-9a1d-430b-a4cf-55ba354ede1c
+      - HISTORY_RETENTION_DAYS=0
+      - LOG_RETENTION_DAYS=7
+      - WEBHOOK_BASE_URL=https://{BaseUrl_ZapVoice}
+      - MANYCHAT_API_KEY=
+
+      - OPENAI_API_KEY=
+
+      # === Simulação de Mensageria e Teste de Estresse ===
+      - SIMULATE_MESSAGING=false
+      - SIMULATE_CHATWOOT_RATELIMIT=false
+      - VITE_SIMULATE_MESSAGING=false
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.zapvoice.rule=Host(`{BaseUrl_ZapVoice}`)
+        - traefik.http.routers.zapvoice.entrypoints=websecure
+        - traefik.http.routers.zapvoice.tls.certresolver=letsencryptresolver
+        - traefik.http.services.zapvoice.loadbalancer.server.port=8000
+
+  # ==========================================
+  # SERVIÇO WORKER (Processamento em Segundo Plano)
+  # ==========================================
+  zapvoice_worker:
+    image: aryarajalves/zap-voice-funil-api-oficial-zap:worker-3.8.5
+    command: python worker.py
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    networks:
+      - network_swarm_public
+    volumes:
+      - zapvoice_uploads:/app/static/uploads
+    environment:
+      # === Configuração Base e Segurança ===
+      - PORT=8000 
+      # URL de conexão com o banco de dados PostgreSQL
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/zapvoice
+      # Chave mestra de segurança para criptografar os tokens de login (JWT)
+      - SECRET_KEY={Secret_Key}
+      # Domínios permitidos para acessar a API
+      - CORS_ORIGINS=https://{BaseUrl_ZapVoice}
+      # === Frontend Runtime Config ===
+      - VITE_API_URL=https://{BaseUrl_ZapVoice}/api
+      - VITE_WS_URL=wss://{BaseUrl_ZapVoice}/ws
+      - WHATSAPP_VERIFY_TOKEN=zapvoice_webhook_2026
+      # === RabbitMQ (Fila de Mensagens) ===
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER={Usuario_Rabbit}
+      - RABBITMQ_PASSWORD={Senha_Rabbit}
+      - RABBITMQ_VHOST=N8N
+      - RABBITMQ_PREFETCH_COUNT=100
+      - RABBITMQ_MESSAGE_DELAY=10
+      # === Storage (S3 / Backblaze - Armazenamento de Arquivos) ===
+      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - S3_ACCESS_KEY=0047daba280ace40000000019
+      - S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - S3_BUCKET_NAME=zap-voice
+      - S3_REGION=us-west-004
+      - S3_PUBLIC_URL=https://zap-voice.s3.us-west-004.backblazeb2.com
+      # === Autenticação e Registro ===
+      - USER_TABLE_NAME=users
+      - REGISTER_API_KEY=4d59bd72-26d9-428f-8f88-d2a8bd96bb70
+      - SUPER_ADMIN_EMAIL=aryarajmarketing@gmail.com
+      - SUPER_ADMIN_PASSWORD=1b2af304-9a1d-430b-a4cf-55ba354ede1c
+      - HISTORY_RETENTION_DAYS=0
+      - LOG_RETENTION_DAYS=7
+      - WEBHOOK_BASE_URL=https://{BaseUrl_ZapVoice}
+      - MANYCHAT_API_KEY=
+
+      - OPENAI_API_KEY=
+
+      # === Simulação de Mensageria e Teste de Estresse ===
+      - SIMULATE_MESSAGING=false
+      - SIMULATE_CHATWOOT_RATELIMIT=false
+      - VITE_SIMULATE_MESSAGING=false
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+# ==========================================
+# VOLUMES E REDES
+# ==========================================
+volumes:
+  zapvoice_uploads:
+    external: true
+    name: zapvoice_uploads
+
+networks:
+  network_swarm_public:
+    name: network_swarm_public
+    external: true

@@ -32,3 +32,8 @@ dist/
 # Arquivos de sistema operacional
 .DS_Store
 Thumbs.db
+
+# Agentes de IA
+.agents/
+output.txt
+scratch/
