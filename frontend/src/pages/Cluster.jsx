@@ -34,6 +34,7 @@ const Cluster = () => {
     useEffect(() => {
         if (selectedServer) {
             setParentIp(selectedServer.host);
+            setIsLoading(true);
             fetchClusterData();
         }
     }, [selectedServer]);
