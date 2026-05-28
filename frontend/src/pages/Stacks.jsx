@@ -261,16 +261,18 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
     const [installing, setInstalling] = useState(false);
     const [showCredentials, setShowCredentials] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [editForm, setEditForm] = useState({ user: credentials?.user || '', password: credentials?.password || '' });
+    const [editForm, setEditForm] = useState({ user: credentials?.user || '', password: credentials?.password || '', version: version || '' });
     const [editingUrlIdx, setEditingUrlIdx] = useState(null);
     const [editUrlValue, setEditUrlValue] = useState('');
     const [updatingDomain, setUpdatingDomain] = useState(false);
 
     useEffect(() => {
-        if (credentials) {
-            setEditForm({ user: credentials.user || '', password: credentials.password || '' });
-        }
-    }, [credentials]);
+        setEditForm({
+            user: credentials?.user || '',
+            password: credentials?.password || '',
+            version: version || ''
+        });
+    }, [credentials, version]);
 
     const handleInstall = async () => {
         setInstalling(true);
@@ -377,6 +379,12 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
                                     {credentials?.password || "Não encontrada"}
                                 </code>
                             </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="text-[9px] text-emerald-500/50 uppercase font-bold tracking-tighter">Versão</span>
+                                <code className="text-[11px] text-emerald-400 font-mono bg-emerald-500/5 px-2 py-1 rounded truncate">
+                                    {version || "Não informada"}
+                                </code>
+                            </div>
                         </div>
                     )}
 
@@ -400,6 +408,16 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
                                         type="text"
                                         value={editForm.password}
                                         onChange={(e) => setEditForm({...editForm, password: e.target.value})}
+                                        className="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-blue-500/50"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <span className="text-[9px] text-blue-500/50 uppercase font-bold tracking-tighter">Versão da Aplicação</span>
+                                    <input 
+                                        type="text"
+                                        placeholder="ex: 1.0.0 (opcional)"
+                                        value={editForm.version || ''}
+                                        onChange={(e) => setEditForm({...editForm, version: e.target.value})}
                                         className="bg-slate-900 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-blue-500/50"
                                     />
                                 </div>
@@ -1262,7 +1280,8 @@ const Stacks = () => {
                 host: selectedServer.host,
                 stack_name: stackName,
                 admin_email: newCreds.user,
-                admin_password: newCreds.password
+                admin_password: newCreds.password,
+                version: newCreds.version
             });
 
             // Re-fetch status to update UI

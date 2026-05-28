@@ -125,6 +125,7 @@ class StackCredentialsUpdateRequest(BaseModel):
     stack_name: str
     admin_email: str
     admin_password: str
+    version: Optional[str] = None
 
 @app.post("/change-server-password")
 def change_server_password_endpoint(req: PasswordChangeRequest):
@@ -201,9 +202,11 @@ def update_server_endpoint(server_id: int, req: ServerUpdateRequest):
 
 @app.post("/update-stack-credentials")
 def update_stack_credentials_endpoint(req: StackCredentialsUpdateRequest):
-    from app.database import save_stack_credentials
+    from app.database import save_stack_credentials, save_setting
     try:
         save_stack_credentials(req.host, req.stack_name, req.admin_email, req.admin_password)
+        if req.version is not None:
+            save_setting(f"stack_version_{req.stack_name}", req.version, req.host)
         return {"status": "success", "message": "Credenciais atualizadas com sucesso!"}
     except Exception as e:
         logger.error(f"Erro ao atualizar credenciais da stack: {e}")
@@ -524,7 +527,7 @@ async def system_status(credentials: ServerCredentials):
             "stack_versions": status_data.get("stack_versions", {})
         }
         
-        # Inject externally installed stacks
+        # Inject externally installed stacks and versions
         try:
             from app.database import get_all_settings, get_stack_credentials
             db_settings = get_all_settings(credentials.host)
@@ -534,6 +537,14 @@ async def system_status(credentials: ServerCredentials):
             stack_credentials = response_data["stack_credentials"]
             stack_versions = response_data["stack_versions"]
             
+            # 1. Inject versions for standard detected/active stacks
+            for s_name in detected_stacks:
+                ver_key = f"stack_version_{s_name}"
+                ver = db_settings.get(ver_key)
+                if ver:
+                    stack_versions[s_name] = ver
+            
+            # 2. Inject external stacks
             for key, val in db_settings.items():
                 if key.startswith("external_installed_") and val == "true":
                     s_name = key.replace("external_installed_", "")
@@ -556,7 +567,7 @@ async def system_status(credentials: ServerCredentials):
 
                     # Get external version
                     ver_key = f"external_version_{s_name}"
-                    ext_ver = db_settings.get(ver_key)
+                    ext_ver = db_settings.get(ver_key) or db_settings.get(f"stack_version_{s_name}")
                     if ext_ver:
                         stack_versions[s_name] = ext_ver
         except Exception as db_err:
@@ -1105,6 +1116,8 @@ def trigger_uninstall_stack(request: UninstallStackRequest, background_tasks: Ba
             return {"message": f"Associação externa de {request.stack_id} removida com sucesso."}
             
         from app.installer import uninstall_stack
+        # Clear version setting in database
+        save_setting(f"stack_version_{request.stack_id}", "", request.host)
         logger.info(f"SOLICITAÇÃO DE DESINSTALAÇÃO: Stack={request.stack_id}, Name={request.stack_name} no Host={request.host}")
         install_status[request.stack_id] = {'status': 'pending', 'message': f'Iniciando desinstalação de {request.stack_id}...'}
         
