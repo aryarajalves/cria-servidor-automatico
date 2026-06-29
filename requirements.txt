@@ -5,3 +5,4 @@ requests==2.32.5      # Usada para fazer requisições HTTP (comunicação entre
 python-dotenv==1.2.1  # Carrega variáveis de ambiente de arquivos .env
 pytest==9.0.2         # Ferramenta para execução de testes automatizados
 httpx==0.28.1         # Cliente HTTP moderno para python (usado em testes e chamadas assíncronas)
+PyJWT==2.8.0          # Biblioteca para geração e validação de tokens JWT (segurança)

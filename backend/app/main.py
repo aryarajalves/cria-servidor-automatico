@@ -37,13 +37,16 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "Erro interno do servidor. Tente novamente mais tarde."}
     )
 
+from fastapi import Depends
+from app.auth_middleware import verify_jwt
+
 # Inclusão dos roteadores modulares
 app.include_router(auth.router)
-app.include_router(servers.router)
-app.include_router(settings.router)
-app.include_router(cloudflare.router)
-app.include_router(installer.router)
-app.include_router(cluster.router)
+app.include_router(servers.router, dependencies=[Depends(verify_jwt)])
+app.include_router(settings.router, dependencies=[Depends(verify_jwt)])
+app.include_router(cloudflare.router, dependencies=[Depends(verify_jwt)])
+app.include_router(installer.router, dependencies=[Depends(verify_jwt)])
+app.include_router(cluster.router, dependencies=[Depends(verify_jwt)])
 
 # Configuração de arquivos estáticos
 if getattr(sys, 'frozen', False):

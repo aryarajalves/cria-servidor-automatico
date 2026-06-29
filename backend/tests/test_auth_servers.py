@@ -37,53 +37,59 @@ def test_login_fail():
     })
     assert response.status_code == 401
 
-def test_server_crud():
+def test_unauthenticated_servers_calls():
+    # Deve falhar com 401 pois não enviamos token (limpamos a dependência sobrescrita)
+    app.dependency_overrides.clear()
+    response = client.get("/servers")
+    assert response.status_code == 401
+
+def test_server_crud(auth_headers):
     # 1. Add server
     response = client.post("/servers", json={
         "name": "Test VPS",
         "host": "1.2.3.4",
         "username": "root",
         "password": "vps_password"
-    })
+    }, headers=auth_headers)
     assert response.status_code == 200
     server_id = response.json()["id"]
     
     # 2. List servers
-    response = client.get("/servers")
+    response = client.get("/servers", headers=auth_headers)
     assert response.status_code == 200
     servers = response.json()
     assert any(s["id"] == server_id for s in servers)
     
     # 3. Delete server
-    response = client.delete(f"/servers/{server_id}")
+    response = client.delete(f"/servers/{server_id}", headers=auth_headers)
     assert response.status_code == 200
     
     # 4. Verify deletion
-    response = client.get("/servers")
+    response = client.get("/servers", headers=auth_headers)
     servers = response.json()
     assert not any(s["id"] == server_id for s in servers)
 
-def test_update_server():
+def test_update_server(auth_headers):
     # 1. Add server
     response = client.post("/servers", json={
         "name": "Update Test",
         "host": "1.1.1.1",
         "username": "root",
         "password": "old_password"
-    })
+    }, headers=auth_headers)
     server_id = response.json()["id"]
     
     # 2. Update password
     response = client.put(f"/servers/{server_id}", json={
         "password": "new_password"
-    })
+    }, headers=auth_headers)
     assert response.status_code == 200
     
     # 3. Verify update
-    response = client.get("/servers")
+    response = client.get("/servers", headers=auth_headers)
     servers = response.json()
     server = next(s for s in servers if s["id"] == server_id)
     assert server["password"] == "new_password"
     
     # Cleanup
-    client.delete(f"/servers/{server_id}")
+    client.delete(f"/servers/{server_id}", headers=auth_headers)

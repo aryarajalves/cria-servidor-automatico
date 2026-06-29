@@ -30,7 +30,7 @@ const Login = () => {
         try {
             const response = await api.post('/login', formData);
             if (response.data.status === 'success') {
-                loginApp(formData.email);
+                loginApp(formData.email, response.data.token);
                 navigate('/');
             }
         } catch (err) {

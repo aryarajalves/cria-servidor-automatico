@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import Optional
 import os
@@ -25,23 +25,30 @@ class PasswordChangeRequest(BaseModel):
     password: str
     new_password: str
 
+from app.auth_middleware import create_access_token, verify_jwt
+
 class LoginRequest(BaseModel):
     email: str
     password: str
 @router.post("/login")
 def login_endpoint(req: LoginRequest):
     """
-    Autenticação mestre da aplicação via variáveis de ambiente.
+    Autenticação mestre da aplicação via variáveis de ambiente com geração de token JWT.
     """
     admin_email = os.getenv("ADMIN_EMAIL", "admin@admin.com")
     admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
     
     if req.email == admin_email and req.password == admin_password:
-        return {"status": "success", "message": "Logado com sucesso!"}
+        token = create_access_token(data={"sub": req.email})
+        return {
+            "status": "success",
+            "message": "Logado com sucesso!",
+            "token": token
+        }
     
     raise HTTPException(status_code=401, detail="Email ou senha incorretos.")
 
-@router.post("/change-server-password")
+@router.post("/change-server-password", dependencies=[Depends(verify_jwt)])
 def change_server_password_endpoint(req: PasswordChangeRequest):
     """
     Altera a senha SSH do servidor.
@@ -54,7 +61,7 @@ def change_server_password_endpoint(req: PasswordChangeRequest):
         logger.error(f"Falha ao alterar senha do servidor: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/verify-connection")
+@router.post("/verify-connection", dependencies=[Depends(verify_jwt)])
 async def verify_connection(credentials: ServerCredentials):
     """
     Verifica APENAS se é possível conectar via SSH (Login).

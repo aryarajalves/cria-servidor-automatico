@@ -50,16 +50,20 @@ export const ServerProvider = ({ children }) => {
         }
     };
 
-    const loginApp = (email) => {
+    const loginApp = (email, token) => {
         const userData = { email, loggedAt: new Date().toISOString() };
         setAppUser(userData);
         localStorage.setItem('app_auth', JSON.stringify(userData));
+        if (token) {
+            localStorage.setItem('app_token', token);
+        }
     };
 
     const logoutApp = () => {
         setAppUser(null);
         setSelectedServer(null);
         localStorage.removeItem('app_auth');
+        localStorage.removeItem('app_token');
         localStorage.removeItem('selected_server');
     };
 
