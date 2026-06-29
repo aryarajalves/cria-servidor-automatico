@@ -22,10 +22,13 @@ export const ServerProvider = ({ children }) => {
     const [isGlobalLoading, setIsGlobalLoading] = useState(false);
     const [isInitializing, setIsInitializing] = useState(true);
 
-    // Carrega servidores do backend ao logar na aplicação
+    // Carrega servidores do backend ao logar na aplicação com um delay de 5 segundos para estabilização
     useEffect(() => {
         if (appUser) {
-            fetchServers();
+            const timer = setTimeout(() => {
+                fetchServers();
+            }, 5000);
+            return () => clearTimeout(timer);
         } else {
             setIsInitializing(false);
         }
