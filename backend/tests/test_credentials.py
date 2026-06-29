@@ -1,28 +1,10 @@
 import unittest
 import os
-import sqlite3
 from app.database import init_db, save_stack_credentials, get_all_stack_credentials, get_stack_credentials
 
 class TestCredentials(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # Garante que o banco de testes existe e está limpo
-        from app.database import get_db_path
-        db_path = get_db_path()
-        if os.path.exists(db_path):
-            try:
-                os.remove(db_path)
-            except:
-                pass
-        init_db()
+    # setup_test_db no conftest.py já inicializa e limpa o banco de dados antes de cada teste
 
-    def setUp(self):
-        from app.database import get_db_path
-        conn = sqlite3.connect(get_db_path())
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM stack_credentials")
-        conn.commit()
-        conn.close()
 
     def test_save_and_get_credentials(self):
         host = "1.2.3.4"

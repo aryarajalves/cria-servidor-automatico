@@ -53,22 +53,21 @@ async def get_cluster_status_endpoint(parent_host: str, parent_username: str, pa
         from app.installer import check_swarm_active, get_swarm_nodes_real_status
         logger.info(f"Verificando status real do Swarm para o pai: {parent_host}")
         
-        # Verifica se o host atual é um nó filho de algum outro cluster no banco
-        from app.database import get_db_path
-        import sqlite3
+        from app.database import get_connection
         is_child = False
         parent_info = None
         
         try:
-            conn = sqlite3.connect(get_db_path(), timeout=20)
+            conn = get_connection()
             cursor = conn.cursor()
             cursor.execute('''
                 SELECT cn.parent_host, cn.role, s.name 
                 FROM cluster_nodes cn
                 LEFT JOIN servers s ON s.host = cn.parent_host
-                WHERE cn.node_id = (SELECT id FROM servers WHERE host = ?)
+                WHERE cn.node_id = (SELECT id FROM servers WHERE host = %s)
             ''', (parent_host,))
             row = cursor.fetchone()
+            cursor.close()
             conn.close()
             
             if row:

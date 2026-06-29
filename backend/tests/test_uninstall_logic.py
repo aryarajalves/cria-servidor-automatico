@@ -10,16 +10,7 @@ from app.installer import uninstall_stack
 from app.database import init_db, save_stack_credentials, get_stack_credentials
 
 class TestUninstallLogic(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        from app.database import get_db_path
-        db_path = get_db_path()
-        if os.path.exists(db_path):
-            try:
-                os.remove(db_path)
-            except:
-                pass
-        init_db()
+    # setup_test_db no conftest.py já inicializa e limpa o banco de dados antes de cada teste
 
     @patch('app.services.web_apps.get_ssh_client')
     @patch('app.services.web_apps.run_ssh_command')

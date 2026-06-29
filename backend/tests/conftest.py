@@ -8,6 +8,14 @@ from app.main import app
 def setup_test_db():
     # Inicializa o banco de dados de testes para garantir que todas as tabelas existam
     init_db()
+    # Limpa as tabelas antes de cada teste no PostgreSQL
+    from app.database import get_connection
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("TRUNCATE TABLE cluster_nodes, stack_credentials, servers, settings CASCADE;")
+    conn.commit()
+    cursor.close()
+    conn.close()
     yield
 
 @pytest.fixture

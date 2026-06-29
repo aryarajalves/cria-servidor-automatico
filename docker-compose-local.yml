@@ -1,4 +1,16 @@
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: autoserver-db
+    ports:
+      - "5439:5432"
+    environment:
+      - POSTGRES_DB=autoserver
+      - POSTGRES_USER=autoserver_user
+      - POSTGRES_PASSWORD=autoserver_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   backend:
     build:
       context: .
@@ -13,8 +25,15 @@ services:
       - /app/__pycache__
     environment:
       - PYTHONUNBUFFERED=1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=autoserver
+      - DB_USER=autoserver_user
+      - DB_PASSWORD=autoserver_password
     env_file:
       - ./backend/.env
+    depends_on:
+      - db
 
   frontend:
     build:
@@ -31,3 +50,6 @@ services:
     environment:
       - VITE_API_URL=http://localhost:8005
     command: npm run dev -- --host --port 5505
+
+volumes:
+  pgdata:

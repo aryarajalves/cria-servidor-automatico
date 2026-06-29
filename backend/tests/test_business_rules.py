@@ -6,13 +6,12 @@ import sys
 # Adiciona o diretório backend ao path para poder importar o app
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app.database import init_db, save_setting, get_all_settings, get_db_path
+from app.database import init_db, save_setting, get_all_settings
 
 class TestBusinessRules(unittest.TestCase):
     def setUp(self):
         # Garante que o banco está inicializado
         init_db()
-        self.db_path = get_db_path()
 
     def test_cloudflare_token_is_global(self):
         """
