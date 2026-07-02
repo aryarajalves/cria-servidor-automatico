@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   worker:
-    image: aryarajalves/configurar-agentes-ia:backend-1.7.6
+    image: aryalvesfernandes/configuraagente:backend-1.0.2
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     command: celery -A celery_app worker --loglevel=info --concurrency=1
     networks:
@@ -34,13 +34,21 @@ services:
       - CORS_ALLOWED_ORIGINS=https://{DOMAIN_FRONTEND},http://localhost:5300 # Proteção do navegador. Lista de domínios (ex: https://meusite.com) autorizados a se comunicar.
       - JWT_SECRET_KEY=d8e4125b-c290-48a1-b8d4-53c8f1e67890 # Assinat ura criptográfica dos tokens de Login. Mantém administradores logados de forma segura.
 
-      # --- CONFIGURAÇÕES DE STORAGE (S3/Backblaze) ---
-      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
-      - S3_ACCESS_KEY=0047daba280ace40000000015
-      - S3_SECRET_KEY=K0042w9BmxfZEalmYf7l7/jQ8eunT8s
-      - S3_BUCKET_NAME=zap-voice
-      - S3_REGION=us-east-005
+      # --- CONFIGURAÇÕES DE STORAGE (Minio) ---
+      - S3_ENDPOINT_URL={S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY={S3_ACCESS_KEY}
+      - S3_SECRET_KEY={S3_SECRET_KEY}
+      - S3_BUCKET_NAME={S3_BUCKET_NAME}
+      - S3_REGION={S3_REGION}
 
+      # --- CONFIGURAÇÕES DE STORAGE (S3 Backblaze B2) — backups do PostgreSQL ---
+      # Preencha com as credenciais do seu bucket no Backblaze B2 (Painel B2 > Application Keys).
+      # Endpoint: https://s3.<regiao>.backblazeb2.com (ex: https://s3.us-west-004.backblazeb2.com)
+      - S3_BACKUP_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - S3_BACKUP_ACCESS_KEY=0047daba280ace40000000019
+      - S3_BACKUP_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - S3_BACKUP_BUCKET_NAME=agent-flow
+      - S3_BACKUP_REGION=us-west-004
 
       # --- CONFIGURAÇÕES DE QUEUE (Redis/Celery) ---
       - REDIS_URL=redis://redis:6379/8
@@ -48,14 +56,22 @@ services:
       # --- LIMITES ---
       - MAX_CONTENT_LENGTH=5368709120 # 5GB em bytes
 
-      - CHATWOOT_URL={Chatwoot_Url}
-      - CHATWOOT_API_TOKEN={Chatwoot_Token}
-
       - PYTHONPATH=/app
 
 
       - VITE_API_URL={VITE_API_URL}
       - VITE_AGENT_API_KEY={VITE_AGENT_API_KEY}
+
+      # --- ZAPVOICE ---
+      - ZAPVOICE_URL={ZAPVOICE_URL}
+      - ZAPVOICE_API_TOKEN={ZAPVOICE_API_TOKEN}
+
+      # Taxa de conversão USD para BRL para exibição de custos
+      - USD_TO_BRL_RATE=5.0
+
+      # --- VISUALIZADOR DE LOGS ---
+      # Quantos dias de log manter nos containers. 0 (ou vazio) = NUNCA apagar.
+      - LOG_RETENTION_DAYS=7
     deploy:
       mode: replicated
       replicas: 1
@@ -71,7 +87,7 @@ services:
   # BACKEND — FastAPI + Gunicorn
   # ----------------------------------------------------------
   backend:
-    image: aryarajalves/configurar-agentes-ia:backend-1.7.6
+    image: aryalvesfernandes/configuraagente:backend-1.0.2
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public
@@ -101,13 +117,21 @@ services:
       - CORS_ALLOWED_ORIGINS=https://{DOMAIN_FRONTEND},http://localhost:5300 # Proteção do navegador. Lista de domínios (ex: https://meusite.com) autorizados a se comunicar.
       - JWT_SECRET_KEY=d8e4125b-c290-48a1-b8d4-53c8f1e67890 # Assinat ura criptográfica dos tokens de Login. Mantém administradores logados de forma segura.
 
-      # --- CONFIGURAÇÕES DE STORAGE (S3/Backblaze) ---
-      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
-      - S3_ACCESS_KEY=0047daba280ace40000000015
-      - S3_SECRET_KEY=K0042w9BmxfZEalmYf7l7/jQ8eunT8s
-      - S3_BUCKET_NAME=zap-voice
-      - S3_REGION=us-east-005
+      # --- CONFIGURAÇÕES DE STORAGE (Minio) ---
+      - S3_ENDPOINT_URL={S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY={S3_ACCESS_KEY}
+      - S3_SECRET_KEY={S3_SECRET_KEY}
+      - S3_BUCKET_NAME={S3_BUCKET_NAME}
+      - S3_REGION={S3_REGION}
 
+      # --- CONFIGURAÇÕES DE STORAGE (S3 Backblaze B2) — backups do PostgreSQL ---
+      # Preencha com as credenciais do seu bucket no Backblaze B2 (Painel B2 > Application Keys).
+      # Endpoint: https://s3.<regiao>.backblazeb2.com (ex: https://s3.us-west-004.backblazeb2.com)
+      - S3_BACKUP_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - S3_BACKUP_ACCESS_KEY=0047daba280ace40000000019
+      - S3_BACKUP_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - S3_BACKUP_BUCKET_NAME=agent-flow
+      - S3_BACKUP_REGION=us-west-004
 
       # --- CONFIGURAÇÕES DE QUEUE (Redis/Celery) ---
       - REDIS_URL=redis://redis:6379/8
@@ -115,14 +139,22 @@ services:
       # --- LIMITES ---
       - MAX_CONTENT_LENGTH=5368709120 # 5GB em bytes
 
-      - CHATWOOT_URL={Chatwoot_Url}
-      - CHATWOOT_API_TOKEN={Chatwoot_Token}
-
       - PYTHONPATH=/app
 
 
       - VITE_API_URL={VITE_API_URL}
       - VITE_AGENT_API_KEY={VITE_AGENT_API_KEY}
+
+      # --- ZAPVOICE ---
+      - ZAPVOICE_URL={ZAPVOICE_URL}
+      - ZAPVOICE_API_TOKEN={ZAPVOICE_API_TOKEN}
+
+      # Taxa de conversão USD para BRL para exibição de custos
+      - USD_TO_BRL_RATE=5.0
+
+      # --- VISUALIZADOR DE LOGS ---
+      # Quantos dias de log manter nos containers. 0 (ou vazio) = NUNCA apagar.
+      - LOG_RETENTION_DAYS=7
     deploy:
       mode: replicated
       replicas: 1
@@ -148,7 +180,7 @@ services:
   # FRONTEND — React (build estático) + Nginx
   # ----------------------------------------------------------
   frontend:
-    image: aryarajalves/configurar-agentes-ia:frontend-1.7.6
+    image: aryalvesfernandes/configuraagente:frontend-1.0.2
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public
@@ -179,13 +211,21 @@ services:
       - CORS_ALLOWED_ORIGINS=https://{DOMAIN_FRONTEND},http://localhost:5300 # Proteção do navegador. Lista de domínios (ex: https://meusite.com) autorizados a se comunicar.
       - JWT_SECRET_KEY=d8e4125b-c290-48a1-b8d4-53c8f1e67890 # Assinat ura criptográfica dos tokens de Login. Mantém administradores logados de forma segura.
 
-      # --- CONFIGURAÇÕES DE STORAGE (S3/Backblaze) ---
-      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
-      - S3_ACCESS_KEY=0047daba280ace40000000015
-      - S3_SECRET_KEY=K0042w9BmxfZEalmYf7l7/jQ8eunT8s
-      - S3_BUCKET_NAME=zap-voice
-      - S3_REGION=us-east-005
+      # --- CONFIGURAÇÕES DE STORAGE (Minio) ---
+      - S3_ENDPOINT_URL={S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY={S3_ACCESS_KEY}
+      - S3_SECRET_KEY={S3_SECRET_KEY}
+      - S3_BUCKET_NAME={S3_BUCKET_NAME}
+      - S3_REGION={S3_REGION}
 
+      # --- CONFIGURAÇÕES DE STORAGE (S3 Backblaze B2) — backups do PostgreSQL ---
+      # Preencha com as credenciais do seu bucket no Backblaze B2 (Painel B2 > Application Keys).
+      # Endpoint: https://s3.<regiao>.backblazeb2.com (ex: https://s3.us-west-004.backblazeb2.com)
+      - S3_BACKUP_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - S3_BACKUP_ACCESS_KEY=0047daba280ace40000000019
+      - S3_BACKUP_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - S3_BACKUP_BUCKET_NAME=agent-flow
+      - S3_BACKUP_REGION=us-west-004
 
       # --- CONFIGURAÇÕES DE QUEUE (Redis/Celery) ---
       - REDIS_URL=redis://redis:6379/8
@@ -193,15 +233,22 @@ services:
       # --- LIMITES ---
       - MAX_CONTENT_LENGTH=5368709120 # 5GB em bytes
 
-      - CHATWOOT_URL={Chatwoot_Url}
-      - CHATWOOT_API_TOKEN={Chatwoot_Token}
-
       - PYTHONPATH=/app
 
 
       - VITE_API_URL={VITE_API_URL}
       - VITE_AGENT_API_KEY={VITE_AGENT_API_KEY}
 
+      # --- ZAPVOICE ---
+      - ZAPVOICE_URL={ZAPVOICE_URL}
+      - ZAPVOICE_API_TOKEN={ZAPVOICE_API_TOKEN}
+
+      # Taxa de conversão USD para BRL para exibição de custos
+      - USD_TO_BRL_RATE=5.0
+
+      # --- VISUALIZADOR DE LOGS ---
+      # Quantos dias de log manter nos containers. 0 (ou vazio) = NUNCA apagar.
+      - LOG_RETENTION_DAYS=7
     deploy:
       mode: replicated
       replicas: 1

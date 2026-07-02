@@ -12,4 +12,4 @@ if __name__ == "__main__":
     # In a frozen app, reload=True is not available.
     print("Iniciando AutoServer Deployer...")
     print("Acesse o painel em: http://localhost:8000")
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, log_level="info", reload=True, log_config=None)
