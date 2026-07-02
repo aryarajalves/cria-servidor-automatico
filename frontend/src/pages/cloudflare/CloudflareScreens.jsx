@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import { Globe, Cloud } from 'lucide-react';
 
 export const CheckingSettingsScreen = () => {
@@ -44,12 +45,12 @@ export const MissingTokenScreen = () => {
                     Para gerenciar o DNS, configure seu API Token da Cloudflare nas configurações.
                 </p>
             </div>
-            <a
-                href="/settings"
+            <Link
+                to="/settings"
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
             >
                 Ir para Configurações
-            </a>
+            </Link>
         </div>
     );
 };
@@ -66,13 +67,13 @@ export const MissingDefaultDomainScreen = () => {
                     Para acessar o gerenciamento de DNS rápido, você precisa definir qual é o <b>Domínio Padrão</b> do sistema.
                 </p>
             </div>
-            <a
-                href="/settings"
+            <Link
+                to="/settings"
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 mx-auto"
             >
                 <Globe size={18} />
                 Selecionar nas Configurações
-            </a>
+            </Link>
         </div>
     );
 };

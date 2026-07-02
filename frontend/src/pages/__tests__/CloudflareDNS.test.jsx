@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import CloudflareDNS from '../CloudflareDNS';
 
 // Mock do contexto de Server
@@ -24,13 +25,21 @@ vi.mock('../../services/api', () => ({
 describe('CloudflareDNS Page', () => {
     it('exibe tela de carregamento de DNS inicialmente', () => {
         mockApiGet.mockReturnValue(new Promise(() => {})); // Nunca resolve para manter loading
-        render(<CloudflareDNS />);
+        render(
+            <MemoryRouter>
+                <CloudflareDNS />
+            </MemoryRouter>
+        );
         expect(screen.getByText(/Verificando DNS/i)).toBeInTheDocument();
     });
 
     it('exibe tela de domínio padrão em falta se não houver default_domain_id', async () => {
         mockApiGet.mockResolvedValue({ data: { default_domain_id: null } });
-        render(<CloudflareDNS />);
+        render(
+            <MemoryRouter>
+                <CloudflareDNS />
+            </MemoryRouter>
+        );
         await waitFor(() => {
             expect(screen.getByText(/Selecione um Domínio Padrão/i)).toBeInTheDocument();
         });
@@ -55,7 +64,11 @@ describe('CloudflareDNS Page', () => {
             return Promise.reject(new Error('Unknown url'));
         });
 
-        render(<CloudflareDNS />);
+        render(
+            <MemoryRouter>
+                <CloudflareDNS />
+            </MemoryRouter>
+        );
 
         // Espera renderizar os registros DNS
         await waitFor(() => {
@@ -93,7 +106,11 @@ describe('CloudflareDNS Page', () => {
             return Promise.reject(new Error('Unknown url'));
         });
 
-        render(<CloudflareDNS />);
+        render(
+            <MemoryRouter>
+                <CloudflareDNS />
+            </MemoryRouter>
+        );
 
         await waitFor(() => {
             expect(screen.getByText('app.exemplo.com')).toBeInTheDocument();
