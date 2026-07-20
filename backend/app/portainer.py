@@ -92,39 +92,34 @@ def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, tok
     except Exception as e:
         print(f"AVISO: Não foi possível verificar se a stack existe: {e}")
 
-    # Cria a stack
-    # Type 1 = Swarm Stack
-    # Parametros de query
-    query_params = {
-        "type": 1,
-        "method": "string",
-        "endpointId": endpoint_id
-    }
-    
-    url = f"{base_url}/api/stacks"
-    
-    payload = {
-        "Name": stack_name,
-        "StackFileContent": stack_content,
-        "SwarmID": "swarmi-id-placeholder" 
-    }
-    
     # Precisamos pegar o SwarmID real do endpoint para criar uma Swarm Stack corretamente
-    # GET /api/endpoints/{id}/docker/info
+    swarm_id = None
     try:
         info_url = f"{base_url}/api/endpoints/{endpoint_id}/docker/info"
         info_response = requests.get(info_url, headers=headers, verify=verify)
         info_response.raise_for_status()
         swarm_id = info_response.json().get("Swarm", {}).get("Cluster", {}).get("ID")
         if swarm_id:
-            payload["SwarmID"] = swarm_id
             print(f"DEBUG: Swarm ID encontrado: {swarm_id}")
         else:
             print("AVISO: Swarm ID não encontrado no endpoint.")
     except Exception as e:
         print(f"AVISO: Erro ao buscar Swarm ID: {e}")
 
-    print(f"DEBUG: Tentando criar stack '{stack_name}' no Endpoint ID {endpoint_id}...")
+    # Cria a stack usando o endpoint específico para Swarm do Portainer 2.20+
+    # Rota: POST /api/stacks/create/swarm/string?endpointId=X
+    url = f"{base_url}/api/stacks/create/swarm/string"
+    query_params = {
+        "endpointId": endpoint_id
+    }
+    
+    payload = {
+        "name": stack_name,
+        "stackFileContent": stack_content,
+        "swarmID": swarm_id or "placeholder"
+    }
+
+    print(f"DEBUG: Tentando criar stack Swarm '{stack_name}' via API 2.20+ em {url}...")
     
     try:
         # allow_redirects=False para detectar se o Portainer está redirecionando (ex: http -> https)
@@ -138,8 +133,7 @@ def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, tok
         print(f"INFO: Stack {stack_name} criada com sucesso no Portainer.")
         return {"status": "success", "message": f"Stack {stack_name} criada com sucesso no Portainer"}
     except requests.exceptions.RequestException as e:
-        error_msg = response.text if response else str(e)
-        print(f"ERRO: Falha ao criar stack no Portainer. Status: {response.status_code if response else 'N/A'}")
+        error_msg = response.text if response is not None else str(e)
+        print(f"ERRO: Falha ao criar stack no Portainer. Status: {response.status_code if response is not None else 'N/A'}")
         print(f"ERRO: Resposta do Portainer: {error_msg}")
-        # Retorna o erro detalhado para aparecer no popup
-        raise Exception(f"Status {response.status_code if response else 'N/A'} - {error_msg}")
+        raise Exception(f"Status {response.status_code if response is not None else 'N/A'} - {error_msg}")

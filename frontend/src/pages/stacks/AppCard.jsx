@@ -190,7 +190,7 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
             )}
 
             {/* URLs Section (Definir link se vazio) */}
-            {isInstalled && (!urls || urls.length === 0) && (
+            {isInstalled && !['postgres', 'redis', 'traefik'].includes(stack.id) && (!urls || urls.length === 0) && (
                 <div className="mb-4 relative z-10">
                     <div className="flex flex-col gap-2">
                         {editingUrlIdx === 'new' ? (
@@ -241,7 +241,7 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
                                     setEditUrlValue('');
                                 }}
                                 className="flex items-center justify-center gap-2 text-xs transition-colors bg-blue-500/5 hover:bg-blue-500/10 px-3 py-2 rounded-lg border border-dashed border-blue-500/20 hover:border-blue-500/40 text-blue-400 font-bold uppercase tracking-wider w-full"
-                            >
+                             >
                                 <Globe size={14} />
                                 Definir Link/Domínio
                             </button>
@@ -251,7 +251,7 @@ const AppCard = ({ stack, onInstall, onRestart, onUninstall, isInstalled, disabl
             )}
 
             {/* URLs Section (Exibir domínios e permitir edição) */}
-            {isInstalled && urls && urls.length > 0 && (
+            {isInstalled && !['postgres', 'redis', 'traefik'].includes(stack.id) && urls && urls.length > 0 && (
                 <div className="mb-4 relative z-10">
                     <div className="flex flex-col gap-2">
                         {urls.map((url, idx) => {

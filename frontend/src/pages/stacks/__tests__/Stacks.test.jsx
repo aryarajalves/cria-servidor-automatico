@@ -4,7 +4,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
 // Mock do contexto do servidor
-vi.mock('../../../../context/ServerContext', () => ({
+vi.mock('../../../context/ServerContext', () => ({
     useServer: () => ({
         selectedServer: {
             id: 1,
@@ -63,6 +63,7 @@ import Stacks from '../../Stacks';
 import SetupStep from '../SetupStep';
 import ExternalAppModal from '../ExternalAppModal';
 import ChatwootAdminModal from '../ChatwootAdminModal';
+import AppInstallModal from '../../../components/AppInstallModal';
 import { apps } from '../constants';
 
 describe('Stacks Page Refactoring Tests', () => {
@@ -174,5 +175,31 @@ describe('Stacks Page Refactoring Tests', () => {
         fireEvent.click(hideButton);
 
         expect(passwordInput.type).toBe('password');
+    });
+
+    it('campo de email do Traefik Proxy no AppInstallModal deve vir vazio por padrao', () => {
+        const traefikApp = {
+            id: "traefik",
+            name: "Traefik Proxy",
+            colorBg: "bg-blue-600/10",
+            colorText: "text-blue-500",
+            icon: () => <span>Icon</span>
+        };
+        const fields = [
+            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com" }
+        ];
+
+        render(
+            <AppInstallModal
+                isOpen={true}
+                onClose={vi.fn()}
+                onInstall={vi.fn()}
+                app={traefikApp}
+                fields={fields}
+            />
+        );
+
+        const emailInput = screen.getByPlaceholderText('seu@email.com');
+        expect(emailInput.value).toBe('');
     });
 });

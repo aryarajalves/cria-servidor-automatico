@@ -10,7 +10,7 @@ services:
       - network_swarm_public
     environment:
       # --- Banco de Dados e Concorrência ---
-      - DATABASE_URL=postgresql+asyncpg://postgres:a12470a9-e3a2-4c21-a9f3-d8b4ca8cb205@postgres_postgres:5432/ai_agent # URL de conexão ao PostgreSQL (Externo)
+      - DATABASE_URL={DATABASE_URL} # URL de conexão ao PostgreSQL (Externo)
       - GUNICORN_WORKERS=4 # Ajustado para 5 workers (Ideal para 2 CPUs)
             
       - FRONTEND_URL=https://{DOMAIN_FRONTEND}
@@ -38,7 +38,7 @@ services:
       - S3_ENDPOINT_URL={S3_ENDPOINT_URL}
       - S3_ACCESS_KEY={S3_ACCESS_KEY}
       - S3_SECRET_KEY={S3_SECRET_KEY}
-      - S3_BUCKET_NAME={S3_BUCKET_NAME}
+      - S3_BUCKET_NAME=agent-flow
       - S3_REGION={S3_REGION}
 
       # --- CONFIGURAÇÕES DE STORAGE (S3 Backblaze B2) — backups do PostgreSQL ---
@@ -93,7 +93,7 @@ services:
       - network_swarm_public
     environment:
       # --- Banco de Dados e Concorrência ---
-      - DATABASE_URL=postgresql+asyncpg://postgres:a12470a9-e3a2-4c21-a9f3-d8b4ca8cb205@postgres_postgres:5432/ai_agent # URL de conexão ao PostgreSQL (Externo)
+      - DATABASE_URL={DATABASE_URL} # URL de conexão ao PostgreSQL (Externo)
       - GUNICORN_WORKERS=4 # Ajustado para 5 workers (Ideal para 2 CPUs)
             
       - FRONTEND_URL=https://{DOMAIN_FRONTEND}
@@ -121,7 +121,7 @@ services:
       - S3_ENDPOINT_URL={S3_ENDPOINT_URL}
       - S3_ACCESS_KEY={S3_ACCESS_KEY}
       - S3_SECRET_KEY={S3_SECRET_KEY}
-      - S3_BUCKET_NAME={S3_BUCKET_NAME}
+      - S3_BUCKET_NAME=agent-flow
       - S3_REGION={S3_REGION}
 
       # --- CONFIGURAÇÕES DE STORAGE (S3 Backblaze B2) — backups do PostgreSQL ---
@@ -147,7 +147,7 @@ services:
 
       # --- ZAPVOICE ---
       - ZAPVOICE_URL={ZAPVOICE_URL}
-      - ZAPVOICE_API_TOKEN={ZAPVOICE_API_TOKEN}
+      - ZAPVOICE_API_TOKEN=
 
       # Taxa de conversão USD para BRL para exibição de custos
       - USD_TO_BRL_RATE=5.0
@@ -187,7 +187,7 @@ services:
 
     environment:
       # --- Banco de Dados e Concorrência ---
-      - DATABASE_URL=postgresql+asyncpg://postgres:a12470a9-e3a2-4c21-a9f3-d8b4ca8cb205@postgres_postgres:5432/ai_agent # URL de conexão ao PostgreSQL (Externo)
+      - DATABASE_URL={DATABASE_URL} # URL de conexão ao PostgreSQL (Externo)
       - GUNICORN_WORKERS=4 # Ajustado para 5 workers (Ideal para 2 CPUs)
             
       - FRONTEND_URL=https://{DOMAIN_FRONTEND}
@@ -241,7 +241,7 @@ services:
 
       # --- ZAPVOICE ---
       - ZAPVOICE_URL={ZAPVOICE_URL}
-      - ZAPVOICE_API_TOKEN={ZAPVOICE_API_TOKEN}
+      - ZAPVOICE_API_TOKEN=
 
       # Taxa de conversão USD para BRL para exibição de custos
       - USD_TO_BRL_RATE=5.0

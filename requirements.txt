@@ -7,3 +7,4 @@ pytest==9.0.2         # Ferramenta para execução de testes automatizados
 httpx==0.28.1         # Cliente HTTP moderno para python (usado em testes e chamadas assíncronas)
 PyJWT==2.8.0          # Biblioteca para geração e validação de tokens JWT (segurança)
 psycopg2-binary==2.9.9 # Adaptador de banco de dados PostgreSQL para Python
+tzdata==2025.2         # Banco de fusos horários (necessário no Windows para o horário de Brasília nos logs)

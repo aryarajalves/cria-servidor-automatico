@@ -24,6 +24,10 @@ export function useSettings() {
     // Exportação de stacks
     const [stackExportPath, setStackExportPath] = useState('');
 
+    // Estados do Portainer
+    const [portainerUser, setPortainerUser] = useState('');
+    const [portainerPassword, setPortainerPassword] = useState('');
+
     // Estados de loading
     const [loadingSettings, setLoadingSettings] = useState(true);
     const [loadingCloudflare, setLoadingCloudflare] = useState(false);
@@ -31,6 +35,7 @@ export function useSettings() {
     const [isLoadingZones, setIsLoadingZones] = useState(false);
     const [loadingExportPath, setLoadingExportPath] = useState(false);
     const [loadingCreds, setLoadingCreds] = useState(false);
+    const [loadingPortainer, setLoadingPortainer] = useState(false);
 
     // UI
     const [showSshPassword, setShowSshPassword] = useState(false);
@@ -81,6 +86,8 @@ export function useSettings() {
                         });
                     }
                     setStackExportPath(res.data.stack_export_path || '');
+                    setPortainerUser(res.data.portainer_user || '');
+                    setPortainerPassword(res.data.portainer_password || '');
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -212,6 +219,26 @@ export function useSettings() {
         }
     };
 
+    const handleSavePortainer = async (e) => {
+        e.preventDefault();
+        setLoadingPortainer(true);
+        setIsGlobalLoading(true);
+        try {
+            await api.post('/settings', {
+                portainer_user: portainerUser,
+                portainer_password: portainerPassword,
+                host: selectedServer?.host
+            });
+            showToast('Configurações do Portainer salvas!', 'success');
+        } catch (error) {
+            console.error('Erro ao salvar configurações do Portainer:', error);
+            showToast('Falha ao salvar configurações', 'error');
+        } finally {
+            setLoadingPortainer(false);
+            setIsGlobalLoading(false);
+        }
+    };
+
     const handleUpdateStackCreds = async (stackName, user, password) => {
         try {
             await api.post('/update-stack-credentials', {
@@ -261,6 +288,13 @@ export function useSettings() {
         stackCredentials,
         loadingCreds,
         handleUpdateStackCreds,
+        // Portainer API
+        portainerUser,
+        setPortainerUser,
+        portainerPassword,
+        setPortainerPassword,
+        loadingPortainer,
+        handleSavePortainer,
         // Loading global
         loadingSettings,
     };

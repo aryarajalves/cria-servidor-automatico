@@ -4,6 +4,8 @@ import os
 DB_HOST = os.getenv("DB_HOST", "db")
 DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "autoserver")
+if "PYTEST_CURRENT_TEST" in os.environ or os.getenv("TESTING") == "true":
+    DB_NAME = os.getenv("DB_TEST_NAME", "autoserver_test")
 DB_USER = os.getenv("DB_USER", "autoserver_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "autoserver_password")
 

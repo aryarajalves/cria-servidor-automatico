@@ -167,9 +167,44 @@ def run_ssh_command(client, command, timeout=10, log_command=True):
 
 def deploy_stack_remote(client, stack_name, stack_content):
     """
-    Faz o deploy de uma stack Docker em um servidor remoto.
+    Faz o deploy de uma stack Docker em um servidor remoto, tentando usar a API do Portainer se configurada,
+    caso contrário faz o fallback para SSH com docker stack deploy.
     """
-    logger.info(f"Fazendo deploy da stack {stack_name}...")
+    try:
+        host = client.get_transport().getpeername()[0]
+    except Exception as e:
+        logger.warning(f"Não foi possível obter o IP do SSHClient: {e}")
+        host = None
+
+    if host:
+        from app.database import get_setting
+        p_user = get_setting("portainer_user", host)
+        p_pass = get_setting("portainer_password", host)
+
+        if p_user and p_pass:
+            logger.info(f"Portainer configurado para o host {host}. Realizando deploy via API...")
+            from app.portainer import get_portainer_token, get_first_swarm_endpoint_id, deploy_stack_portainer
+            
+            last_exception = None
+            # Tenta primeiro a porta HTTP 9000 (sem SSL) para evitar falhas de certificado/handshake
+            for port in [9000, 9443]:
+                scheme = "https" if port == 9443 else "http"
+                base_url = f"{scheme}://{host}:{port}"
+                try:
+                    logger.info(f"Tentando autenticar no Portainer em {base_url} (verify=False)...")
+                    token = get_portainer_token(base_url, p_user, p_pass, verify=False)
+                    endpoint_id = get_first_swarm_endpoint_id(base_url, token=token, verify=False)
+                    logger.info(f"Realizando deploy via Portainer API em {base_url} (Endpoint={endpoint_id})...")
+                    res = deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, token=token, verify=False)
+                    if res.get("status") == "success":
+                        return {"status": "success", "message": f"Stack {stack_name} implantada com sucesso via Portainer API"}
+                except Exception as pe:
+                    logger.warning(f"Falha ao implantar no Portainer na porta {port}: {pe}")
+                    last_exception = pe
+
+            logger.warning(f"Todas as tentativas de deploy via API do Portainer falharam para {host}. Fazendo fallback para SSH direto...")
+
+    logger.info(f"Fazendo deploy da stack {stack_name} via SSH...")
     sftp = client.open_sftp()
     remote_path = f"/root/{stack_name}.yml"
     

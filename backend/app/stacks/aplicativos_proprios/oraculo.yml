@@ -1,0 +1,138 @@
+version: "3.7"
+
+services:
+  # Oráculo - Backend e Frontend Unificados
+  oraculo:
+    # Imagem oficial unificada (Vite estático servido pelo Node/Express)
+    image: aryalvesfernandes/oraculo:1.0.6
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    networks:
+      - network_swarm_public
+    environment:
+      # Porta HTTP interna que o backend escutará
+      - PORT=3131
+      # Modo de ambiente da aplicação (ex: production, development)
+      - NODE_ENV=production
+      
+      # ── Banco de Dados Externo ──────────────────────────────────────────────────
+      # Endereço (host) do banco de dados PostgreSQL externo
+      - DB_HOST=postgres
+      # Porta de conexão do banco de dados PostgreSQL externo
+      - DB_PORT=5432
+      # Usuário do banco de dados PostgreSQL
+      - DB_USER=postgres
+      # Senha de conexão do banco de dados PostgreSQL
+      - DB_PASSWORD={Senha_Postgres}
+      # Nome do banco de dados do Oráculo
+      - DB_NAME=oraculo
+      
+      # ── MinIO/S3 Externo ────────────────────────────────────────────────────────
+      # Endpoint S3 de conexão (ex: MinIO local ou AWS S3 / Cloudflare R2)
+      - MINIO_ENDPOINT=http://minio:9000
+      # Usuário root do MinIO/S3
+      - MINIO_ROOT_USER={Minio_User}
+      # Senha root do MinIO/S3
+      - MINIO_ROOT_PASSWORD={Minio_Password}
+      # Nome do bucket para armazenar os arquivos e assets do projeto
+      - MINIO_BUCKET=oraculo
+      
+      # ── RabbitMQ Externo ──────────────────────────────────────────────────────
+      # Host de conexão do Broker de Mensageria (RabbitMQ)
+      - RABBITMQ_HOST=rabbitmq
+      # Porta de conexão do RabbitMQ
+      - RABBITMQ_PORT=5672
+      # Usuário do RabbitMQ
+      - RABBITMQ_USER={Usuario_Rabbit}
+      # Senha do RabbitMQ
+      - RABBITMQ_PASS={Senha_Rabbit}
+
+      # ── Provedores e Modelos de IA ─────────────────────────────────────────────
+      # Token de Acesso da OpenAI API para geração de imagens e inteligência
+      - OPENAI_API_KEY={OPENAI_API_KEY}
+      # Token de Acesso da Anthropic Claude API
+      - ANTHROPIC_API_KEY={ANTHROPIC_API_KEY}
+      # Token de Acesso do Google Gemini AI
+      - GEMINI_API_KEY={GEMINI_API_KEY}
+      # Chave de API do Fal.ai para modelos alternativos de geração visual
+      - FAL_KEY={FAL_KEY}
+      # Chave de API do ElevenLabs para clonagem e síntese de áudio
+      - ELEVENLABS_API_KEY={ELEVENLABS_API_KEY}
+
+      # ── Redes Sociais (Meta & Instagram) ────────────────────────────────────────
+      # Token de Acesso para integração da Graph API do Meta (Instagram/Facebook)
+      - META_ACCESS_TOKEN=
+      # ID da conta comercial do Instagram vinculada ao Facebook Page
+      - INSTAGRAM_ACCOUNT_ID=
+      # ID da Página do Facebook vinculada ao Instagram
+      - FACEBOOK_PAGE_ID=
+      # Usuário do Instagram para login direto ou automações secundárias
+      - INSTAGRAM_USERNAME=
+      # Senha do Instagram correspondente
+      - INSTAGRAM_PASSWORD=
+
+      # ── Armazenamento Externo & Imagens ───────────────────────────────────────
+      # Key ID de API do serviço de storage em nuvem Backblaze B2
+      - B2_KEY_ID=
+      # Application Key correspondente do Backblaze B2
+      - B2_APPLICATION_KEY=
+      # Nome do bucket de arquivos configurado no Backblaze B2
+      - B2_BUCKET_NAME=
+      # Endpoint S3 compatível do Backblaze B2
+      - B2_ENDPOINT=
+
+      # ── Outras Integrações ─────────────────────────────────────────────────────
+      # Chave de API do Apify para monitoramento/radar de descobertas do Google
+      - APIFY_API_KEY=
+      # Token de integração interna da API do Notion
+      - NOTION_TOKEN=
+
+      # ── Autenticação & Configurações de Acesso ─────────────────────────────────
+      # Nome de usuário do Super Admin do Painel
+      - DASHBOARD_USER={DASHBOARD_USER}
+      # Exibição visual do nome do Super Admin no Dashboard
+      - DASHBOARD_USER_NAME={DASHBOARD_USER_NAME}
+      # Senha master de acesso do Super Admin
+      - DASHBOARD_PASS={DASHBOARD_PASS}
+      # Chave de assinatura e criptografia dos tokens JWT
+      - JWT_SECRET={JWT_SECRET}
+      # Tempo de expiração do Token JWT gerado (ex: 24h, 72h)
+      - JWT_EXPIRES_IN=24h
+      # Origens de CORS aceitas no backend
+      - CORS_ALLOWED_ORIGINS=https://{BaseUrl_Oraculo}
+
+    volumes:
+      - oraculo_data:/app/backend/data
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.oraculo.rule=Host(`{BaseUrl_Oraculo}`)
+        - traefik.http.routers.oraculo.entrypoints=websecure
+        - traefik.http.routers.oraculo.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.oraculo.service=oraculo
+        - traefik.http.services.oraculo.loadbalancer.server.port=3131
+        - traefik.http.services.oraculo.loadbalancer.passHostHeader=true
+        - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+        - traefik.http.routers.oraculo.middlewares=sslheader@docker
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+
+networks:
+  network_swarm_public:
+    name: network_swarm_public
+    external: true
+
+volumes:
+  oraculo_data:
+    driver: local

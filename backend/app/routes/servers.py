@@ -61,7 +61,46 @@ def update_server_endpoint(server_id: int, req: ServerUpdateRequest):
     try:
         update_server(server_id, req.name, req.host, req.username, req.password)
         logger.info(f"Servidor {server_id} atualizado com sucesso no banco de dados.")
-        return {"status": "success", "message": "Servidor atualizado com sucesso!"}
+        return {"status": "success", "message": "Servidor updated com sucesso!"}
     except Exception as e:
         logger.error(f"Erro ao atualizar servidor {server_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+class CommandExecutionRequest(BaseModel):
+    host: str
+    username: str
+    password: str
+    command: str
+
+@router.post("/servers/run-command")
+def run_command_on_server(req: CommandExecutionRequest):
+    from app.services.base_ssh import get_ssh_client
+    try:
+        client = get_ssh_client(req.host, req.username, req.password, timeout=15)
+    except Exception as e:
+        logger.error(f"Erro ao conectar via SSH: {e}")
+        raise HTTPException(status_code=400, detail=f"Falha na conexão SSH: {str(e)}")
+
+    try:
+        stdin, stdout, stderr = client.exec_command(req.command, timeout=30, get_pty=True)
+        stdout.channel.settimeout(30)
+        exit_status = stdout.channel.recv_exit_status()
+        
+        output = stdout.read().decode(errors="replace")
+        error = stderr.read().decode(errors="replace")
+        
+        return {
+            "exit_status": exit_status,
+            "output": output,
+            "error": error
+        }
+    except Exception as e:
+        logger.error(f"Erro ao executar comando: {e}")
+        return {
+            "exit_status": -1,
+            "output": "",
+            "error": f"Erro de execução/Timeout: {str(e)}"
+        }
+    finally:
+        client.close()
+

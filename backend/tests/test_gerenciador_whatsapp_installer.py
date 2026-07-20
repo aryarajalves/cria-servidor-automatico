@@ -71,7 +71,7 @@ class TestGerenciadorWhatsAppInstaller(unittest.TestCase):
     def test_install_gerenciador_whatsapp_reuse_secrets(self, mock_file, mock_exists, mock_get_env, mock_get_services, mock_get_path, mock_deploy, mock_create_db, mock_ssh, mock_save_creds):
         # Setup mocks
         mock_exists.return_value = True
-        yaml_content = "{API_SECRET} {SUPER_ADMIN_PASSWORD}"
+        yaml_content = "{API_SECRET} {SUPER_ADMIN_PASSWORD} {SUPER_ADMIN_EMAIL}"
         mock_file.return_value.read.return_value = yaml_content
         mock_get_path.side_effect = lambda x: x
         
@@ -79,7 +79,8 @@ class TestGerenciadorWhatsAppInstaller(unittest.TestCase):
         mock_get_services.return_value = ["gerenciador_whatsapp_backend"]
         mock_get_env.return_value = {
             "API_SECRET": "EXISTING_SECRET",
-            "SUPER_ADMIN_PASSWORD": "EXISTING_PASSWORD_22_CH"
+            "SUPER_ADMIN_PASSWORD": "EXISTING_PASSWORD_22_CH",
+            "SUPER_ADMIN_EMAIL": "existing@email.com"
         }
         
         # Chama a função
@@ -98,6 +99,7 @@ class TestGerenciadorWhatsAppInstaller(unittest.TestCase):
         self.assertEqual(result['credentials']['password'], '')
         deployed_content = mock_deploy.call_args[0][2]
         self.assertIn("EXISTING_SECRET EXISTING_PASSWORD_22_CH", deployed_content)
+        self.assertIn("existing@email.com", deployed_content)
         
         # Verifica que NÃO salvou no banco
         mock_save_creds.assert_not_called()

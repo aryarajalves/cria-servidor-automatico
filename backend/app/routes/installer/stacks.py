@@ -11,9 +11,10 @@ from app.installer import (
 from .schemas import (
     ServerCredentials, RedisInstallRequest, PortainerInstallRequest,
     TraefikInstallRequest, PostgresInstallRequest, RabbitMQInstallRequest,
-    ChatwootInstallRequest, ChatwootAdminCreateRequest, EnvUpdate, RestartStackRequest,
+    EnvUpdate, RestartStackRequest,
     AIAgentManagerInstallRequest, ZapVoiceRequest, GerenciadorWhatsAppInstallRequest,
-    UninstallStackRequest, StackDomainUpdateRequest, ExternalStackRequest
+    UninstallStackRequest, StackDomainUpdateRequest, ExternalStackRequest, MinioInstallRequest,
+    BackupChatwooRabbitInstallRequest, OraculoInstallRequest
 )
 
 logger = logging.getLogger(__name__)
@@ -124,6 +125,7 @@ def trigger_install_rabbitmq(request: RabbitMQInstallRequest, background_tasks: 
     Faz o deploy da stack do RabbitMQ em um servidor remoto.
     """
     try:
+        save_setting("stack_domain_rabbitmq", request.rabbit_base_url, request.host)
         if check_stack_exists(request.host, request.username, request.password, "rabbitmq") and not request.overwrite:
              return {"message": f"A stack 'rabbitmq' já está rodando em {request.host}. Use 'overwrite': true para forçar."}
 
@@ -135,51 +137,34 @@ def trigger_install_rabbitmq(request: RabbitMQInstallRequest, background_tasks: 
         logger.error(f"Falha ao instalar RabbitMQ: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/install-chatwoot")
-def trigger_install_chatwoot(request: ChatwootInstallRequest, background_tasks: BackgroundTasks):
+@router.post("/install-minio")
+def trigger_install_minio(request: MinioInstallRequest, background_tasks: BackgroundTasks):
     """
-    Faz o deploy das stacks do Chatwoot (Admin e Sidekiq) em um servidor remoto.
+    Faz o deploy da stack do MinIO em um servidor remoto.
     """
     try:
-        save_setting("stack_domain_chatwoot_admin", request.chatwoot_base_url, request.host)
-        active_stacks = get_active_stacks(request.host, request.username, request.password)
-        existing_stack = next((s for s in active_stacks if s == "chatwoot_admin" or s.startswith("chatwoot_admin_")), None)
-        
-        if existing_stack and not request.overwrite:
-             return {"message": f"A stack '{existing_stack}' já está rodando em {request.host}. Use 'overwrite': true para forçar."}
+        if check_stack_exists(request.host, request.username, request.password, "minio") and not request.overwrite:
+             return {"message": f"A stack 'minio' já está rodando em {request.host}. Use 'overwrite': true para forçar."}
 
-        if not request.postgres_password:
-            try:
-                from app.installer import get_stack_env_vars
-                pg_env = get_stack_env_vars(request.host, request.username, request.password, "postgres")
-                request.postgres_password = pg_env.get("POSTGRES_PASSWORD")
-            except Exception as e:
-                logger.warning(f"Não foi possível obter senha do Postgres para Chatwoot: {e}")
-
-        request.postgres_password = request.postgres_password or ""
-
-        from app.installer import install_chatwoot
-        install_status['chatwoot'] = {'status': 'pending', 'message': 'Iniciando instalação do Chatwoot...'}
+        save_setting("stack_domain_minio", f"{request.minio_server_url},{request.minio_console_url}", request.host)
+        from app.installer import install_minio
+        install_status['minio'] = {'status': 'pending', 'message': 'Iniciando instalação do MinIO...'}
         background_tasks.add_task(
             run_generic_install_task, 
-            'chatwoot', 
-            install_chatwoot, 
+            'minio', 
+            install_minio, 
             request.host, 
             request.username, 
             request.password, 
-            request.postgres_password, 
-            request.s3_bucket_name,
-            request.s3_access_key_id,
-            request.s3_secret_access_key,
-            request.s3_region,
-            request.s3_endpoint,
-            request.chatwoot_base_url,
-            overwrite=request.overwrite,
-            stack_name="chatwoot_admin"
+            request.minio_root_user, 
+            request.minio_root_password, 
+            request.minio_console_url, 
+            request.minio_server_url, 
+            stack_name="minio"
         )
-        return {"message": f"Instalação do Chatwoot iniciada em {request.host}"}
+        return {"message": f"Instalação do MinIO iniciada em {request.host}"}
     except Exception as e:
-        logger.error(f"Falha ao instalar Chatwoot: {e}")
+        logger.error(f"Falha ao instalar MinIO: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/get-stack-env/{stack_name}")
@@ -302,6 +287,39 @@ def install_gerenciador_whatsapp_endpoint(request: GerenciadorWhatsAppInstallReq
         logger.error(f"Falha ao instalar Gerenciador Grupo WhatsApp: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/install-backup-chatwoo-rabbit")
+def install_backup_chatwoo_rabbit_endpoint(request: BackupChatwooRabbitInstallRequest, background_tasks: BackgroundTasks):
+    """
+    Endpoint para instalar a stack do Backup Automático do Chatwoot com RabbitMQ em background.
+    """
+    try:
+        save_setting("stack_domain_backup_chatwoo_rabbit", request.base_url, request.host)
+
+        if not request.postgres_password:
+            try:
+                from app.installer import get_stack_env_vars
+                pg_env = get_stack_env_vars(request.host, request.username, request.password, "postgres")
+                request.postgres_password = pg_env.get("POSTGRES_PASSWORD")
+            except Exception as e:
+                logger.warning(f"Não foi possível obter senha do Postgres para Backup Chatwoot Rabbit: {e}")
+
+        from app.installer import install_backup_chatwoo_rabbit
+        install_status['backup_chatwoo_rabbit'] = {'status': 'pending', 'message': 'Iniciando instalação do Backup Automático do Chatwoot com RabbitMQ...'}
+        background_tasks.add_task(
+            run_generic_install_task, 'backup_chatwoo_rabbit', install_backup_chatwoo_rabbit,
+            request.host, request.username, request.password,
+            request.postgres_password, request.base_url,
+            request.s3_endpoint_url, request.s3_access_key_id, request.s3_secret_access_key, request.s3_bucket_name,
+            request.rabbitmq_host, request.rabbitmq_management_port, request.rabbitmq_user, request.rabbitmq_password,
+            request.login_email, request.login_password, request.jwt_secret,
+            stack_name="backup_chatwoo_rabbit"
+        )
+
+        return {"message": f"Instalação do Backup Automático do Chatwoot com RabbitMQ iniciada em {request.host}"}
+    except Exception as e:
+        logger.error(f"Falha ao instalar Backup Chatwoot Rabbit: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/uninstall-stack")
 def trigger_uninstall_stack(request: UninstallStackRequest, background_tasks: BackgroundTasks):
     """
@@ -394,98 +412,25 @@ def mark_external_stack_endpoint(req: ExternalStackRequest):
         logger.error(f"Erro ao associar stack externa '{req.stack_name}': {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/stacks/chatwoot/create-admin")
-def create_chatwoot_admin_endpoint(request: ChatwootAdminCreateRequest):
+@router.post("/install-oraculo")
+def install_oraculo_endpoint(request: OraculoInstallRequest, background_tasks: BackgroundTasks):
     """
-    Rota extra para criar administrador do Chatwoot no terminal SSH do container.
+    Endpoint para instalar a stack do Oráculo em background.
     """
     try:
-        from app.installer import get_ssh_client, run_ssh_command
-        client = get_ssh_client(request.host, request.username, request.password)
+        save_setting("stack_domain_oraculo", request.oraculo_domain, request.host)
+        from app.installer import install_oraculo
+        install_status['oraculo'] = {'status': 'pending', 'message': 'Iniciando instalação do Oráculo...'}
+        background_tasks.add_task(run_generic_install_task, 'oraculo', install_oraculo,
+                                 request.host, request.username, request.password,
+                                 request.oraculo_domain, request.openai_api_key,
+                                 request.gemini_api_key, request.anthropic_api_key,
+                                 request.fal_key, request.elevenlabs_api_key,
+                                 request.dashboard_user, request.dashboard_pass,
+                                 request.dashboard_user_name, stack_name="oraculo")
         
-        # Filtra containers ativos no Docker contendo 'chatwoot_admin' de forma flexivel no nome
-        container_find_cmd = "docker ps --filter name=chatwoot_admin --format '{{.Names}}' | head -n 1"
-        container_name = run_ssh_command(client, container_find_cmd).strip()
-        
-        if not container_name:
-            container_name = run_ssh_command(client, "docker ps --filter name=chatwoot --format '{{.Names}}' | head -n 1").strip()
-            
-        if not container_name:
-            return {"status": "error", "message": "Container do Chatwoot não encontrado para criar admin."}
-
-        logger.info(f"Container do Chatwoot selecionado: {container_name}")
-
-        # Escapa aspas simples nos campos para não quebrar o heredoc do bash
-        admin_email = request.admin_email.replace("'", "\\'")
-        admin_password = request.admin_password.replace("'", "\\'")
-        full_name = request.full_name.replace("'", "\\'")
-        company_name = request.company_name.replace("'", "\\'")
-
-        # Monta o script Ruby linha a linha (sem aspas simples externas)
-        # Usa printf para gravar no container — evita qualquer problema de escaping de shell
-        ruby_lines = [
-            "begin",
-            f"  user = User.find_by(email: '{admin_email}')",
-            "  if user",
-            f"    user.password = '{admin_password}'",
-            f"    user.password_confirmation = '{admin_password}'",
-            "    user.save!(validate: false)",
-            "  else",
-            "    user = User.new(",
-            f"      email: '{admin_email}',",
-            f"      password: '{admin_password}',",
-            f"      password_confirmation: '{admin_password}',",
-            f"      name: '{full_name}'",
-            "    )",
-            "    user.save!(validate: false)",
-            "  end",
-            "  user.update_columns(type: 'SuperAdmin', confirmed_at: Time.now.utc)",
-            f"  account = Account.first || Account.create!(name: '{company_name}')",
-            "  AccountUser.find_or_create_by!(account: account, user: user) do |au|",
-            "    au.role = :administrator",
-            "  end",
-            "  puts 'SUCCESS'",
-            "rescue => e",
-            "  puts 'ERROR: ' + e.message",
-            "end",
-        ]
-        ruby_script_content = "\n".join(ruby_lines)
-
-        # Grava o script Ruby no host remoto em /tmp/cw_admin.rb via SFTP
-        sftp = client.open_sftp()
-        try:
-            with sftp.file("/tmp/cw_admin.rb", "w") as f:
-                f.write(ruby_script_content)
-            logger.info("Script Ruby gravado em /tmp/cw_admin.rb no host SSH")
-        finally:
-            sftp.close()
-
-        # Copia o script para dentro do container do Chatwoot usando docker cp
-        copy_cmd = f"docker cp /tmp/cw_admin.rb {container_name}:/tmp/cw_admin.rb"
-        run_ssh_command(client, copy_cmd, timeout=30)
-        logger.info(f"Script Ruby copiado para o container {container_name}")
-
-        # Executa via rails runner (sem nenhum problema de escaping de argumento)
-        rails_cmd = f"docker exec {container_name} bundle exec rails runner /tmp/cw_admin.rb"
-        logger.info(f"Executando rails runner: {rails_cmd}")
-        output = run_ssh_command(client, rails_cmd, timeout=120)
-        logger.info(f"Output create-admin: {output}")
-
-        # Remove os arquivos temporários no container e no host SSH
-        run_ssh_command(client, f"docker exec {container_name} rm -f /tmp/cw_admin.rb", timeout=10)
-        run_ssh_command(client, "rm -f /tmp/cw_admin.rb", timeout=10)
-
-        if "SUCCESS" in output:
-            # Salva credenciais criadas com sucesso no banco de dados local da aplicação
-            save_stack_credentials(request.host, "chatwoot_admin", request.admin_email, request.admin_password)
-            return {"status": "success", "message": f"Administrador '{request.admin_email}' criado com sucesso! Agora você pode fazer login no Chatwoot."}
-        elif "ERROR" in output:
-            error_msg = output.split("ERROR:")[-1].strip() if "ERROR:" in output else output
-            return {"status": "error", "message": f"Erro ao criar admin: {error_msg}"}
-        else:
-            logger.warning(f"Output inesperado do rails runner: {output}")
-            return {"status": "success", "message": "Comando executado. Tente fazer login com as credenciais informadas."}
-
+        return {"message": f"Instalação do Oráculo iniciada em {request.host}"}
     except Exception as e:
-        logger.error(f"Erro ao criar admin Chatwoot: {e}")
+        logger.error(f"Falha ao instalar Oráculo: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+

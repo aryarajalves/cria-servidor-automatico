@@ -6,6 +6,7 @@ import { useSettings } from './settings/useSettings';
 import ServerCredentialsCard from './settings/ServerCredentialsCard';
 import CloudflareCard from './settings/CloudflareCard';
 import SshPasswordCard from './settings/SshPasswordCard';
+import PortainerCard from './settings/PortainerCard';
 
 
 // ─── Sub-componentes simples ─────────────────────────────────────────────────
@@ -105,6 +106,15 @@ const Settings = () => {
                     isLoadingZones={settings.isLoadingZones}
                     loadingCloudflare={settings.loadingCloudflare}
                     handleSaveCloudflare={settings.handleSaveCloudflare}
+                />
+
+                <PortainerCard
+                    portainerUser={settings.portainerUser}
+                    setPortainerUser={settings.setPortainerUser}
+                    portainerPassword={settings.portainerPassword}
+                    setPortainerPassword={settings.setPortainerPassword}
+                    loadingPortainer={settings.loadingPortainer}
+                    handleSavePortainer={settings.handleSavePortainer}
                 />
 
                 <SshPasswordCard

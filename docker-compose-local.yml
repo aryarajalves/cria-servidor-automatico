@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=autoserver_user
       - POSTGRES_PASSWORD=autoserver_password
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
 
   backend:
     build:
@@ -51,5 +51,5 @@ services:
       - VITE_API_URL=http://localhost:8005
     command: npm run dev -- --host --port 5505
 
-volumes:
-  pgdata:
+# volumes:
+#   pgdata:

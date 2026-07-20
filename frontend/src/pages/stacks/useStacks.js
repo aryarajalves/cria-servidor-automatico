@@ -15,7 +15,6 @@ export const useStacks = () => {
     const [loadingStep, setLoadingStep] = useState(null);
     const [configModal, setConfigModal] = useState(null);
     const [externalModal, setExternalModal] = useState(null);
-    const [chatAdminModal, setChatAdminModal] = useState(null); // { stackName }
     const [verifyingStatus, setVerifyingStatus] = useState(false);
     const [verifyingMessage, setVerifyingMessage] = useState("Verificando status do sistema...");
 
@@ -71,14 +70,14 @@ export const useStacks = () => {
             }
         } catch (e) {
             if (e.name === 'CanceledError' || e.name === 'AbortError' || e.code === 'ERR_CANCELED') {
-                setError('__SERVER_OFFLINE__');
-            } else {
-                const msg = e.response?.data?.detail || e.message || '';
-                const isOffline = msg.includes('Connection refused') || msg.includes('timed out') ||
-                    msg.includes('No route to host') || msg.includes('Network is unreachable') ||
-                    msg.includes('SSH') || msg.includes('ssh') || msg.includes('errno');
-                setError(isOffline ? '__SERVER_OFFLINE__' : (msg || 'Falha ao conectar ao servidor.'));
+                // Ignora cancelamentos intencionais (evita bugs de StrictMode / unmount)
+                return;
             }
+            const msg = e.response?.data?.detail || e.message || '';
+            const isOffline = msg.includes('Connection refused') || msg.includes('timed out') ||
+                msg.includes('No route to host') || msg.includes('Network is unreachable') ||
+                msg.includes('SSH') || msg.includes('ssh') || msg.includes('errno');
+            setError(isOffline ? '__SERVER_OFFLINE__' : (msg || 'Falha ao conectar ao servidor.'));
         } finally {
             clearTimeout(timeoutId);
             setLoading(false);
@@ -180,31 +179,6 @@ export const useStacks = () => {
         });
     };
 
-    const handleCreateChatwootAdmin = async (stackName, email, password, fullName, companyName) => {
-        try {
-            setVerifyingMessage("Criando administrador via terminal...");
-            setVerifyingStatus(true);
-            const { data } = await api.post('/stacks/chatwoot/create-admin', {
-                ...selectedServer,
-                stack_name: stackName,
-                admin_email: email,
-                admin_password: password,
-                full_name: fullName,
-                company_name: companyName
-            });
-            if (data.status === 'success') {
-                showToast(data.message);
-                await fetchStatus();
-            } else {
-                showToast(data.message, "error");
-            }
-        } catch (e) {
-            showToast("Erro ao criar admin: " + (e.response?.data?.detail || e.message), "error");
-        } finally {
-            setVerifyingStatus(false);
-        }
-    };
-
     const handleConfirmInstall = async (app, configValues) => {
         try {
             let endpoint = '';
@@ -213,11 +187,13 @@ export const useStacks = () => {
                 case 'portainer': endpoint = '/install-portainer'; break;
                 case 'redis': endpoint = '/install-redis'; break;
                 case 'postgres': endpoint = '/install-postgres'; break;
-                case 'chatwoot': endpoint = '/install-chatwoot'; break;
                 case 'rabbitmq': endpoint = '/install-rabbitmq'; break;
+                case 'minio': endpoint = '/install-minio'; break;
                 case 'ai_agent_manager': endpoint = '/install-ai-agent-manager'; break;
                 case 'zapvoice': endpoint = '/install-zapvoice'; break;
                 case 'gerenciador_whatsapp': endpoint = '/install-gerenciador-whatsapp'; break;
+                case 'oraculo': endpoint = '/install-oraculo'; break;
+                case 'backup_chatwoo_rabbit': endpoint = '/install-backup-chatwoo-rabbit'; break;
                 default: throw new Error("App desconhecido");
             }
 
@@ -284,6 +260,25 @@ export const useStacks = () => {
 
         const actualStackName = getActualStackName(app.stackName);
         const isInstalled = !!actualStackName;
+
+        // Validação de dependências obrigatórias para o Gerente de Agente de IA (ai_agent_manager)
+        if (appId === 'ai_agent_manager') {
+            const hasPostgres = Array.isArray(activeStacks) && activeStacks.some(s => s.trim() === 'postgres');
+            const hasRabbit = Array.isArray(activeStacks) && activeStacks.some(s => s.trim() === 'rabbitmq');
+            const hasMinio = Array.isArray(activeStacks) && activeStacks.some(s => s.trim() === 'minio');
+            const hasZapvoice = Array.isArray(activeStacks) && activeStacks.some(s => s.trim() === 'zapvoice');
+
+            if (!hasPostgres || !hasRabbit || !hasMinio || !hasZapvoice) {
+                const missing = [];
+                if (!hasPostgres) missing.push('PostgreSQL');
+                if (!hasRabbit) missing.push('RabbitMQ');
+                if (!hasMinio) missing.push('MinIO');
+                if (!hasZapvoice) missing.push('ZapVoice');
+
+                alert(`Não é possível instalar o Gerente de Agente de IA. As seguintes dependências obrigatórias estão ausentes no servidor: ${missing.join(', ')}. Por favor, instale-as primeiro.`);
+                return;
+            }
+        }
 
         const needsPostgres = app.fields.some(f => f.name === 'postgres_password');
         const hasPostgres = Array.isArray(activeStacks) && activeStacks.includes('postgres');
@@ -361,7 +356,7 @@ export const useStacks = () => {
                     } else if (f.name === 'rabbit_password') {
                         val = envVars.RABBITMQ_DEFAULT_PASS || stackCredentials[actualStackName]?.password || '';
                     } else if (f.name === 'email' && appId === 'traefik') {
-                        val = stackCredentials[actualStackName]?.user || '';
+                        val = '';
                     }
                 }
                 
@@ -529,8 +524,6 @@ export const useStacks = () => {
         setConfigModal,
         externalModal,
         setExternalModal,
-        chatAdminModal,
-        setChatAdminModal,
         verifyingStatus,
         verifyingMessage,
         loading,
@@ -543,7 +536,6 @@ export const useStacks = () => {
         handleInitSwarm,
         handleCreateNetwork,
         handleInstallCtop,
-        handleCreateChatwootAdmin,
         handleConfirmInstall,
         handleInstallApp,
         handleRestartStack,

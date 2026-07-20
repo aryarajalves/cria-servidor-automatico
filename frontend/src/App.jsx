@@ -9,6 +9,7 @@ import CloudflareDNS from './pages/CloudflareDNS';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Cluster from './pages/Cluster';
+import LogViewer from './pages/LogViewer';
 
 // Protected Route for the Application itself
 const ProtectedRoute = ({ children }) => {
@@ -76,6 +77,12 @@ function App() {
                                     <Route path="/cluster" element={
                                         <VPSProtectedRoute>
                                             <Cluster />
+                                        </VPSProtectedRoute>
+                                    } />
+
+                                    <Route path="/logs" element={
+                                        <VPSProtectedRoute>
+                                            <LogViewer />
                                         </VPSProtectedRoute>
                                     } />
 

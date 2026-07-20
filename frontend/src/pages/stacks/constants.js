@@ -12,7 +12,7 @@ export const apps = [
         colorBg: "bg-blue-600/10",
         colorText: "text-blue-500",
         fields: [
-            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com" }
+            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com", type: "email" }
         ]
     },
     {
@@ -53,21 +53,6 @@ export const apps = [
         fields: []
     },
     {
-        id: "chatwoot",
-        stackName: "chatwoot_admin",
-        category: "standard",
-        name: "Chatwoot",
-        description: "Plataforma de engajamento do cliente open-source.",
-        icon: MessageSquare,
-        version: "3.x",
-        colorBg: "bg-emerald-500/10",
-        colorText: "text-emerald-500",
-        fields: [
-            { name: "chatwoot_base_url", label: "URL do Chatwoot", placeholder: "Selecione o domínio...", type: "dns_record" },
-            { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false }
-        ]
-    },
-    {
         id: "rabbitmq",
         stackName: "rabbitmq",
         category: "standard",
@@ -84,6 +69,23 @@ export const apps = [
         ]
     },
     {
+        id: "minio",
+        stackName: "minio",
+        category: "standard",
+        name: "MinIO S3",
+        description: "Servidor de armazenamento de objetos compatível com S3 de alta performance.",
+        icon: HardDrive,
+        version: "RELEASE.2025-02-07",
+        colorBg: "bg-amber-600/10",
+        colorText: "text-amber-500",
+        fields: [
+            { name: "minio_server_url", label: "Domínio da API S3 (Público)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "minio_console_url", label: "Domínio do Console (Privado)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "minio_root_user", label: "Usuário Admin (Root)", placeholder: "unwind", required: false },
+            { name: "minio_root_password", label: "Senha Admin (Root)", placeholder: "SuaSenhaAqui", type: "password", required: false }
+        ]
+    },
+    {
         id: "ai_agent_manager",
         stackName: "agentes",
         category: "custom",
@@ -94,7 +96,6 @@ export const apps = [
         colorBg: "bg-purple-600/10",
         colorText: "text-purple-500",
         fields: [
-            { name: "openai_api_key", label: "OpenAI API Key (Opcional)", placeholder: "sk-...", type: "password", required: false },
             { name: "domain_backend", label: "Domínio do API (Backend)", placeholder: "Selecione o domínio...", type: "dns_record" },
             { name: "domain_frontend", label: "Domínio da Interface (Frontend)", placeholder: "Selecione o domínio...", type: "dns_record" },
         ]
@@ -110,7 +111,6 @@ export const apps = [
         colorBg: "bg-blue-600/10",
         colorText: "text-blue-500",
         fields: [
-            { name: "super_admin_email", label: "Email Super Admin", placeholder: "admin@email.com", required: true },
             { name: "chatwoot_base_url", label: "Domínio do ZapVoice", placeholder: "Selecione o domínio...", type: "dns_record" },
             { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false },
         ]
@@ -126,10 +126,42 @@ export const apps = [
         colorBg: "bg-emerald-600/10",
         colorText: "text-emerald-500",
         fields: [
-            { name: "super_admin_email", label: "Email do Super Admin", placeholder: "seu@email.com", required: true },
             { name: "backend_domain", label: "Domínio do API (Backend)", placeholder: "Selecione o domínio...", type: "dns_record" },
             { name: "frontend_domain", label: "Domínio da Interface (Frontend)", placeholder: "Selecione o domínio...", type: "dns_record" },
             { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false },
+        ]
+    },
+    {
+        id: "backup_chatwoo_rabbit",
+        stackName: "backup_chatwoo_rabbit",
+        category: "custom",
+        name: "Backup",
+        description: "Gerenciador de backup automático do RabbitMQ e do sistema integrado com S3.",
+        icon: HardDrive,
+        version: "1.0.0",
+        colorBg: "bg-amber-500/10",
+        colorText: "text-amber-500",
+        fields: [
+            { name: "base_url", label: "Domínio do Painel", placeholder: "Selecione o domínio...", type: "dns_record" },
+        ]
+    },
+    {
+        id: "oraculo",
+        stackName: "oraculo",
+        category: "custom",
+        name: "Oraculo",
+        description: "Criação automatizada de carrosséis de alta conversão usando Inteligência Artificial.",
+        icon: Zap,
+        version: "1.0.6",
+        colorBg: "bg-blue-600/10",
+        colorText: "text-blue-500",
+        fields: [
+            { name: "oraculo_domain", label: "Domínio do Oráculo", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "openai_api_key", label: "OpenAI API Key (Opcional)", placeholder: "sk-...", type: "password", required: false },
+            { name: "gemini_api_key", label: "Gemini API Key (Opcional)", placeholder: "AIzaSy...", type: "password", required: false },
+            { name: "anthropic_api_key", label: "Anthropic API Key (Opcional)", placeholder: "sk-ant-...", type: "password", required: false },
+            { name: "fal_key", label: "Fal.ai Key (Opcional)", placeholder: "fal-...", type: "password", required: false },
+            { name: "elevenlabs_api_key", label: "ElevenLabs API Key (Opcional)", placeholder: "", type: "password", required: false },
         ]
     },
 ];

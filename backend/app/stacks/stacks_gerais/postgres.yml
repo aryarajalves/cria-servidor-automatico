@@ -3,6 +3,8 @@ version: '3.8'
 services:
   postgres:
     image: pgvector/pgvector:pg14
+    # Define o hotname do container
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     # configura o volume do serviço do postgres
     volumes:
       # para salvar no volume do Docker

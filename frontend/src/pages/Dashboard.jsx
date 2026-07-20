@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useServer } from '../context/ServerContext';
 import { Navigate, useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -27,40 +27,50 @@ const Dashboard = () => {
     const [stats, setStats] = useState(null);
     const navigate = useNavigate(); // Usar o hook navigate em vez de window.location.href
 
+    const fetchStatus = useCallback(async (signal) => {
+        const ctrl = signal ? null : new AbortController();
+        const actualSignal = signal || ctrl?.signal;
+        const timeoutId = ctrl ? setTimeout(() => ctrl.abort(), 30000) : null;
+
+        try {
+            setLoading(true);
+            setError(null);
+            setIsGlobalLoading(true);
+            const { data } = await api.post('/system-status', selectedServer, {
+                signal: actualSignal
+            });
+            setStats(data);
+            setError(null);
+        } catch (err) {
+            if (err.name === 'CanceledError' || err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
+                // Ignora cancelamentos intencionais (evita bugs de StrictMode / unmount)
+                return;
+            }
+            const msg = err.response?.data?.detail || err.message || '';
+            const isOffline = msg.includes('Connection refused') || msg.includes('timed out') ||
+                msg.includes('No route to host') || msg.includes('SSH') || msg.includes('ssh');
+            setError(isOffline ? '__SERVER_OFFLINE__' : (msg || 'Falha ao obter status do sistema via SSH.'));
+        } finally {
+            if (timeoutId) clearTimeout(timeoutId);
+            setLoading(false);
+            setIsGlobalLoading(false);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedServer]);
+
     useEffect(() => {
         if (!selectedServer) return;
 
         const controller = new AbortController();
-        // Timeout de 30s — se o SSH travar, não fica preso infinitamente
         const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-        const fetchStatus = async () => {
-            try {
-                setLoading(true);
-                setIsGlobalLoading(true);
-                const { data } = await api.post('/system-status', selectedServer, {
-                    signal: controller.signal
-                });
-                setStats(data);
-                setError(null);
-            } catch (err) {
-                if (err.name === 'CanceledError' || err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
-                    setError('__SERVER_OFFLINE__');
-                } else {
-                    const msg = err.response?.data?.detail || err.message || '';
-                    const isOffline = msg.includes('Connection refused') || msg.includes('timed out') ||
-                        msg.includes('No route to host') || msg.includes('SSH') || msg.includes('ssh');
-                    setError(isOffline ? '__SERVER_OFFLINE__' : (msg || 'Falha ao obter status do sistema via SSH.'));
-                }
-            } finally {
-                clearTimeout(timeoutId);
-                setLoading(false);
-                setIsGlobalLoading(false);
-            }
-        };
+        fetchStatus(controller.signal);
 
-        fetchStatus();
-        return () => { controller.abort(); clearTimeout(timeoutId); };
+        return () => {
+            controller.abort();
+            clearTimeout(timeoutId);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedServer]);
 
     if (!selectedServer && !isInitializing) return <Navigate to="/connect" />;
@@ -88,7 +98,7 @@ const Dashboard = () => {
 
                 <div className="flex gap-3">
                     <button
-                        onClick={() => { setError(null); setLoading(true); }}
+                        onClick={() => fetchStatus()}
                         className="flex items-center gap-2 px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-medium transition-colors border border-slate-700"
                     >
                         <RefreshCw size={16} />
@@ -109,18 +119,7 @@ const Dashboard = () => {
         );
     }
 
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center h-96 text-red-400">
-                <AlertCircle size={48} className="mb-4" />
-                <p className="text-lg font-medium">{error}</p>
-                <Button variant="secondary" className="mt-4" onClick={() => window.location.reload()}>
-                    Tentar Novamente
-                </Button>
-            </div>
-        );
-    }
-    if (loading || isInitializing) {
+    if (loading || isInitializing || !stats) {
         return (
             <div style={{ position: 'fixed', inset: 0, zIndex: 9999 }} className="bg-slate-950 backdrop-blur-2xl flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-500">
                 <div className="absolute inset-0 bg-blue-600/5 pointer-events-none" />
@@ -147,18 +146,6 @@ const Dashboard = () => {
                 >
                     Cancelar verificação
                 </button>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center h-96 text-red-400">
-                <AlertCircle size={48} className="mb-4" />
-                <p className="text-lg font-medium">{error}</p>
-                <Button variant="secondary" className="mt-4" onClick={() => window.location.reload()}>
-                    Tentar Novamente
-                </Button>
             </div>
         );
     }

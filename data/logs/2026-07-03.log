@@ -1,0 +1,1577 @@
+[03/07/26 00:01:10 BRT] [INFO] [uvicorn.error] Shutting down
+[03/07/26 00:01:10 BRT] [INFO] [uvicorn.error] Waiting for application shutdown.
+[03/07/26 00:01:10 BRT] [INFO] [uvicorn.error] Application shutdown complete.
+[03/07/26 00:01:10 BRT] [INFO] [uvicorn.error] Finished server process [8]
+[03/07/26 00:01:11 BRT] [INFO] [uvicorn.error] Stopping reloader process [1]
+[03/07/26 00:01:18 BRT] [INFO] [uvicorn.error] Will watch for changes in these directories: ['/app']
+[03/07/26 00:01:18 BRT] [INFO] [uvicorn.error] Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[03/07/26 00:01:18 BRT] [INFO] [uvicorn.error] Started reloader process [1] using StatReload
+[03/07/26 00:01:20 BRT] [DEBUG] [asyncio] Using selector: EpollSelector
+[03/07/26 00:01:20 BRT] [INFO] [uvicorn.error] Started server process [8]
+[03/07/26 00:01:20 BRT] [INFO] [uvicorn.error] Waiting for application startup.
+[03/07/26 00:01:20 BRT] [INFO] [uvicorn.error] Application startup complete.
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [454de33e] -> GET /servers | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [INFO] [autoserver] [454de33e] <- GET /servers | status=200 | 200.2ms
+[03/07/26 00:01:32 BRT] [INFO] [uvicorn.access] 172.20.0.1:56178 - "GET /servers HTTP/1.1" 200
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [0c23023a] -> GET /servers | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [a230673e] -> OPTIONS /system-status | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [INFO] [autoserver] [a230673e] <- OPTIONS /system-status | status=200 | 1.3ms
+[03/07/26 00:01:32 BRT] [INFO] [uvicorn.access] 172.20.0.1:56178 - "OPTIONS /system-status HTTP/1.1" 200
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [698fbe7d] -> OPTIONS /system-status | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [INFO] [autoserver] [698fbe7d] <- OPTIONS /system-status | status=200 | 2.6ms
+[03/07/26 00:01:32 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "OPTIONS /system-status HTTP/1.1" 200
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [5d2e5d93] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [DEBUG] [autoserver] [ae8eef54] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:01:32 BRT] [INFO] [app.routes.installer.infra] Fetching full system status for: 167.233.201.92
+[03/07/26 00:01:32 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:32 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:32 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:32 BRT] [INFO] [autoserver] [0c23023a] <- GET /servers | status=200 | 179.6ms
+[03/07/26 00:01:32 BRT] [INFO] [uvicorn.access] 172.20.0.1:56184 - "GET /servers HTTP/1.1" 200
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bc9ead0
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:32 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:32 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:33 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:33 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.86s
+[03/07/26 00:01:33 BRT] [INFO] [app.services.base_ssh] CMD: docker --version
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:33 BRT] [INFO] [app.services.base_ssh] OUTPUT: Docker version 29.6.1, build 8900f1d
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:33 BRT] [INFO] [app.services.base_ssh] CMD: docker info --format '{{.Swarm.LocalNodeState}}'
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:33 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:34 BRT] [INFO] [app.services.base_ssh] OUTPUT: active
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:01:34 BRT] [INFO] [app.services.base_ssh] CMD: docker network ls --filter name=^network_swarm_public$ --format '{{.Name}}'
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:01:34 BRT] [INFO] [app.services.base_ssh] OUTPUT: network_swarm_public
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:01:34 BRT] [INFO] [app.services.base_ssh] CMD: docker stack ls --format '{{.Name}}'
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:01:34 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:01:35 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio
+oraculo
+portainer
+postgres
+rabbitmq
+redis
+traefik
+[03/07/26 00:01:35 BRT] [INFO] [app.services.base_ssh] CMD: docker service ls -q
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:01:35 BRT] [INFO] [app.services.base_ssh] OUTPUT: iof89141h651
+xp6cs2iqvmkt
+ftzopr0zchqx
+p0xwpu8u2o34
+j1khwxef89ln
+1xc4ne1rjv7q
+4vrnnu3b3e54
+7x6t70ney...
+[03/07/26 00:01:35 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect iof89141h651 xp6cs2iqvmkt ftzopr0zchqx p0xwpu8u2o34 j1khwxef89ln 1xc4ne1rjv7q 4vrnnu3b3e54 7x6t70ney59z --format '{{.Spec.Name}}|{{json .Spec.Labels}}'
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:01:35 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio_minio|{"com.docker.stack.image":"minio/minio:RELEASE.2025-02-07T23-21-09Z-cpuv1","com.docker.s...
+[03/07/26 00:01:35 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:01:36 BRT] [INFO] [autoserver] [5d2e5d93] <- POST /system-status | status=200 | 3638.1ms
+[03/07/26 00:01:36 BRT] [INFO] [uvicorn.access] 172.20.0.1:56196 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:01:36 BRT] [INFO] [autoserver] [ae8eef54] <- POST /system-status | status=200 | 3591.1ms
+[03/07/26 00:01:36 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:01:39 BRT] [DEBUG] [autoserver] [4bdd4e4f] -> OPTIONS /get-stack-env/postgres | query={} | client=172.20.0.1
+[03/07/26 00:01:39 BRT] [INFO] [autoserver] [4bdd4e4f] <- OPTIONS /get-stack-env/postgres | status=200 | 1.2ms
+[03/07/26 00:01:39 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "OPTIONS /get-stack-env/postgres HTTP/1.1" 200
+[03/07/26 00:01:39 BRT] [DEBUG] [autoserver] [743d50a8] -> POST /get-stack-env/postgres | query={} | client=172.20.0.1
+[03/07/26 00:01:39 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:39 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:39 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bded150
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:40 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:40 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:40 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.86s
+[03/07/26 00:01:40 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services postgres --format '{{.Name}}'
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:40 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] OUTPUT: postgres_postgres
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect postgres_postgres --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["POSTGRES_PASSWORD=kwgYi1_BaRvgH9VGIudcXKknMh5APx7rxulqTr-lCn8"]
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:01:41 BRT] [INFO] [autoserver] [743d50a8] <- POST /get-stack-env/postgres | status=200 | 1554.7ms
+[03/07/26 00:01:41 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "POST /get-stack-env/postgres HTTP/1.1" 200
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [b37e7654] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [af1e6763] -> POST /get-stack-env/postgres | query={} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [16e3fb1a] -> POST /get-stack-env/postgres | query={} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [INFO] [autoserver] [b37e7654] <- GET /settings | status=200 | 166.6ms
+[03/07/26 00:01:41 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [152ac233] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:41 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:41 BRT] [INFO] [autoserver] [152ac233] <- GET /settings | status=200 | 164.7ms
+[03/07/26 00:01:41 BRT] [INFO] [uvicorn.access] 172.20.0.1:56588 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [2badab1d] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a210510
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a213010
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:41 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:41 BRT] [DEBUG] [autoserver] [d7575b7d] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:01:41 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:01:41 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:01:41 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:01:41 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:42 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:42 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:42 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:01:42 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:01:42 BRT] [INFO] [autoserver] [d7575b7d] <- POST /cloudflare/zones | status=200 | 735.6ms
+[03/07/26 00:01:42 BRT] [INFO] [uvicorn.access] 172.20.0.1:56588 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:01:42 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:01:42 BRT] [DEBUG] [autoserver] [03c4db33] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:01:42 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:01:42 BRT] [INFO] [autoserver] [2badab1d] <- POST /cloudflare/zones | status=200 | 825.5ms
+[03/07/26 00:01:42 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:01:42 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:01:42 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:42 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:42 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 1.02s
+[03/07/26 00:01:42 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 1.02s
+[03/07/26 00:01:42 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services postgres --format '{{.Name}}'
+[03/07/26 00:01:42 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services postgres --format '{{.Name}}'
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:42 BRT] [DEBUG] [autoserver] [928bb871] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:01:42 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:42 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] OUTPUT: postgres_postgres
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect postgres_postgres --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] OUTPUT: postgres_postgres
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect postgres_postgres --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:43 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:01:43 BRT] [INFO] [autoserver] [03c4db33] <- POST /cloudflare/records | status=200 | 632.6ms
+[03/07/26 00:01:43 BRT] [INFO] [uvicorn.access] 172.20.0.1:56588 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["POSTGRES_PASSWORD=kwgYi1_BaRvgH9VGIudcXKknMh5APx7rxulqTr-lCn8"]
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:01:43 BRT] [INFO] [autoserver] [af1e6763] <- POST /get-stack-env/postgres | status=200 | 1795.1ms
+[03/07/26 00:01:43 BRT] [INFO] [uvicorn.access] 172.20.0.1:56576 - "POST /get-stack-env/postgres HTTP/1.1" 200
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:43 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["POSTGRES_PASSWORD=kwgYi1_BaRvgH9VGIudcXKknMh5APx7rxulqTr-lCn8"]
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:43 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:01:43 BRT] [INFO] [autoserver] [16e3fb1a] <- POST /get-stack-env/postgres | status=200 | 1802.8ms
+[03/07/26 00:01:43 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "POST /get-stack-env/postgres HTTP/1.1" 200
+[03/07/26 00:01:43 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:01:43 BRT] [INFO] [autoserver] [928bb871] <- POST /cloudflare/records | status=200 | 812.1ms
+[03/07/26 00:01:43 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:01:44 BRT] [DEBUG] [autoserver] [6820a6e8] -> OPTIONS /install-zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:44 BRT] [INFO] [autoserver] [6820a6e8] <- OPTIONS /install-zapvoice | status=200 | 1.1ms
+[03/07/26 00:01:44 BRT] [INFO] [uvicorn.access] 172.20.0.1:56192 - "OPTIONS /install-zapvoice HTTP/1.1" 200
+[03/07/26 00:01:44 BRT] [DEBUG] [autoserver] [ef02afa3] -> POST /install-zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:45 BRT] [INFO] [autoserver] [ef02afa3] <- POST /install-zapvoice | status=200 | 205.1ms
+[03/07/26 00:01:45 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "POST /install-zapvoice HTTP/1.1" 200
+[03/07/26 00:01:45 BRT] [INFO] [app.routes.installer.stacks] TASK: Iniciando zapvoice em 167.233.201.92
+[03/07/26 00:01:45 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:45 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:45 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bbd6390
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:45 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:45 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:46 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 1.00s
+[03/07/26 00:01:46 BRT] [INFO] [app.services.database_apps] Verificando/Criando banco de dados 'zapvoice' no Postgres...
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] CMD: docker ps -q -f name=postgres_postgres | head -n 1
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] OUTPUT: fc6e534a1df5
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] CMD: docker exec fc6e534a1df5 psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='zapvoice'"
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] OUTPUT: 1
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:46 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services zapvoice --format '{{.Name}}'
+[03/07/26 00:01:46 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:01:47 BRT] [DEBUG] [autoserver] [8f93bd03] -> OPTIONS /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:47 BRT] [INFO] [autoserver] [8f93bd03] <- OPTIONS /install-status/zapvoice | status=200 | 1.2ms
+[03/07/26 00:01:47 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "OPTIONS /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:47 BRT] [DEBUG] [autoserver] [d49bbe4b] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:47 BRT] [INFO] [autoserver] [d49bbe4b] <- GET /install-status/zapvoice | status=200 | 16.2ms
+[03/07/26 00:01:47 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:01:47 BRT] [INFO] [app.services.base_ssh] OUTPUT: 
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:01:47 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:47 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:47 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bc54950
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:47 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:47 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:48 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:48 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.99s
+[03/07/26 00:01:48 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services rabbitmq --format '{{.Name}}'
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:48 BRT] [INFO] [app.services.base_ssh] OUTPUT: rabbitmq_rabbitmq
+[03/07/26 00:01:48 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect rabbitmq_rabbitmq --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:48 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:49 BRT] [DEBUG] [autoserver] [018c9fa1] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:49 BRT] [INFO] [autoserver] [018c9fa1] <- GET /install-status/zapvoice | status=200 | 1.6ms
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:49 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:49 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["RABBITMQ_DEFAULT_PASS=2fc61f52-b76f-4239-82a4-dc3822b67813","RABBITMQ_DEFAULT_USER=user0949","RABB...
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:01:49 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:49 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:49 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bbd3810
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:49 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:49 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:50 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:50 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.90s
+[03/07/26 00:01:50 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services minio --format '{{.Name}}'
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:50 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio_minio
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:50 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect minio_minio --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:50 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["MINIO_BROWSER_REDIRECT_URL=https://privadoestudo02.aryaraj.shop","MINIO_ROOT_PASSWORD=5c419cd6-54d...
+[03/07/26 00:01:50 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:01:51 BRT] [DEBUG] [autoserver] [594521d3] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:51 BRT] [INFO] [autoserver] [594521d3] <- GET /install-status/zapvoice | status=200 | 1.6ms
+[03/07/26 00:01:51 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:51 BRT] [INFO] [app.services.base_ssh] Portainer configurado para o host 167.233.201.92. Realizando deploy via API...
+[03/07/26 00:01:51 BRT] [INFO] [app.services.base_ssh] Tentando autenticar no Portainer em http://167.233.201.92:9000 (verify=False)...
+[03/07/26 00:01:51 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:01:51 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "POST /api/auth HTTP/1.1" 200 306
+[03/07/26 00:01:51 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:01:51 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/endpoints HTTP/1.1" 200 None
+[03/07/26 00:01:52 BRT] [INFO] [app.services.base_ssh] Realizando deploy via Portainer API em http://167.233.201.92:9000 (Endpoint=1)...
+[03/07/26 00:01:52 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:01:52 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/stacks HTTP/1.1" 200 None
+[03/07/26 00:01:52 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:01:52 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/endpoints/1/docker/info HTTP/1.1" 200 None
+[03/07/26 00:01:53 BRT] [DEBUG] [autoserver] [a1d51c06] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:53 BRT] [INFO] [autoserver] [a1d51c06] <- GET /install-status/zapvoice | status=200 | 2.0ms
+[03/07/26 00:01:53 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:53 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:01:55 BRT] [DEBUG] [autoserver] [8ade58fd] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:55 BRT] [INFO] [autoserver] [8ade58fd] <- GET /install-status/zapvoice | status=200 | 2.7ms
+[03/07/26 00:01:55 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:56 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "POST /api/stacks/create/swarm/string?endpointId=1 HTTP/1.1" 200 561
+[03/07/26 00:01:56 BRT] [INFO] [app.routes.installer.stacks] TASK: Finalizado zapvoice. Result: {'status': 'success', 'message': 'ZapVoice instalado.', 'credentials': {'user': '', 'password': ''}}
+[03/07/26 00:01:56 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:01:56 BRT] [INFO] [app.routes.installer.stacks] TASK: Credenciais de zapvoice salvas no banco para 167.233.201.92
+[03/07/26 00:01:57 BRT] [DEBUG] [autoserver] [46f07996] -> GET /install-status/zapvoice | query={} | client=172.20.0.1
+[03/07/26 00:01:57 BRT] [INFO] [autoserver] [46f07996] <- GET /install-status/zapvoice | status=200 | 1.7ms
+[03/07/26 00:01:57 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "GET /install-status/zapvoice HTTP/1.1" 200
+[03/07/26 00:01:57 BRT] [DEBUG] [autoserver] [62ddef43] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:01:57 BRT] [INFO] [app.routes.installer.infra] Fetching full system status for: 167.233.201.92
+[03/07/26 00:01:57 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:01:57 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:01:57 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a210b50
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:01:57 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:01:57 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:01:58 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:01:58 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.99s
+[03/07/26 00:01:58 BRT] [INFO] [app.services.base_ssh] CMD: docker --version
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:01:58 BRT] [INFO] [app.services.base_ssh] OUTPUT: Docker version 29.6.1, build 8900f1d
+[03/07/26 00:01:58 BRT] [INFO] [app.services.base_ssh] CMD: docker info --format '{{.Swarm.LocalNodeState}}'
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:01:58 BRT] [INFO] [app.services.base_ssh] OUTPUT: active
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:01:58 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:01:59 BRT] [INFO] [app.services.base_ssh] CMD: docker network ls --filter name=^network_swarm_public$ --format '{{.Name}}'
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:01:59 BRT] [INFO] [app.services.base_ssh] OUTPUT: network_swarm_public
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:01:59 BRT] [INFO] [app.services.base_ssh] CMD: docker stack ls --format '{{.Name}}'
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:01:59 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:02:00 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio
+oraculo
+portainer
+postgres
+rabbitmq
+redis
+traefik
+zapvoice
+[03/07/26 00:02:00 BRT] [INFO] [app.services.base_ssh] CMD: docker service ls -q
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:02:00 BRT] [INFO] [app.services.base_ssh] OUTPUT: iof89141h651
+xp6cs2iqvmkt
+ftzopr0zchqx
+p0xwpu8u2o34
+j1khwxef89ln
+1xc4ne1rjv7q
+4vrnnu3b3e54
+7x6t70ney...
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:02:00 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect iof89141h651 xp6cs2iqvmkt ftzopr0zchqx p0xwpu8u2o34 j1khwxef89ln 1xc4ne1rjv7q 4vrnnu3b3e54 7x6t70ney59z jn9tnibyhep7 wm7rqpod71ur --format '{{.Spec.Name}}|{{json .Spec.Labels}}'
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:02:00 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:02:00 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio_minio|{"com.docker.stack.image":"minio/minio:RELEASE.2025-02-07T23-21-09Z-cpuv1","com.docker.s...
+[03/07/26 00:02:01 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:02:01 BRT] [INFO] [autoserver] [62ddef43] <- POST /system-status | status=200 | 4105.1ms
+[03/07/26 00:02:01 BRT] [INFO] [uvicorn.access] 172.20.0.1:56582 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:05:09 BRT] [DEBUG] [autoserver] [45a95d15] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [INFO] [autoserver] [45a95d15] <- GET /settings | status=200 | 148.9ms
+[03/07/26 00:05:10 BRT] [INFO] [uvicorn.access] 172.20.0.1:58382 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [6787e749] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [57a3d6e6] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [INFO] [autoserver] [6787e749] <- GET /settings | status=200 | 173.7ms
+[03/07/26 00:05:10 BRT] [INFO] [uvicorn.access] 172.20.0.1:58392 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:05:10 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [5544ca1c] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:05:10 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:05:10 BRT] [INFO] [autoserver] [57a3d6e6] <- POST /cloudflare/zones | status=200 | 826.8ms
+[03/07/26 00:05:10 BRT] [INFO] [uvicorn.access] 172.20.0.1:58382 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:05:10 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:05:10 BRT] [INFO] [autoserver] [5544ca1c] <- POST /cloudflare/zones | status=200 | 675.4ms
+[03/07/26 00:05:10 BRT] [INFO] [uvicorn.access] 172.20.0.1:58392 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [a5c94925] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [6beb6997] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [928d3329] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [DEBUG] [autoserver] [570f9ee5] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:10 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:11 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:11 BRT] [INFO] [autoserver] [6beb6997] <- POST /cloudflare/records | status=200 | 569.2ms
+[03/07/26 00:05:11 BRT] [INFO] [uvicorn.access] 172.20.0.1:58396 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:11 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:11 BRT] [INFO] [autoserver] [570f9ee5] <- POST /cloudflare/records | status=200 | 624.1ms
+[03/07/26 00:05:11 BRT] [INFO] [uvicorn.access] 172.20.0.1:58402 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:11 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:11 BRT] [INFO] [autoserver] [a5c94925] <- POST /cloudflare/records | status=200 | 779.1ms
+[03/07/26 00:05:11 BRT] [INFO] [uvicorn.access] 172.20.0.1:58382 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:12 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:12 BRT] [INFO] [autoserver] [928d3329] <- POST /cloudflare/records | status=200 | 1341.7ms
+[03/07/26 00:05:12 BRT] [INFO] [uvicorn.access] 172.20.0.1:58392 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:25 BRT] [DEBUG] [autoserver] [d975a500] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:25 BRT] [INFO] [autoserver] [d975a500] <- GET /settings | status=200 | 140.6ms
+[03/07/26 00:05:25 BRT] [INFO] [uvicorn.access] 172.20.0.1:58476 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:05:25 BRT] [DEBUG] [autoserver] [fd38b4ec] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:25 BRT] [DEBUG] [autoserver] [baac3446] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:05:26 BRT] [INFO] [autoserver] [fd38b4ec] <- GET /settings | status=200 | 144.7ms
+[03/07/26 00:05:26 BRT] [INFO] [uvicorn.access] 172.20.0.1:58492 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:05:26 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:26 BRT] [DEBUG] [autoserver] [0dda7467] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:05:26 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:05:26 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:05:26 BRT] [INFO] [autoserver] [0dda7467] <- POST /cloudflare/zones | status=200 | 580.1ms
+[03/07/26 00:05:26 BRT] [INFO] [uvicorn.access] 172.20.0.1:58492 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:05:26 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:05:26 BRT] [INFO] [autoserver] [baac3446] <- POST /cloudflare/zones | status=200 | 735.1ms
+[03/07/26 00:05:26 BRT] [INFO] [uvicorn.access] 172.20.0.1:58476 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:05:26 BRT] [DEBUG] [autoserver] [3d438e77] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:26 BRT] [DEBUG] [autoserver] [96403d9b] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:26 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:27 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:27 BRT] [INFO] [autoserver] [3d438e77] <- POST /cloudflare/records | status=200 | 443.8ms
+[03/07/26 00:05:27 BRT] [INFO] [uvicorn.access] 172.20.0.1:58492 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:27 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:27 BRT] [INFO] [autoserver] [96403d9b] <- POST /cloudflare/records | status=200 | 564.8ms
+[03/07/26 00:05:27 BRT] [INFO] [uvicorn.access] 172.20.0.1:58476 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:38 BRT] [DEBUG] [autoserver] [8b2b164f] -> OPTIONS /cloudflare/create | query={} | client=172.20.0.1
+[03/07/26 00:05:38 BRT] [INFO] [autoserver] [8b2b164f] <- OPTIONS /cloudflare/create | status=200 | 1.2ms
+[03/07/26 00:05:38 BRT] [INFO] [uvicorn.access] 172.20.0.1:35582 - "OPTIONS /cloudflare/create HTTP/1.1" 200
+[03/07/26 00:05:38 BRT] [DEBUG] [autoserver] [ae048313] -> POST /cloudflare/create | query={} | client=172.20.0.1
+[03/07/26 00:05:38 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:38 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "POST /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records HTTP/1.1" 200 None
+[03/07/26 00:05:38 BRT] [INFO] [autoserver] [ae048313] <- POST /cloudflare/create | status=200 | 584.5ms
+[03/07/26 00:05:38 BRT] [INFO] [uvicorn.access] 172.20.0.1:35582 - "POST /cloudflare/create HTTP/1.1" 200
+[03/07/26 00:05:38 BRT] [DEBUG] [autoserver] [442313c3] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:38 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:39 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:39 BRT] [INFO] [autoserver] [442313c3] <- POST /cloudflare/records | status=200 | 629.2ms
+[03/07/26 00:05:39 BRT] [INFO] [uvicorn.access] 172.20.0.1:35582 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:50 BRT] [DEBUG] [autoserver] [d2b5e611] -> POST /cloudflare/create | query={} | client=172.20.0.1
+[03/07/26 00:05:50 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:50 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "POST /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records HTTP/1.1" 200 None
+[03/07/26 00:05:50 BRT] [INFO] [autoserver] [d2b5e611] <- POST /cloudflare/create | status=200 | 747.6ms
+[03/07/26 00:05:50 BRT] [INFO] [uvicorn.access] 172.20.0.1:44942 - "POST /cloudflare/create HTTP/1.1" 200
+[03/07/26 00:05:50 BRT] [DEBUG] [autoserver] [6c747a77] -> OPTIONS /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:50 BRT] [INFO] [autoserver] [6c747a77] <- OPTIONS /cloudflare/records | status=200 | 0.8ms
+[03/07/26 00:05:50 BRT] [INFO] [uvicorn.access] 172.20.0.1:44942 - "OPTIONS /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:50 BRT] [DEBUG] [autoserver] [c57732e0] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:05:50 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:05:51 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:05:51 BRT] [INFO] [autoserver] [c57732e0] <- POST /cloudflare/records | status=200 | 561.5ms
+[03/07/26 00:05:51 BRT] [INFO] [uvicorn.access] 172.20.0.1:44950 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [7511b644] -> GET /api/cluster/status | query={'parent_host': '167.233.201.92', 'parent_username': 'root', 'parent_password': 'HareHare@03'} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [WARNING] [autoserver] [7511b644] <- GET /api/cluster/status | status=401 | 16.4ms
+[03/07/26 00:05:55 BRT] [INFO] [uvicorn.access] 172.20.0.1:44950 - "GET /api/cluster/status?parent_host=167.233.201.92&parent_username=root&parent_password=HareHare%4003 HTTP/1.1" 401
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [4a26135c] -> GET /api/cluster/status | query={'parent_host': '167.233.201.92', 'parent_username': 'root', 'parent_password': 'HareHare@03'} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [033dffd1] -> GET /api/cluster/nodes | query={'parent_host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [WARNING] [autoserver] [4a26135c] <- GET /api/cluster/status | status=401 | 2.9ms
+[03/07/26 00:05:55 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "GET /api/cluster/status?parent_host=167.233.201.92&parent_username=root&parent_password=HareHare%4003 HTTP/1.1" 401
+[03/07/26 00:05:55 BRT] [WARNING] [autoserver] [033dffd1] <- GET /api/cluster/nodes | status=401 | 11.0ms
+[03/07/26 00:05:55 BRT] [INFO] [uvicorn.access] 172.20.0.1:44950 - "GET /api/cluster/nodes?parent_host=167.233.201.92 HTTP/1.1" 401
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [60859f1e] -> GET /api/cluster/nodes | query={'parent_host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [WARNING] [autoserver] [60859f1e] <- GET /api/cluster/nodes | status=401 | 1.5ms
+[03/07/26 00:05:55 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "GET /api/cluster/nodes?parent_host=167.233.201.92 HTTP/1.1" 401
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [c53b2e6a] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [DEBUG] [autoserver] [712bc13e] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:05:55 BRT] [INFO] [app.routes.installer.infra] Fetching full system status for: 167.233.201.92
+[03/07/26 00:05:55 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:05:55 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:05:55 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a233c90
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:05:55 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:05:55 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:05:56 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:05:56 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 1.00s
+[03/07/26 00:05:56 BRT] [INFO] [app.services.base_ssh] CMD: docker --version
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:05:56 BRT] [INFO] [app.services.base_ssh] OUTPUT: Docker version 29.6.1, build 8900f1d
+[03/07/26 00:05:56 BRT] [INFO] [app.services.base_ssh] CMD: docker info --format '{{.Swarm.LocalNodeState}}'
+[03/07/26 00:05:56 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:05:57 BRT] [INFO] [app.services.base_ssh] OUTPUT: active
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:05:57 BRT] [INFO] [app.services.base_ssh] CMD: docker network ls --filter name=^network_swarm_public$ --format '{{.Name}}'
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:05:57 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:05:58 BRT] [INFO] [app.services.base_ssh] OUTPUT: network_swarm_public
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:05:58 BRT] [INFO] [app.services.base_ssh] CMD: docker stack ls --format '{{.Name}}'
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:05:58 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio
+oraculo
+portainer
+postgres
+rabbitmq
+redis
+traefik
+zapvoice
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:05:58 BRT] [INFO] [app.services.base_ssh] CMD: docker service ls -q
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:05:58 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:05:59 BRT] [INFO] [app.services.base_ssh] OUTPUT: iof89141h651
+xp6cs2iqvmkt
+ftzopr0zchqx
+p0xwpu8u2o34
+j1khwxef89ln
+1xc4ne1rjv7q
+4vrnnu3b3e54
+7x6t70ney...
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:05:59 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect iof89141h651 xp6cs2iqvmkt ftzopr0zchqx p0xwpu8u2o34 j1khwxef89ln 1xc4ne1rjv7q 4vrnnu3b3e54 7x6t70ney59z jn9tnibyhep7 wm7rqpod71ur --format '{{.Spec.Name}}|{{json .Spec.Labels}}'
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:05:59 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio_minio|{"com.docker.stack.image":"minio/minio:RELEASE.2025-02-07T23-21-09Z-cpuv1","com.docker.s...
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:05:59 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:05:59 BRT] [INFO] [autoserver] [c53b2e6a] <- POST /system-status | status=200 | 4316.7ms
+[03/07/26 00:05:59 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:05:59 BRT] [INFO] [autoserver] [712bc13e] <- POST /system-status | status=200 | 4316.2ms
+[03/07/26 00:05:59 BRT] [INFO] [uvicorn.access] 172.20.0.1:44950 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [559edec6] -> OPTIONS /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [f19f62b8] -> OPTIONS /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [559edec6] <- OPTIONS /settings | status=200 | 2.5ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:44950 - "OPTIONS /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [f19f62b8] <- OPTIONS /settings | status=200 | 3.5ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "OPTIONS /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [41a131f6] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [41a131f6] <- GET /settings | status=200 | 144.9ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:45480 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [9dc59b1c] -> GET /settings | query={'host': '167.233.201.92'} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [9dc59b1c] <- GET /settings | status=200 | 158.4ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "GET /settings?host=167.233.201.92 HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [a7ce29bb] -> OPTIONS /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [a7ce29bb] <- OPTIONS /cloudflare/zones | status=200 | 2.0ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:45480 - "OPTIONS /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [b4f62f76] -> OPTIONS /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [b4f62f76] <- OPTIONS /cloudflare/zones | status=200 | 1.7ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:44958 - "OPTIONS /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [b0948246] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:06:03 BRT] [DEBUG] [autoserver] [b1a703c0] -> POST /cloudflare/zones | query={} | client=172.20.0.1
+[03/07/26 00:06:03 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:03 BRT] [INFO] [root] Tentando se conectar ao Cloudflare para listar zonas...
+[03/07/26 00:06:03 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:03 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:06:03 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:06:03 BRT] [INFO] [autoserver] [b1a703c0] <- POST /cloudflare/zones | status=200 | 604.0ms
+[03/07/26 00:06:03 BRT] [INFO] [uvicorn.access] 172.20.0.1:45504 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:06:04 BRT] [DEBUG] [autoserver] [ea3916b1] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:06:04 BRT] [DEBUG] [autoserver] [fda79f59] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones HTTP/1.1" 200 None
+[03/07/26 00:06:04 BRT] [INFO] [root] Cloudflare retornou 6 zonas.
+[03/07/26 00:06:04 BRT] [INFO] [autoserver] [b0948246] <- POST /cloudflare/zones | status=200 | 648.1ms
+[03/07/26 00:06:04 BRT] [INFO] [uvicorn.access] 172.20.0.1:45490 - "POST /cloudflare/zones HTTP/1.1" 200
+[03/07/26 00:06:04 BRT] [DEBUG] [autoserver] [064b6c25] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:06:04 BRT] [DEBUG] [autoserver] [0a0f0071] -> POST /cloudflare/records | query={} | client=172.20.0.1
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTPS connection (1): api.cloudflare.com:443
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:06:04 BRT] [INFO] [autoserver] [ea3916b1] <- POST /cloudflare/records | status=200 | 590.7ms
+[03/07/26 00:06:04 BRT] [INFO] [uvicorn.access] 172.20.0.1:45504 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:06:04 BRT] [INFO] [autoserver] [fda79f59] <- POST /cloudflare/records | status=200 | 597.5ms
+[03/07/26 00:06:04 BRT] [INFO] [uvicorn.access] 172.20.0.1:45508 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:06:04 BRT] [INFO] [autoserver] [0a0f0071] <- POST /cloudflare/records | status=200 | 580.0ms
+[03/07/26 00:06:04 BRT] [INFO] [uvicorn.access] 172.20.0.1:45522 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:06:04 BRT] [DEBUG] [urllib3.connectionpool] https://api.cloudflare.com:443 "GET /client/v4/zones/a65d84aff81d1bfdaaa7aff1c43008e3/dns_records?type=A&per_page=100&page=1 HTTP/1.1" 200 None
+[03/07/26 00:06:04 BRT] [INFO] [autoserver] [064b6c25] <- POST /cloudflare/records | status=200 | 719.6ms
+[03/07/26 00:06:04 BRT] [INFO] [uvicorn.access] 172.20.0.1:45490 - "POST /cloudflare/records HTTP/1.1" 200
+[03/07/26 00:06:18 BRT] [DEBUG] [autoserver] [080f3e3a] -> OPTIONS /install-ai-agent-manager | query={} | client=172.20.0.1
+[03/07/26 00:06:18 BRT] [INFO] [autoserver] [080f3e3a] <- OPTIONS /install-ai-agent-manager | status=200 | 1.2ms
+[03/07/26 00:06:18 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "OPTIONS /install-ai-agent-manager HTTP/1.1" 200
+[03/07/26 00:06:18 BRT] [DEBUG] [autoserver] [e2a2ea8a] -> POST /install-ai-agent-manager | query={} | client=172.20.0.1
+[03/07/26 00:06:18 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:18 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:18 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:18 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bbc8210
+[03/07/26 00:06:18 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:19 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:19 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:19 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.99s
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:19 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:20 BRT] [INFO] [paramiko.transport.sftp] [chan 0] Opened sftp connection (server version 3)
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport.sftp] [chan 0] open(b'/tmp/portainer_1783047979_6620.json', 'w')
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport.sftp] [chan 0] open(b'/tmp/portainer_1783047979_6620.json', 'w') -> 00000000
+[03/07/26 00:06:20 BRT] [DEBUG] [paramiko.transport.sftp] [chan 0] close(00000000)
+[03/07/26 00:06:21 BRT] [INFO] [paramiko.transport.sftp] [chan 0] sftp session closed.
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:06:21 BRT] [INFO] [app.services.base_ssh] CMD: rm /tmp/portainer_1783047979_6620.out /tmp/portainer_1783047979_6620.json
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:06:21 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:06:22 BRT] [INFO] [app.services.base_ssh] OUTPUT: 
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:06:22 BRT] [INFO] [app.services.base_ssh] CMD: rm /tmp/portainer_1783047982_5913.out
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:06:22 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:06:23 BRT] [INFO] [app.services.base_ssh] OUTPUT: 
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:06:23 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:23 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:23 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bbd2d10
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:23 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:23 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:24 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:24 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.99s
+[03/07/26 00:06:24 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services postgres --format '{{.Name}}'
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:06:24 BRT] [INFO] [app.services.base_ssh] OUTPUT: postgres_postgres
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:24 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect postgres_postgres --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:24 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:25 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["POSTGRES_PASSWORD=kwgYi1_BaRvgH9VGIudcXKknMh5APx7rxulqTr-lCn8"]
+[03/07/26 00:06:25 BRT] [INFO] [autoserver] [e2a2ea8a] <- POST /install-ai-agent-manager | status=200 | 6592.9ms
+[03/07/26 00:06:25 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "POST /install-ai-agent-manager HTTP/1.1" 200
+[03/07/26 00:06:25 BRT] [INFO] [app.routes.installer.stacks] TASK: Iniciando ai_agent_manager em 167.233.201.92
+[03/07/26 00:06:25 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:25 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:25 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9bdcc150
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:25 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:25 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:26 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:26 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.98s
+[03/07/26 00:06:26 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:26 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:26 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a257550
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:26 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:26 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:27 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.98s
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services zapvoice --format '{{.Name}}'
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:27 BRT] [DEBUG] [autoserver] [c7ad69e4] -> OPTIONS /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:27 BRT] [INFO] [autoserver] [c7ad69e4] <- OPTIONS /install-status/ai_agent_manager | status=200 | 0.8ms
+[03/07/26 00:06:27 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "OPTIONS /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:27 BRT] [DEBUG] [autoserver] [099b0edd] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:27 BRT] [INFO] [autoserver] [099b0edd] <- GET /install-status/ai_agent_manager | status=200 | 1.9ms
+[03/07/26 00:06:27 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] OUTPUT: zapvoice_zapvoice_app
+zapvoice_zapvoice_worker
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect zapvoice_zapvoice_app --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["BACKBLAZE_S3_ACCESS_KEY=0047daba280ace40000000019","BACKBLAZE_S3_BUCKET_NAME=zap-voice","BACKBLAZE...
+[03/07/26 00:06:27 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:27 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a254e50
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:28 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:28 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:28 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.86s
+[03/07/26 00:06:28 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services minio --format '{{.Name}}'
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:28 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:06:29 BRT] [INFO] [app.services.base_ssh] OUTPUT: minio_minio
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:29 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect minio_minio --format '{{json .Spec.TaskTemplate.ContainerSpec.Env}}'
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:29 BRT] [DEBUG] [autoserver] [4d9178fb] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:29 BRT] [INFO] [autoserver] [4d9178fb] <- GET /install-status/ai_agent_manager | status=200 | 2.2ms
+[03/07/26 00:06:29 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:29 BRT] [INFO] [app.services.base_ssh] OUTPUT: ["MINIO_BROWSER_REDIRECT_URL=https://privadoestudo02.aryaraj.shop","MINIO_ROOT_PASSWORD=5c419cd6-54d...
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] Dropping user packet because connection is dead.
+[03/07/26 00:06:29 BRT] [INFO] [app.services.database_apps] Verificando/Criando banco de dados 'ai_agent_manager' no Postgres...
+[03/07/26 00:06:29 BRT] [INFO] [app.services.base_ssh] CMD: docker ps -q -f name=postgres_postgres | head -n 1
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:29 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:06:30 BRT] [INFO] [app.services.base_ssh] OUTPUT: fc6e534a1df5
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:30 BRT] [INFO] [app.services.base_ssh] CMD: docker exec fc6e534a1df5 psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='ai_agent_manager'"
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:30 BRT] [INFO] [app.services.base_ssh] OUTPUT: 
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:30 BRT] [INFO] [app.services.base_ssh] CMD: docker exec fc6e534a1df5 psql -U postgres -c "CREATE DATABASE ai_agent_manager;"
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:06:30 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:06:31 BRT] [DEBUG] [autoserver] [0b55022f] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:06:31 BRT] [INFO] [app.services.base_ssh] OUTPUT: CREATE DATABASE
+[03/07/26 00:06:31 BRT] [INFO] [autoserver] [0b55022f] <- GET /install-status/ai_agent_manager | status=200 | 3.1ms
+[03/07/26 00:06:31 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:31 BRT] [INFO] [app.services.base_ssh] CMD: docker stack services agentes --format '{{.Name}}'
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:06:31 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:06:31 BRT] [INFO] [app.services.base_ssh] OUTPUT: 
+[03/07/26 00:06:32 BRT] [INFO] [app.services.base_ssh] Portainer configurado para o host 167.233.201.92. Realizando deploy via API...
+[03/07/26 00:06:32 BRT] [INFO] [app.services.base_ssh] Tentando autenticar no Portainer em http://167.233.201.92:9000 (verify=False)...
+[03/07/26 00:06:32 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:06:32 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "POST /api/auth HTTP/1.1" 200 306
+[03/07/26 00:06:32 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:06:32 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/endpoints HTTP/1.1" 200 None
+[03/07/26 00:06:33 BRT] [DEBUG] [autoserver] [c4f6d1db] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:33 BRT] [INFO] [autoserver] [c4f6d1db] <- GET /install-status/ai_agent_manager | status=200 | 2.4ms
+[03/07/26 00:06:33 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:33 BRT] [INFO] [app.services.base_ssh] Realizando deploy via Portainer API em http://167.233.201.92:9000 (Endpoint=1)...
+[03/07/26 00:06:33 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:06:33 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/stacks HTTP/1.1" 200 None
+[03/07/26 00:06:33 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:06:33 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "GET /api/endpoints/1/docker/info HTTP/1.1" 200 None
+[03/07/26 00:06:33 BRT] [DEBUG] [urllib3.connectionpool] Starting new HTTP connection (1): 167.233.201.92:9000
+[03/07/26 00:06:35 BRT] [DEBUG] [autoserver] [bd7a5d9f] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:35 BRT] [INFO] [autoserver] [bd7a5d9f] <- GET /install-status/ai_agent_manager | status=200 | 3.0ms
+[03/07/26 00:06:35 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:37 BRT] [DEBUG] [autoserver] [57469fc9] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:37 BRT] [INFO] [autoserver] [57469fc9] <- GET /install-status/ai_agent_manager | status=200 | 2.3ms
+[03/07/26 00:06:37 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:38 BRT] [DEBUG] [urllib3.connectionpool] http://167.233.201.92:9000 "POST /api/stacks/create/swarm/string?endpointId=1 HTTP/1.1" 200 561
+[03/07/26 00:06:38 BRT] [INFO] [app.routes.installer.stacks] TASK: Finalizado ai_agent_manager. Result: {'status': 'success', 'message': 'Gerente de Agente de IA instalado.', 'credentials': {'user': '', 'password': ''}}
+[03/07/26 00:06:38 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:06:38 BRT] [INFO] [app.routes.installer.stacks] TASK: Credenciais de agentes salvas no banco para 167.233.201.92
+[03/07/26 00:06:39 BRT] [DEBUG] [autoserver] [c59cfc3d] -> GET /install-status/ai_agent_manager | query={} | client=172.20.0.1
+[03/07/26 00:06:39 BRT] [INFO] [autoserver] [c59cfc3d] <- GET /install-status/ai_agent_manager | status=200 | 1.8ms
+[03/07/26 00:06:39 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "GET /install-status/ai_agent_manager HTTP/1.1" 200
+[03/07/26 00:06:39 BRT] [DEBUG] [autoserver] [c707b7c8] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:06:39 BRT] [INFO] [app.routes.installer.infra] Fetching full system status for: 167.233.201.92
+[03/07/26 00:06:39 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:06:39 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:06:39 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0x9a247250
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:06:39 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:06:39 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:06:40 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:06:40 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.98s
+[03/07/26 00:06:40 BRT] [INFO] [app.services.base_ssh] CMD: docker --version
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:06:40 BRT] [INFO] [app.services.base_ssh] OUTPUT: Docker version 29.6.1, build 8900f1d
+[03/07/26 00:06:40 BRT] [INFO] [app.services.base_ssh] CMD: docker info --format '{{.Swarm.LocalNodeState}}'
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:06:40 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:06:41 BRT] [INFO] [app.services.base_ssh] OUTPUT: active
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:06:41 BRT] [INFO] [app.services.base_ssh] CMD: docker network ls --filter name=^network_swarm_public$ --format '{{.Name}}'
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:06:41 BRT] [INFO] [app.services.base_ssh] OUTPUT: network_swarm_public
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:06:41 BRT] [INFO] [app.services.base_ssh] CMD: docker stack ls --format '{{.Name}}'
+[03/07/26 00:06:41 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:06:42 BRT] [INFO] [app.services.base_ssh] OUTPUT: agentes
+minio
+oraculo
+portainer
+postgres
+rabbitmq
+redis
+traefik
+zapvoice
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:06:42 BRT] [INFO] [app.services.base_ssh] CMD: docker service ls -q
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:06:42 BRT] [INFO] [app.services.base_ssh] OUTPUT: nk0ihwgm8rmp
+4p2iuir22xwg
+bh58tdlqasar
+iof89141h651
+xp6cs2iqvmkt
+ftzopr0zchqx
+p0xwpu8u2o34
+j1khwxef8...
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:06:42 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect nk0ihwgm8rmp 4p2iuir22xwg bh58tdlqasar iof89141h651 xp6cs2iqvmkt ftzopr0zchqx p0xwpu8u2o34 j1khwxef89ln 1xc4ne1rjv7q 4vrnnu3b3e54 7x6t70ney59z jn9tnibyhep7 wm7rqpod71ur --format '{{.Spec.Name}}|{{json .Spec.Labels}}'
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:06:42 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:06:43 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:06:43 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:06:43 BRT] [INFO] [app.services.base_ssh] OUTPUT: agentes_backend|{"com.docker.stack.image":"aryalvesfernandes/configuraagente:backend-1.0.2","com.doc...
+[03/07/26 00:06:43 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:06:43 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:06:43 BRT] [INFO] [autoserver] [c707b7c8] <- POST /system-status | status=200 | 4078.3ms
+[03/07/26 00:06:43 BRT] [INFO] [uvicorn.access] 172.20.0.1:46920 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:13:25 BRT] [INFO] [uvicorn.error] Shutting down
+[03/07/26 00:13:31 BRT] [INFO] [uvicorn.error] Will watch for changes in these directories: ['/app']
+[03/07/26 00:13:31 BRT] [INFO] [uvicorn.error] Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[03/07/26 00:13:31 BRT] [INFO] [uvicorn.error] Started reloader process [1] using StatReload
+[03/07/26 00:13:32 BRT] [DEBUG] [asyncio] Using selector: EpollSelector
+[03/07/26 00:13:33 BRT] [INFO] [uvicorn.error] Started server process [8]
+[03/07/26 00:13:33 BRT] [INFO] [uvicorn.error] Waiting for application startup.
+[03/07/26 00:13:33 BRT] [INFO] [uvicorn.error] Application startup complete.
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [289d6c34] -> OPTIONS /servers | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [289d6c34] <- OPTIONS /servers | status=200 | 1.4ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46044 - "OPTIONS /servers HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [b3c19849] -> OPTIONS /servers | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [b3c19849] <- OPTIONS /servers | status=200 | 1.7ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46048 - "OPTIONS /servers HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [463a5592] -> GET /servers | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [463a5592] <- GET /servers | status=200 | 229.1ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46044 - "GET /servers HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [1f30cf0c] -> GET /servers | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [8aa949ba] -> OPTIONS /system-status | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [8aa949ba] <- OPTIONS /system-status | status=200 | 1.4ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46044 - "OPTIONS /system-status HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [378d46ab] -> OPTIONS /system-status | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [378d46ab] <- OPTIONS /system-status | status=200 | 2.6ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46058 - "OPTIONS /system-status HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [41086b8d] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [DEBUG] [autoserver] [e43a946d] -> POST /system-status | query={} | client=172.20.0.1
+[03/07/26 00:13:54 BRT] [INFO] [app.routes.installer.infra] Fetching full system status for: 167.233.201.92
+[03/07/26 00:13:54 BRT] [INFO] [app.services.base_ssh] [SSH] Iniciando conexão SSH com 167.233.201.92
+[03/07/26 00:13:54 BRT] [INFO] [app.services.base_ssh] [SSH] Parâmetros: User=root, Timeout=30s
+[03/07/26 00:13:54 BRT] [INFO] [app.services.base_ssh] [SSH] look_for_keys=False, allow_agent=False
+[03/07/26 00:13:54 BRT] [INFO] [autoserver] [1f30cf0c] <- GET /servers | status=200 | 131.3ms
+[03/07/26 00:13:54 BRT] [INFO] [uvicorn.access] 172.20.0.1:46048 - "GET /servers HTTP/1.1" 200
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] starting thread (client mode): 0xe9665d90
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Local version/idstring: SSH-2.0-paramiko_4.0.0
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Remote version/idstring: SSH-2.0-OpenSSH_10.0p2 Debian-7+deb13u4
+[03/07/26 00:13:54 BRT] [INFO] [paramiko.transport] Connected (version 2.0, client OpenSSH_10.0p2)
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] === Key exchange possibilities ===
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] kex algos: mlkem768x25519-sha256, sntrup761x25519-sha512, sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, ext-info-s, kex-strict-s-v00@openssh.com
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] client encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] server encrypt: chacha20-poly1305@openssh.com, aes128-gcm@openssh.com, aes256-gcm@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] client compress: none, zlib@openssh.com
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] server compress: none, zlib@openssh.com
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] client lang: <none>
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] server lang: <none>
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] kex follows: False
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] === Key exchange agreements ===
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Strict kex mode: True
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Kex: curve25519-sha256@libssh.org
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] HostKey: ssh-ed25519
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Cipher: aes128-ctr
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] MAC: hmac-sha2-256
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] Compression: none
+[03/07/26 00:13:54 BRT] [DEBUG] [paramiko.transport] === End of kex handshake ===
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Resetting outbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Switch to new keys ...
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Resetting inbound seqno after NEWKEYS due to strict mode
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Adding ssh-ed25519 host key for 167.233.201.92: b'5c7a7c2fba1c9ffb59c793a78020f0ff'
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] userauth is OK
+[03/07/26 00:13:55 BRT] [INFO] [paramiko.transport] Authentication (password) successful!
+[03/07/26 00:13:55 BRT] [INFO] [app.services.base_ssh] [SSH] Conexão estabelecida em 0.87s
+[03/07/26 00:13:55 BRT] [INFO] [app.services.base_ssh] CMD: docker --version
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet in: 32768 bytes
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Received global request "hostkeys-00@openssh.com"
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Rejecting "hostkeys-00@openssh.com" global request from server.
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 0] Max packet out: 32768 bytes
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Secsh channel 0 opened.
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 0] Sesch channel 0 request ok
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF received (0)
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 0] EOF sent (0)
+[03/07/26 00:13:55 BRT] [INFO] [app.services.base_ssh] OUTPUT: Docker version 29.6.1, build 8900f1d
+[03/07/26 00:13:55 BRT] [INFO] [app.services.base_ssh] CMD: docker info --format '{{.Swarm.LocalNodeState}}'
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet in: 32768 bytes
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] [chan 1] Max packet out: 32768 bytes
+[03/07/26 00:13:55 BRT] [DEBUG] [paramiko.transport] Secsh channel 1 opened.
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 1] Sesch channel 1 request ok
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF received (1)
+[03/07/26 00:13:56 BRT] [INFO] [app.services.base_ssh] OUTPUT: active
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 1] EOF sent (1)
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet in: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 2] Max packet out: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] Secsh channel 2 opened.
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 2] Sesch channel 2 request ok
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF received (2)
+[03/07/26 00:13:56 BRT] [INFO] [app.services.base_ssh] CMD: docker network ls --filter name=^network_swarm_public$ --format '{{.Name}}'
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 2] EOF sent (2)
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet in: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 3] Max packet out: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] Secsh channel 3 opened.
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 3] Sesch channel 3 request ok
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF received (3)
+[03/07/26 00:13:56 BRT] [INFO] [app.services.base_ssh] OUTPUT: network_swarm_public
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 3] EOF sent (3)
+[03/07/26 00:13:56 BRT] [INFO] [app.services.base_ssh] CMD: docker stack ls --format '{{.Name}}'
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet in: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] [chan 4] Max packet out: 32768 bytes
+[03/07/26 00:13:56 BRT] [DEBUG] [paramiko.transport] Secsh channel 4 opened.
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 4] Sesch channel 4 request ok
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF received (4)
+[03/07/26 00:13:57 BRT] [INFO] [app.services.base_ssh] OUTPUT: agentes
+minio
+oraculo
+portainer
+postgres
+rabbitmq
+redis
+traefik
+zapvoice
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 4] EOF sent (4)
+[03/07/26 00:13:57 BRT] [INFO] [app.services.base_ssh] CMD: docker service ls -q
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet in: 32768 bytes
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 5] Max packet out: 32768 bytes
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] Secsh channel 5 opened.
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 5] Sesch channel 5 request ok
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF received (5)
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 5] EOF sent (5)
+[03/07/26 00:13:57 BRT] [INFO] [app.services.base_ssh] OUTPUT: nk0ihwgm8rmp
+4p2iuir22xwg
+bh58tdlqasar
+iof89141h651
+xp6cs2iqvmkt
+ftzopr0zchqx
+p0xwpu8u2o34
+j1khwxef8...
+[03/07/26 00:13:57 BRT] [INFO] [app.services.base_ssh] CMD: docker service inspect nk0ihwgm8rmp 4p2iuir22xwg bh58tdlqasar iof89141h651 xp6cs2iqvmkt ftzopr0zchqx p0xwpu8u2o34 j1khwxef89ln 1xc4ne1rjv7q 4vrnnu3b3e54 7x6t70ney59z jn9tnibyhep7 wm7rqpod71ur --format '{{.Spec.Name}}|{{json .Spec.Labels}}'
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet in: 32768 bytes
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 6] Max packet out: 32768 bytes
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] Secsh channel 6 opened.
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 6] Sesch channel 6 request ok
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF received (6)
+[03/07/26 00:13:57 BRT] [INFO] [app.services.base_ssh] OUTPUT: agentes_backend|{"com.docker.stack.image":"aryalvesfernandes/configuraagente:backend-1.0.2","com.doc...
+[03/07/26 00:13:57 BRT] [DEBUG] [paramiko.transport] [chan 6] EOF sent (6)
+[03/07/26 00:13:58 BRT] [DEBUG] [paramiko.transport] EOF in transport thread
+[03/07/26 00:13:58 BRT] [INFO] [autoserver] [41086b8d] <- POST /system-status | status=200 | 3773.3ms
+[03/07/26 00:13:58 BRT] [INFO] [uvicorn.access] 172.20.0.1:46070 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:13:58 BRT] [INFO] [autoserver] [e43a946d] <- POST /system-status | status=200 | 3746.7ms
+[03/07/26 00:13:58 BRT] [INFO] [uvicorn.access] 172.20.0.1:46058 - "POST /system-status HTTP/1.1" 200
+[03/07/26 00:15:52 BRT] [INFO] [uvicorn.error] Shutting down
+[03/07/26 00:15:52 BRT] [INFO] [uvicorn.error] Waiting for application shutdown.
+[03/07/26 00:15:52 BRT] [INFO] [uvicorn.error] Application shutdown complete.
+[03/07/26 00:15:52 BRT] [INFO] [uvicorn.error] Finished server process [8]
+[03/07/26 00:15:52 BRT] [INFO] [uvicorn.error] Stopping reloader process [1]

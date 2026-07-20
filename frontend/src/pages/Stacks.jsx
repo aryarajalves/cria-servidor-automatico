@@ -11,7 +11,6 @@ import { useStacks } from './stacks/useStacks';
 import SetupStep from './stacks/SetupStep';
 import AppCard from './stacks/AppCard';
 import ExternalAppModal from './stacks/ExternalAppModal';
-import ChatwootAdminModal from './stacks/ChatwootAdminModal';
 import ErrorBoundary from './stacks/ErrorBoundary';
 import { apps } from './stacks/constants';
 
@@ -32,8 +31,6 @@ const Stacks = () => {
         setConfigModal,
         externalModal,
         setExternalModal,
-        chatAdminModal,
-        setChatAdminModal,
         verifyingStatus,
         verifyingMessage,
         loading,
@@ -46,7 +43,6 @@ const Stacks = () => {
         handleInitSwarm,
         handleCreateNetwork,
         handleInstallCtop,
-        handleCreateChatwootAdmin,
         handleConfirmInstall,
         handleInstallApp,
         handleRestartStack,
@@ -238,7 +234,7 @@ const Stacks = () => {
                         {apps && apps.filter(a => a.category !== 'custom').map(app => {
                             const actualStackName = getActualStackName(app.stackName);
                             const isInstalled = !!actualStackName;
-                            const hasPostgres = !!getActualStackName('postgres');
+
                             return (
                                 <AppCard
                                     key={app.id}
@@ -247,14 +243,13 @@ const Stacks = () => {
                                     onRestart={handleRestartStack}
                                     onUninstall={handleUninstallApp}
                                     isInstalled={isInstalled}
-                                    disabled={!status?.network || (app.id === 'chatwoot' && !hasPostgres)}
-                                    disabledMessage={!status?.network ? "Requer Rede Overlay" : "Requer PostgreSQL"}
+                                    disabled={!status?.network}
+                                    disabledMessage="Requer Rede Overlay"
                                     urls={stackUrls[actualStackName] || []}
                                     credentials={stackCredentials[actualStackName]}
                                     version={stackVersions[actualStackName]}
                                     onUpdateCredentials={handleUpdateCredentials}
                                     getActualStackName={getActualStackName}
-                                    onOpenChatAdmin={(stackName) => setChatAdminModal({ stackName })}
                                     onUpdateDomain={handleUpdateDomain}
                                     onMarkExternal={(appId, appName) => setExternalModal({ appId, appName })}
                                 />
@@ -280,6 +275,39 @@ const Stacks = () => {
                             const actualStackName = getActualStackName(app.stackName);
                             const isInstalled = !!actualStackName;
                             const hasRabbit = !!getActualStackName('rabbitmq');
+                            const hasPostgres = !!getActualStackName('postgres');
+                            const hasMinio = !!getActualStackName('minio');
+                            
+                            let customDisabled = !status?.network;
+                            let customDisabledMsg = "Requer Rede Overlay";
+                            
+                            if (status?.network) {
+                                if ((app.id === 'zapvoice' || app.id === 'backup_chatwoo_rabbit') && !hasRabbit) {
+                                    customDisabled = true;
+                                    customDisabledMsg = "Requer RabbitMQ";
+                                } else if (app.id === 'ai_agent_manager') {
+                                    const hasZapvoice = !!getActualStackName('zapvoice');
+                                    const missing = [];
+                                    if (!hasPostgres) missing.push("PostgreSQL");
+                                    if (!hasRabbit) missing.push("RabbitMQ");
+                                    if (!hasMinio) missing.push("MinIO S3");
+                                    if (!hasZapvoice) missing.push("ZapVoice");
+                                    if (missing.length > 0) {
+                                        customDisabled = true;
+                                        customDisabledMsg = `Requer: ${missing.join(', ')}`;
+                                    }
+                                } else if (app.id === 'oraculo') {
+                                    const missing = [];
+                                    if (!hasPostgres) missing.push("PostgreSQL");
+                                    if (!hasMinio) missing.push("MinIO S3");
+                                    if (!hasRabbit) missing.push("RabbitMQ");
+                                    if (missing.length > 0) {
+                                        customDisabled = true;
+                                        customDisabledMsg = `Requer: ${missing.join(', ')}`;
+                                    }
+                                }
+                            }
+
                             return (
                                 <AppCard
                                     key={app.id}
@@ -288,14 +316,13 @@ const Stacks = () => {
                                     onRestart={handleRestartStack}
                                     onUninstall={handleUninstallApp}
                                     isInstalled={isInstalled}
-                                    disabled={!status?.network || (app.id === 'zapvoice' && !hasRabbit)}
-                                    disabledMessage={!status?.network ? "Requer Rede Overlay" : "Requer RabbitMQ"}
+                                    disabled={customDisabled}
+                                    disabledMessage={customDisabledMsg}
                                     urls={stackUrls[actualStackName] || []}
                                     credentials={stackCredentials[actualStackName]}
                                     version={stackVersions[actualStackName]}
                                     onUpdateCredentials={handleUpdateCredentials}
                                     getActualStackName={getActualStackName}
-                                    onOpenChatAdmin={(stackName) => setChatAdminModal({ stackName })}
                                     onUpdateDomain={handleUpdateDomain}
                                     onMarkExternal={(appId, appName) => setExternalModal({ appId, appName })}
                                 />
@@ -359,12 +386,6 @@ const Stacks = () => {
                 </div>
             )}
 
-            <ChatwootAdminModal 
-                isOpen={!!chatAdminModal}
-                onClose={() => setChatAdminModal(null)}
-                onCreate={handleCreateChatwootAdmin}
-                stackName={chatAdminModal?.stackName}
-            />
 
             <ExternalAppModal
                 isOpen={!!externalModal}

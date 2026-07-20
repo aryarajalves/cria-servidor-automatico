@@ -1,0 +1,83 @@
+version: "3.7"
+
+services:
+  app:
+    image: aryalvesfernandes/backup:1.0.0
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    networks:
+      - network_swarm_public
+    environment:
+      # ==========================================
+      # CONFIGURAÇÃO DO BANCO DE DADOS (POSTGRES)
+      # ==========================================
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/backup_manager
+
+      # ==========================================
+      # CONFIGURAÇÃO DO BACKBLAZE (STORAGE COMPATÍVEL COM S3)
+      # ==========================================
+      - S3_ENDPOINT_URL={S3_Endpoint_URL}
+      - S3_ACCESS_KEY_ID={S3_Access_Key_ID}
+      - S3_SECRET_ACCESS_KEY={S3_Secret_Access_Key}
+      - S3_BUCKET_NAME={S3_Bucket_Name}
+
+      # ==========================================
+      # CONFIGURAÇÕES DE PORTA DA API
+      # ==========================================
+      - PORT=8000
+
+      # ==========================================
+      # CONFIGURAÇÃO DO BROKER RABBITMQ
+      # ==========================================
+      - RABBITMQ_HOST={RabbitMQ_Host}
+      - RABBITMQ_MANAGEMENT_PORT={RabbitMQ_Management_Port}
+      - RABBITMQ_USER={RabbitMQ_User}
+      - RABBITMQ_PASSWORD={RabbitMQ_Password}
+
+      # ==========================================
+      # CREDENCIAIS DO SUPER ADMIN (PAINEL DE CONTROLE)
+      # ==========================================
+      - LOGIN_EMAIL={Login_Email}
+      - LOGIN_PASSWORD={Login_Password}
+
+      - CORS_ALLOWED_ORIGINS=
+
+      # [OPCIONAL] Limites de taxa para requisições de leitura (GET) nas APIs
+      - RATE_LIMIT_GET=60/minute
+
+      # [OPCIONAL] Limites de taxa para requisições de escrita/modificação (POST, PUT, DELETE) nas APIs
+      - RATE_LIMIT_POST=10/minute
+
+      # ==========================================
+      # SEGURANÇA E JWT (TOKENS DE SESSÃO DO PAINEL)
+      # ==========================================
+      - JWT_SECRET={JWT_Secret}
+      - JWT_EXPIRATION_HOURS=24
+
+      # Minio
+      - MINIO_ENDPOINT_URL=
+      - MINIO_ACCESS_KEY_ID=
+      - MINIO_SECRET_ACCESS_KEY=
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+        - node.role == manager
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.backup-app.rule=Host(`{BaseUrl_Backup}`)
+        - traefik.http.routers.backup-app.entrypoints=websecure
+        - traefik.http.routers.backup-app.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.backup-app.priority=1
+        - traefik.http.routers.backup-app.service=backup-app
+        - traefik.http.services.backup-app.loadbalancer.server.port=8000
+        - traefik.http.services.backup-app.loadbalancer.passHostHeader=true
+
+networks:
+  network_swarm_public:
+    name: network_swarm_public
+    external: true

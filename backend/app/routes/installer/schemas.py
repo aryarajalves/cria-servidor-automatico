@@ -31,23 +31,6 @@ class RabbitMQInstallRequest(ServerCredentials):
     rabbit_base_url: str
     overwrite: bool = False
 
-class ChatwootInstallRequest(ServerCredentials):
-    postgres_password: Optional[str] = None
-    s3_bucket_name: Optional[str] = None
-    s3_access_key_id: Optional[str] = None
-    s3_secret_access_key: Optional[str] = None
-    s3_region: Optional[str] = None
-    s3_endpoint: Optional[str] = None
-    chatwoot_base_url: str
-    overwrite: bool = False
-
-class ChatwootAdminCreateRequest(ServerCredentials):
-    stack_name: str
-    admin_email: str
-    admin_password: str
-    full_name: str
-    company_name: str
-
 class EnvUpdate(BaseModel):
     host: str
     username: str
@@ -76,14 +59,21 @@ class ZapVoiceRequest(BaseModel):
     password: str
     chatwoot_base_url: str 
     postgres_password: str
-    super_admin_email: str
+    super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
     secret_key: Optional[str] = None
 
 class GerenciadorWhatsAppInstallRequest(ServerCredentials):
     postgres_password: Optional[str] = None
-    super_admin_email: str
+    super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
     backend_domain: str
     frontend_domain: str
+    overwrite: bool = False
+
+class MinioInstallRequest(ServerCredentials):
+    minio_root_user: Optional[str] = None
+    minio_root_password: Optional[str] = None
+    minio_console_url: str
+    minio_server_url: str
     overwrite: bool = False
 
 class UninstallStackRequest(ServerCredentials):
@@ -101,3 +91,32 @@ class ExternalStackRequest(ServerCredentials):
     email: Optional[str] = None
     password: Optional[str] = None
     version: Optional[str] = None
+class BackupChatwooRabbitInstallRequest(ServerCredentials):
+    postgres_password: Optional[str] = None
+    base_url: str
+    s3_endpoint_url: Optional[str] = None
+    s3_access_key_id: Optional[str] = None
+    s3_secret_access_key: Optional[str] = None
+    s3_bucket_name: Optional[str] = None
+    rabbitmq_host: Optional[str] = None
+    rabbitmq_management_port: Optional[int] = 15672
+    rabbitmq_user: Optional[str] = None
+    rabbitmq_password: Optional[str] = None
+    login_email: Optional[str] = "teste@gmail"
+    login_password: Optional[str] = None
+    jwt_secret: Optional[str] = None
+    overwrite: bool = False
+
+class OraculoInstallRequest(ServerCredentials):
+    oraculo_domain: str
+    openai_api_key: Optional[str] = ""
+    gemini_api_key: Optional[str] = ""
+    anthropic_api_key: Optional[str] = ""
+    fal_key: Optional[str] = ""
+    elevenlabs_api_key: Optional[str] = ""
+    dashboard_user: Optional[str] = ""
+    dashboard_pass: Optional[str] = ""
+    dashboard_user_name: Optional[str] = "Admin"
+    overwrite: bool = False
+
+

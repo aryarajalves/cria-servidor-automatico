@@ -164,3 +164,46 @@ def delete_postgres_database(client, db_name):
             logger.error(f"FALHA AO REMOVER BANCO '{db_name}'. Ele ainda aparece na lista.")
     except Exception as e:
         logger.error(f"Erro ao processar remoção do banco {db_name}: {e}")
+
+def install_minio(host, username, password, minio_root_user=None, minio_root_password=None, minio_console_url="", minio_server_url=""):
+    """
+    Faz o deploy da stack do MinIO em um servidor remoto via SSH.
+    """
+    stack_path = get_stack_path("minio.yml")
+    if not os.path.exists(stack_path):
+        raise FileNotFoundError(f"Arquivo de stack não encontrado: {stack_path}")
+
+    if not minio_root_user:
+        minio_root_user = "unwind"
+    if not minio_root_password:
+        minio_root_password = secrets.token_hex(16)
+
+    with open(stack_path, "r", encoding="utf-8") as f:
+        stack_content = f.read()
+
+    minio_console_url_clean = minio_console_url.replace("https://", "").replace("http://", "").strip("/")
+    minio_server_url_clean = minio_server_url.replace("https://", "").replace("http://", "").strip("/")
+
+    stack_content = stack_content.replace("{Minio_User}", minio_root_user)
+    stack_content = stack_content.replace("{Minio_Password}", minio_root_password)
+    stack_content = stack_content.replace("{BaseUrl_Minio_Console}", minio_console_url_clean)
+    stack_content = stack_content.replace("{BaseUrl_Minio_Api}", minio_server_url_clean)
+
+    client = get_ssh_client(host, username, password)
+    try:
+        logger.info(f"Criando volume minio_data em {host}...")
+        try:
+            run_ssh_command(client, "docker volume create minio_data")
+        except Exception as e:
+            logger.warning(f"Aviso ao criar volume minio_data (pode já existir): {e}")
+
+        result = deploy_stack_remote(client, "minio", stack_content)
+        save_stack_credentials(host, "minio", minio_root_user, minio_root_password)
+        return {
+            "status": "success",
+            "message": "MinIO instalado com sucesso",
+            "credentials": {"user": minio_root_user, "password": minio_root_password}
+        }
+    finally:
+        client.close()
+

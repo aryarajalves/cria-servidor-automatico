@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Server, Layers, Settings, Globe, LogOut, AlertTriangle, X, ChevronDown, Plus, Trash2, Network } from 'lucide-react';
+import { LayoutDashboard, Server, Layers, Settings, Globe, LogOut, AlertTriangle, X, ChevronDown, Plus, Trash2, Network, Terminal, ScrollText } from 'lucide-react';
 import { useServer } from '../context/ServerContext';
 
 const Layout = ({ children }) => {
@@ -12,12 +12,28 @@ const Layout = ({ children }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [serverToDelete, setServerToDelete] = useState(null);
 
-    const navItems = [
-        { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-        { path: '/stacks', icon: Layers, label: 'Stacks / Apps' },
-        { path: '/cluster', icon: Network, label: 'Cluster Swarm' },
-        { path: '/dns', icon: Globe, label: 'Cloudflare DNS' },
-        { path: '/settings', icon: Settings, label: 'Configurações' },
+    const navSections = [
+        {
+            title: "Visão Geral",
+            items: [
+                { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
+            ]
+        },
+        {
+            title: "Gerenciamento",
+            items: [
+                { path: '/stacks', icon: Layers, label: 'Stacks / Apps' },
+                { path: '/cluster', icon: Network, label: 'Cluster Swarm' },
+            ]
+        },
+        {
+            title: "Configurações",
+            items: [
+                { path: '/dns', icon: Globe, label: 'Cloudflare DNS' },
+                { path: '/logs', icon: ScrollText, label: 'Visualizador de Logs' },
+                { path: '/settings', icon: Settings, label: 'Configurações' },
+            ]
+        }
     ];
 
     const handleLogoutClick = () => {
@@ -230,27 +246,38 @@ const Layout = ({ children }) => {
                             <div className="w-24 h-2 bg-slate-800 rounded"></div>
                         </div>
                     ) : selectedServer ? (
-                        navItems.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = location.pathname === item.path;
+                        <div className="space-y-6">
+                            {navSections.map((section) => (
+                                <div key={section.title} className="space-y-2">
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 select-none">
+                                        {section.title}
+                                    </p>
+                                    <div className="space-y-1">
+                                        {section.items.map((item) => {
+                                            const Icon = item.icon;
+                                            const isActive = location.pathname === item.path;
 
-                            return (
-                                <Link
-                                    key={item.path}
-                                    to={item.path}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group ${isActive
-                                        ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-[0_0_15px_-3px_rgba(37,99,235,0.2)]'
-                                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-700/50'
-                                        }`}
-                                >
-                                    <div className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-blue-600/20' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
-                                        <Icon size={18} />
+                                            return (
+                                                <Link
+                                                    key={item.path}
+                                                    to={item.path}
+                                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group ${isActive
+                                                        ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-[0_0_15px_-3px_rgba(37,99,235,0.2)]'
+                                                        : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-700/50'
+                                                        }`}
+                                                >
+                                                    <div className={`p-2 rounded-lg transition-colors ${isActive ? 'bg-blue-600/20' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
+                                                        <Icon size={18} />
+                                                    </div>
+                                                    <span className="font-medium text-sm tracking-wide">{item.label}</span>
+                                                    {isActive && <div className="ml-auto w-1 h-4 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
+                                                </Link>
+                                            );
+                                        })}
                                     </div>
-                                    <span className="font-medium text-sm tracking-wide">{item.label}</span>
-                                    {isActive && <div className="ml-auto w-1 h-4 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
-                                </Link>
-                            );
-                        })
+                                </div>
+                            ))}
+                        </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-40 px-6 text-center space-y-4">
                             <div className="p-4 bg-slate-800/50 rounded-full text-slate-600">

@@ -44,17 +44,22 @@ async def save_system_settings(req: SettingsRequest):
             token = req.cloudflare_token.strip()
             save_setting("cloudflare_token", token, 'global')
             
-        if req.portainer_user:
+        if req.portainer_user is not None:
             save_setting("portainer_user", req.portainer_user, host)
             
-        if req.portainer_password:
+        if req.portainer_password is not None:
             save_setting("portainer_password", req.portainer_password, host)
 
         # Sincroniza com stack_credentials se for Portainer
-        if req.portainer_user or req.portainer_password:
-            p_user = req.portainer_user or get_setting("portainer_user", host)
-            p_pass = req.portainer_password or get_setting("portainer_password", host)
-            save_stack_credentials(host, "portainer", p_user, p_pass)
+        if req.portainer_user is not None or req.portainer_password is not None:
+            p_user = req.portainer_user if req.portainer_user is not None else get_setting("portainer_user", host)
+            p_pass = req.portainer_password if req.portainer_password is not None else get_setting("portainer_password", host)
+            
+            if not p_user and not p_pass:
+                from app.database import delete_stack_credentials
+                delete_stack_credentials(host, "portainer")
+            else:
+                save_stack_credentials(host, "portainer", p_user or "", p_pass or "")
 
         if req.default_domain_id is not None:
             save_setting("default_domain_id", req.default_domain_id, host)

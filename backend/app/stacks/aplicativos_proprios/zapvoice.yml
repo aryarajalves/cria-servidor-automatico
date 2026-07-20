@@ -5,7 +5,7 @@ services:
   # SERVIÇO PRINCIPAL (Backend + Frontend)
   # ==========================================
   zapvoice_app:
-    image: aryarajalves/zap-voice-funil-api-oficial-zap:backend-3.8.5
+    image: aryalvesfernandes/zapvoice:backend-1.1.7
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public
@@ -32,13 +32,15 @@ services:
       - RABBITMQ_VHOST=N8N
       - RABBITMQ_PREFETCH_COUNT=100
       - RABBITMQ_MESSAGE_DELAY=10
+
       # === Storage (S3 / Backblaze - Armazenamento de Arquivos) ===
-      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
-      - S3_ACCESS_KEY=0047daba280ace40000000019
-      - S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
-      - S3_BUCKET_NAME=zap-voice
-      - S3_REGION=us-west-004
-      - S3_PUBLIC_URL=https://zap-voice.s3.us-west-004.backblazeb2.com
+      - BACKBLAZE_S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - BACKBLAZE_S3_ACCESS_KEY=0047daba280ace40000000019
+      - BACKBLAZE_S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - BACKBLAZE_S3_BUCKET_NAME=zap-voice
+      - BACKBLAZE_S3_REGION=us-west-004
+      - BACKBLAZE_S3_PUBLIC_URL=https://s3.us-west-004.backblazeb2.com
+
       # === Autenticação e Registro ===
       - USER_TABLE_NAME=users
       - REGISTER_API_KEY=4d59bd72-26d9-428f-8f88-d2a8bd96bb70
@@ -55,6 +57,26 @@ services:
       - SIMULATE_MESSAGING=false
       - SIMULATE_CHATWOOT_RATELIMIT=false
       - VITE_SIMULATE_MESSAGING=false
+
+      # === Storage (S3 / MinIO - Armazenamento de Arquivos) ===
+      - S3_ENDPOINT_URL={Minio_Endpoint}
+      - S3_ACCESS_KEY={Minio_User}
+      - S3_SECRET_KEY={Minio_Password}
+      - S3_BUCKET_NAME=zap-voice
+      - S3_REGION=us-east-1
+      - S3_PUBLIC_URL={Minio_Public_Url}
+
+      - COMPANY_NAME=ZapJords
+
+      # É o token de acesso para a api do instagram.
+      - INSTAGRAM_VERIFY_TOKEN=senha_instagram_2026
+
+      # === Cadastro Incorporado da Meta (Embedded Signup) ===
+      - META_APP_ID=
+      - META_CONFIG_ID=
+
+      # === Instagram Automation ===
+      - ENABLE_INSTAGRAM=false
     deploy:
       mode: replicated
       replicas: 1
@@ -72,7 +94,7 @@ services:
   # SERVIÇO WORKER (Processamento em Segundo Plano)
   # ==========================================
   zapvoice_worker:
-    image: aryarajalves/zap-voice-funil-api-oficial-zap:worker-3.8.5
+    image: aryalvesfernandes/zapvoice:worker-1.1.7
     command: python worker.py
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
@@ -100,13 +122,15 @@ services:
       - RABBITMQ_VHOST=N8N
       - RABBITMQ_PREFETCH_COUNT=100
       - RABBITMQ_MESSAGE_DELAY=10
+
       # === Storage (S3 / Backblaze - Armazenamento de Arquivos) ===
-      - S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
-      - S3_ACCESS_KEY=0047daba280ace40000000019
-      - S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
-      - S3_BUCKET_NAME=zap-voice
-      - S3_REGION=us-west-004
-      - S3_PUBLIC_URL=https://zap-voice.s3.us-west-004.backblazeb2.com
+      - BACKBLAZE_S3_ENDPOINT_URL=https://s3.us-west-004.backblazeb2.com
+      - BACKBLAZE_S3_ACCESS_KEY=0047daba280ace40000000019
+      - BACKBLAZE_S3_SECRET_KEY=K004O4dV6WcJMazD2DwrUwAEE/OWiaY
+      - BACKBLAZE_S3_BUCKET_NAME=zap-voice
+      - BACKBLAZE_S3_REGION=us-west-004
+      - BACKBLAZE_S3_PUBLIC_URL=https://s3.us-west-004.backblazeb2.com
+
       # === Autenticação e Registro ===
       - USER_TABLE_NAME=users
       - REGISTER_API_KEY=4d59bd72-26d9-428f-8f88-d2a8bd96bb70
@@ -123,6 +147,26 @@ services:
       - SIMULATE_MESSAGING=false
       - SIMULATE_CHATWOOT_RATELIMIT=false
       - VITE_SIMULATE_MESSAGING=false
+
+      # === Storage (S3 / MinIO - Armazenamento de Arquivos) ===
+      - S3_ENDPOINT_URL={Minio_Endpoint}
+      - S3_ACCESS_KEY={Minio_User}
+      - S3_SECRET_KEY={Minio_Password}
+      - S3_BUCKET_NAME=zap-voice
+      - S3_REGION=us-east-1
+      - S3_PUBLIC_URL={Minio_Public_Url}
+
+      - COMPANY_NAME=ZapJords
+
+      # É o token de acesso para a api do instagram.
+      - INSTAGRAM_VERIFY_TOKEN=senha_instagram_2026
+
+      # === Cadastro Incorporado da Meta (Embedded Signup) ===
+      - META_APP_ID=
+      - META_CONFIG_ID=
+
+      # === Instagram Automation ===
+      - ENABLE_INSTAGRAM=false
     deploy:
       mode: replicated
       replicas: 1
