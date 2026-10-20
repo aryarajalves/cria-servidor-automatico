@@ -3,22 +3,25 @@ import os
 
 DB_HOST = os.getenv("DB_HOST", "db")
 DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "autoserver")
-if "PYTEST_CURRENT_TEST" in os.environ or os.getenv("TESTING") == "true":
-    DB_NAME = os.getenv("DB_TEST_NAME", "autoserver_test")
 DB_USER = os.getenv("DB_USER", "autoserver_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "autoserver_password")
 
 import time
 
+def get_db_name():
+    if "PYTEST_CURRENT_TEST" in os.environ or os.getenv("TESTING") == "true":
+        return os.getenv("DB_TEST_NAME", "autoserver_test")
+    return os.getenv("DB_NAME", "autoserver")
+
 def get_connection():
+    db_name = get_db_name()
     retries = 10
     while retries > 0:
         try:
             return psycopg2.connect(
                 host=DB_HOST,
                 port=DB_PORT,
-                database=DB_NAME,
+                database=db_name,
                 user=DB_USER,
                 password=DB_PASSWORD,
                 connect_timeout=5
@@ -42,6 +45,19 @@ def init_db():
             PRIMARY KEY (server_host, key)
         )
     ''')
+
+    # Tabela de chaves SSH
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ssh_keys (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            private_key TEXT NOT NULL,
+            passphrase VARCHAR(255),
+            public_key TEXT,
+            key_type VARCHAR(50) DEFAULT 'RSA',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
     
     # Tabela de servidores
     cursor.execute('''
@@ -49,9 +65,26 @@ def init_db():
             id SERIAL PRIMARY KEY,
             name VARCHAR(255),
             host VARCHAR(255),
+            port INTEGER DEFAULT 22,
             username VARCHAR(255),
-            password VARCHAR(255)
+            password VARCHAR(255),
+            auth_type VARCHAR(50) DEFAULT 'password',
+            key_id INTEGER REFERENCES ssh_keys(id) ON DELETE SET NULL
         )
+    ''')
+
+    # Garante que colunas novas existam caso a tabela já tenha sido criada anteriormente
+    cursor.execute('''
+        ALTER TABLE servers 
+        ADD COLUMN IF NOT EXISTS port INTEGER DEFAULT 22;
+    ''')
+    cursor.execute('''
+        ALTER TABLE servers 
+        ADD COLUMN IF NOT EXISTS auth_type VARCHAR(50) DEFAULT 'password';
+    ''')
+    cursor.execute('''
+        ALTER TABLE servers 
+        ADD COLUMN IF NOT EXISTS key_id INTEGER REFERENCES ssh_keys(id) ON DELETE SET NULL;
     ''')
     
     # Tabela de nós do cluster
@@ -122,13 +155,121 @@ def get_all_settings(server_host='global'):
     conn.close()
     return settings
 
-# Server Management Functions
-def add_server(name, host, username, password):
+# SSH Key Management Functions
+def add_ssh_key(name, private_key, public_key=None, key_type='RSA', passphrase=None):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
-        'INSERT INTO servers (name, host, username, password) VALUES (%s, %s, %s, %s) RETURNING id',
-        (name, host, username, password)
+        '''
+        INSERT INTO ssh_keys (name, private_key, public_key, key_type, passphrase)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING id
+        ''',
+        (name, private_key, public_key, key_type, passphrase)
+    )
+    key_id = cursor.fetchone()[0]
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return key_id
+
+def get_ssh_keys():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT k.id, k.name, k.public_key, k.key_type, k.passphrase, k.created_at,
+               COUNT(s.id) as servers_count
+        FROM ssh_keys k
+        LEFT JOIN servers s ON s.key_id = k.id
+        GROUP BY k.id, k.name, k.public_key, k.key_type, k.passphrase, k.created_at
+        ORDER BY k.id DESC
+    ''')
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return [
+        {
+            "id": r[0],
+            "name": r[1],
+            "public_key": r[2],
+            "key_type": r[3],
+            "has_passphrase": bool(r[4]),
+            "created_at": str(r[5]) if r[5] else None,
+            "servers_count": r[6]
+        }
+        for r in rows
+    ]
+
+def get_ssh_key_by_id(key_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT id, name, private_key, public_key, key_type, passphrase, created_at
+        FROM ssh_keys WHERE id = %s
+    ''', (key_id,))
+    r = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if r:
+        return {
+            "id": r[0],
+            "name": r[1],
+            "private_key": r[2],
+            "public_key": r[3],
+            "key_type": r[4],
+            "passphrase": r[5],
+            "created_at": str(r[6]) if r[6] else None
+        }
+    return None
+
+def update_ssh_key(key_id, name=None, private_key=None, public_key=None, key_type=None, passphrase=None):
+    conn = get_connection()
+    cursor = conn.cursor()
+    updates = []
+    params = []
+    if name is not None:
+        updates.append("name = %s")
+        params.append(name)
+    if private_key is not None:
+        updates.append("private_key = %s")
+        params.append(private_key)
+    if public_key is not None:
+        updates.append("public_key = %s")
+        params.append(public_key)
+    if key_type is not None:
+        updates.append("key_type = %s")
+        params.append(key_type)
+    if passphrase is not None:
+        updates.append("passphrase = %s")
+        params.append(passphrase)
+    if not updates:
+        cursor.close()
+        conn.close()
+        return
+    params.append(key_id)
+    cursor.execute(f"UPDATE ssh_keys SET {', '.join(updates)} WHERE id = %s", tuple(params))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def delete_ssh_key(key_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM ssh_keys WHERE id = %s', (key_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+# Server Management Functions
+def add_server(name, host, username, password=None, auth_type='password', key_id=None, port=22):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        '''
+        INSERT INTO servers (name, host, port, username, password, auth_type, key_id) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id
+        ''',
+        (name, host, port or 22, username, password, auth_type, key_id)
     )
     server_id = cursor.fetchone()[0]
     conn.commit()
@@ -139,12 +280,27 @@ def add_server(name, host, username, password):
 def get_servers():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT id, name, host, username, password FROM servers')
+    cursor.execute('''
+        SELECT s.id, s.name, s.host, s.port, s.username, s.password, s.auth_type, s.key_id, k.name as key_name
+        FROM servers s
+        LEFT JOIN ssh_keys k ON s.key_id = k.id
+        ORDER BY s.id ASC
+    ''')
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
     return [
-        {"id": r[0], "name": r[1], "host": r[2], "username": r[3], "password": r[4]}
+        {
+            "id": r[0],
+            "name": r[1],
+            "host": r[2],
+            "port": r[3] or 22,
+            "username": r[4],
+            "password": r[5],
+            "auth_type": r[6] or "password",
+            "key_id": r[7],
+            "key_name": r[8]
+        }
         for r in rows
     ]
 
@@ -156,7 +312,7 @@ def delete_server(server_id):
     cursor.close()
     conn.close()
 
-def update_server(server_id, name=None, host=None, username=None, password=None):
+def update_server(server_id, name=None, host=None, port=None, username=None, password=None, auth_type=None, key_id=None):
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -169,12 +325,21 @@ def update_server(server_id, name=None, host=None, username=None, password=None)
     if host is not None:
         updates.append("host = %s")
         params.append(host)
+    if port is not None:
+        updates.append("port = %s")
+        params.append(port)
     if username is not None:
         updates.append("username = %s")
         params.append(username)
     if password is not None:
         updates.append("password = %s")
         params.append(password)
+    if auth_type is not None:
+        updates.append("auth_type = %s")
+        params.append(auth_type)
+    if key_id is not None:
+        updates.append("key_id = %s")
+        params.append(key_id)
         
     if not updates:
         cursor.close()
@@ -191,12 +356,55 @@ def update_server(server_id, name=None, host=None, username=None, password=None)
 def get_server_by_id(server_id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT id, name, host, username, password FROM servers WHERE id = %s', (server_id,))
+    cursor.execute('''
+        SELECT s.id, s.name, s.host, s.port, s.username, s.password, s.auth_type, s.key_id, k.name as key_name
+        FROM servers s
+        LEFT JOIN ssh_keys k ON s.key_id = k.id
+        WHERE s.id = %s
+    ''', (server_id,))
     r = cursor.fetchone()
     cursor.close()
     conn.close()
     if r:
-        return {"id": r[0], "name": r[1], "host": r[2], "username": r[3], "password": r[4]}
+        return {
+            "id": r[0],
+            "name": r[1],
+            "host": r[2],
+            "port": r[3] or 22,
+            "username": r[4],
+            "password": r[5],
+            "auth_type": r[6] or "password",
+            "key_id": r[7],
+            "key_name": r[8]
+        }
+    return None
+
+def get_server_by_host(host):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT s.id, s.name, s.host, s.port, s.username, s.password, s.auth_type, s.key_id, k.name as key_name
+        FROM servers s
+        LEFT JOIN ssh_keys k ON s.key_id = k.id
+        WHERE s.host = %s
+        ORDER BY s.id DESC
+        LIMIT 1
+    ''', (host,))
+    r = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if r:
+        return {
+            "id": r[0],
+            "name": r[1],
+            "host": r[2],
+            "port": r[3] or 22,
+            "username": r[4],
+            "password": r[5],
+            "auth_type": r[6] or "password",
+            "key_id": r[7],
+            "key_name": r[8]
+        }
     return None
 
 # Stack Credentials Functions

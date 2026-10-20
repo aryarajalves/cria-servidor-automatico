@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Loader2, CheckCircle2, ShieldAlert, Trash2 } from 'lucide-react';
 
 export const AddNodeProgressModal = ({
@@ -10,10 +11,10 @@ export const AddNodeProgressModal = ({
 }) => {
     if (!showProgressModal) return null;
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
-            <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 w-screen h-screen">
+            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md" />
+            <div className="relative z-10 w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
                 <div className="flex justify-center mb-6">
                     {progressStatus === 'pending' || progressStatus === 'running' ? (
                         <div className="p-4 rounded-full bg-blue-500/10 text-blue-400 relative">
@@ -57,6 +58,11 @@ export const AddNodeProgressModal = ({
             </div>
         </div>
     );
+
+    if (typeof document !== 'undefined') {
+        return ReactDOM.createPortal(modalContent, document.body);
+    }
+    return modalContent;
 };
 
 export const HostnameProgressModal = ({
@@ -68,10 +74,10 @@ export const HostnameProgressModal = ({
 }) => {
     if (!showHostnameProgressModal) return null;
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
-            <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 w-screen h-screen">
+            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md" />
+            <div className="relative z-10 w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
                 <div className="flex justify-center mb-6">
                     {hostnameProgressStatus === 'pending' || hostnameProgressStatus === 'running' ? (
                         <div className="p-4 rounded-full bg-blue-500/10 text-blue-400 relative">
@@ -115,6 +121,11 @@ export const HostnameProgressModal = ({
             </div>
         </div>
     );
+
+    if (typeof document !== 'undefined') {
+        return ReactDOM.createPortal(modalContent, document.body);
+    }
+    return modalContent;
 };
 
 export const DeleteNodeModal = ({
@@ -128,11 +139,11 @@ export const DeleteNodeModal = ({
 }) => {
     if (!showDeleteModal) return null;
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 w-screen h-screen">
             {/* Backdrop que impede fechar ao clicar fora, como exige a regra de UX */}
-            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" />
-            <div className="relative w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
+            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md" />
+            <div className="relative z-10 w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 text-center animate-in zoom-in-95 duration-200">
                 <div className="flex justify-center mb-6">
                     {deleteProgressStatus === 'idle' ? (
                         <div className="p-4 rounded-full bg-red-500/10 text-red-400 animate-pulse">
@@ -210,4 +221,9 @@ export const DeleteNodeModal = ({
             </div>
         </div>
     );
+
+    if (typeof document !== 'undefined') {
+        return ReactDOM.createPortal(modalContent, document.body);
+    }
+    return modalContent;
 };

@@ -64,6 +64,16 @@ vi.mock('../../settings/useSettings', () => ({
         handleUpdatePasswordLocally: vi.fn(),
         showSshPassword: false,
         setShowSshPassword: vi.fn(),
+        passwordAuthEnabled: true,
+        loadingPasswordAuth: false,
+        handleTogglePasswordAuth: vi.fn(),
+        fetchPasswordAuthStatus: vi.fn(),
+        fail2banStatus: { installed: true, active: true, maxretry: 5, findtime: 600, bantime: 3600, banned_ips: [] },
+        loadingFail2ban: false,
+        handleSaveFail2ban: vi.fn(),
+        handleUnbanIp: vi.fn(),
+        handleToggleFail2ban: vi.fn(),
+        fetchFail2banStatus: vi.fn(),
         stackCredentials: {},
         loadingCreds: false,
         handleUpdateStackCreds: vi.fn(),
@@ -71,10 +81,11 @@ vi.mock('../../settings/useSettings', () => ({
     })),
 }));
 
-
 import Settings from '../../Settings';
 import ServerCredentialsCard from '../ServerCredentialsCard';
 import SshPasswordCard from '../SshPasswordCard';
+import SshSecurityCard from '../SshSecurityCard';
+import Fail2banCard from '../Fail2banCard';
 import CloudflareCard from '../CloudflareCard';
 
 // ─── Testes: Settings (página orquestradora) ──────────────────────────────────
@@ -84,6 +95,16 @@ const defaultSettingsReturn = {
     toast: { show: false, message: '', type: 'success' },
     showToast: vi.fn(),
     hideToast: vi.fn(),
+    passwordAuthEnabled: true,
+    loadingPasswordAuth: false,
+    handleTogglePasswordAuth: vi.fn(),
+    fetchPasswordAuthStatus: vi.fn(),
+    fail2banStatus: { installed: true, active: true, maxretry: 5, findtime: 600, bantime: 3600, banned_ips: [] },
+    loadingFail2ban: false,
+    handleSaveFail2ban: vi.fn(),
+    handleUnbanIp: vi.fn(),
+    handleToggleFail2ban: vi.fn(),
+    fetchFail2banStatus: vi.fn(),
     cfToken: '',
     setCfToken: vi.fn(),
     isCfTokenFromEnv: false,
@@ -118,11 +139,27 @@ describe('Settings (página orquestradora)', () => {
         expect(screen.getByText(/Carregando configurações/i)).toBeInTheDocument();
     });
 
-    it('exibe o conteúdo quando loadingSettings=false', async () => {
+    it('exibe o conteúdo e permite navegar entre as abas', async () => {
         const { useSettings } = await import('../../settings/useSettings');
         vi.mocked(useSettings).mockReturnValueOnce({ ...defaultSettingsReturn, loadingSettings: false });
         render(<Settings />);
         expect(screen.getByText(/Configurações do Sistema/i)).toBeInTheDocument();
+        expect(screen.getByText('Servidor & Acesso')).toBeInTheDocument();
+        expect(screen.getByText('Cloudflare API')).toBeInTheDocument();
+        expect(screen.getByText('API do Portainer')).toBeInTheDocument();
+
+        // Inicialmente na aba Servidor & Acesso
+        expect(screen.getByText('Credenciais do Servidor')).toBeInTheDocument();
+
+        // Clica na aba Cloudflare API
+        const cloudflareTab = screen.getByText('Cloudflare API').closest('button');
+        fireEvent.click(cloudflareTab);
+        expect(screen.getByText(/Token para automação de DNS/i)).toBeInTheDocument();
+
+        // Clica na aba API do Portainer
+        const portainerTab = screen.getByText('API do Portainer').closest('button');
+        fireEvent.click(portainerTab);
+        expect(screen.getByText('Usuário do Portainer')).toBeInTheDocument();
     });
 });
 
@@ -132,16 +169,17 @@ describe('ServerCredentialsCard', () => {
     const selectedServer = { host: '192.168.1.1', password: 'minha_senha_ssh' };
     const showToast = vi.fn();
 
-    it('exibe o IP do servidor', () => {
+    it('exibe o IP e a porta do servidor', () => {
         render(
             <ServerCredentialsCard
-                selectedServer={selectedServer}
+                selectedServer={{ host: '192.168.1.1', port: 2222, password: 'minha_senha_ssh' }}
                 showSshPassword={false}
                 setShowSshPassword={vi.fn()}
                 showToast={showToast}
             />
         );
         expect(screen.getByText('192.168.1.1')).toBeInTheDocument();
+        expect(screen.getByText('2222')).toBeInTheDocument();
     });
 
     it('oculta a senha por padrão com pontos', () => {
@@ -222,23 +260,23 @@ describe('CloudflareCard', () => {
     const baseProps = {
         cfToken: '',
         setCfToken: vi.fn(),
-        isCfTokenFromEnv: false,
         cfZones: [],
         defaultDomain: { id: '', name: '' },
         setDefaultDomain: vi.fn(),
         isLoadingZones: false,
         loadingCloudflare: false,
         handleSaveCloudflare: vi.fn(),
+        fetchZones: vi.fn(),
     };
 
-    it('exibe o campo de token quando não vem do .env', () => {
+    it('exibe o campo editável de token Cloudflare', () => {
         render(<CloudflareCard {...baseProps} />);
-        expect(screen.getByPlaceholderText(/H-29/i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/Cole o API Token da Cloudflare/i)).toBeInTheDocument();
     });
 
-    it('exibe badge de segurança quando token vem do .env', () => {
-        render(<CloudflareCard {...baseProps} isCfTokenFromEnv={true} />);
-        expect(screen.getByText(/Token carregado via arquivo .env/i)).toBeInTheDocument();
+    it('exibe badge de Token Configurado quando cfToken está preenchido', () => {
+        render(<CloudflareCard {...baseProps} cfToken="token-teste-123" />);
+        expect(screen.getByText(/Token Configurado/i)).toBeInTheDocument();
     });
 
     it('exibe alerta para inserir token quando cfToken está vazio', () => {
@@ -246,9 +284,9 @@ describe('CloudflareCard', () => {
         expect(screen.getByText(/Insira o Token acima/i)).toBeInTheDocument();
     });
 
-    it('exibe alerta de nenhum domínio quando token está presente mas cfZones está vazio', () => {
+    it('exibe aviso de recarregar domínios quando token presente e lista vazia', () => {
         render(<CloudflareCard {...baseProps} cfToken="meu-token" cfZones={[]} isLoadingZones={false} />);
-        expect(screen.getByText(/Nenhum domínio encontrado/i)).toBeInTheDocument();
+        expect(screen.getByText(/Nenhum domínio carregado ainda/i)).toBeInTheDocument();
     });
 
     it('exibe as zonas disponíveis no select', () => {
@@ -259,5 +297,132 @@ describe('CloudflareCard', () => {
         render(<CloudflareCard {...baseProps} cfToken="meu-token" cfZones={zones} />);
         expect(screen.getByText('exemplo.com')).toBeInTheDocument();
         expect(screen.getByText('outro.com')).toBeInTheDocument();
+    });
+});
+
+// ─── Testes: SshSecurityCard ───────────────────────────────────────────────────
+
+describe('SshSecurityCard', () => {
+    const baseSecurityProps = {
+        selectedServer: { host: '10.0.0.1', username: 'root' },
+        passwordAuthEnabled: true,
+        loadingPasswordAuth: false,
+        handleTogglePasswordAuth: vi.fn(),
+        fetchPasswordAuthStatus: vi.fn(),
+    };
+
+    it('renderiza com badge de Senha Habilitada quando passwordAuthEnabled é true', () => {
+        render(<SshSecurityCard {...baseSecurityProps} passwordAuthEnabled={true} />);
+        expect(screen.getByText(/Senha Habilitada/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Desativar Acesso por Senha/i })).toBeInTheDocument();
+    });
+
+    it('renderiza com badge de Apenas Chaves SSH quando passwordAuthEnabled é false', () => {
+        render(<SshSecurityCard {...baseSecurityProps} passwordAuthEnabled={false} />);
+        expect(screen.getByText(/Apenas Chaves SSH/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Reativar Acesso por Senha/i })).toBeInTheDocument();
+    });
+
+    it('abre modal de confirmação ao clicar no botão de desativar senha', () => {
+        render(<SshSecurityCard {...baseSecurityProps} passwordAuthEnabled={true} />);
+        fireEvent.click(screen.getByRole('button', { name: /Desativar Acesso por Senha/i }));
+        expect(screen.getByText(/Desativar Senha no Servidor\?/i)).toBeInTheDocument();
+    });
+
+    it('executa handleTogglePasswordAuth ao confirmar no modal', async () => {
+        const handleToggle = vi.fn().mockResolvedValue();
+        render(<SshSecurityCard {...baseSecurityProps} passwordAuthEnabled={true} handleTogglePasswordAuth={handleToggle} />);
+        
+        // Abre o modal
+        fireEvent.click(screen.getByRole('button', { name: /Desativar Acesso por Senha/i }));
+        
+        // Clica no botão de confirmação do modal
+        fireEvent.click(screen.getByRole('button', { name: /Sim, Desativar Senha/i }));
+        
+        await waitFor(() => {
+            expect(handleToggle).toHaveBeenCalledWith(false);
+        });
+    });
+
+    it('exibe modal bloqueante de progresso quando loadingPasswordAuth é true', () => {
+        render(<SshSecurityCard {...baseSecurityProps} loadingPasswordAuth={true} passwordAuthEnabled={true} />);
+        expect(screen.getByText('Desativando Senha na VPS')).toBeInTheDocument();
+        expect(screen.getByText(/Verificando chaves SSH autorizadas/i)).toBeInTheDocument();
+        expect(screen.getByText(/Não feche nem recarregue a página/i)).toBeInTheDocument();
+    });
+});
+
+// ─── Testes: Fail2banCard ───────────────────────────────────────────────────────
+
+describe('Fail2banCard', () => {
+    const baseFail2banProps = {
+        selectedServer: { host: '10.0.0.1', username: 'root' },
+        fail2banStatus: {
+            installed: true,
+            active: true,
+            maxretry: 5,
+            findtime: 600,
+            bantime: 3600,
+            jails: ['sshd'],
+            banned_ips: [{ ip: '192.168.1.50', jail: 'sshd' }],
+        },
+        loadingFail2ban: false,
+        handleSaveFail2ban: vi.fn(),
+        handleUnbanIp: vi.fn(),
+        handleToggleFail2ban: vi.fn(),
+        fetchFail2banStatus: vi.fn(),
+    };
+
+    it('renderiza com badge de Proteção Ativa quando ativo', () => {
+        render(<Fail2banCard {...baseFail2banProps} />);
+        expect(screen.getAllByText(/Proteção Ativa/i).length).toBeGreaterThanOrEqual(1);
+        expect(screen.getByRole('button', { name: /Salvar e Aplicar Regras/i })).toBeInTheDocument();
+        expect(screen.getByText('192.168.1.50')).toBeInTheDocument();
+    });
+
+    it('renderiza com badge de Não Configurado quando não instalado', () => {
+        const uninstalledProps = {
+            ...baseFail2banProps,
+            fail2banStatus: { installed: false, active: false, maxretry: 5, findtime: 600, bantime: 3600, banned_ips: [] },
+        };
+        render(<Fail2banCard {...uninstalledProps} />);
+        expect(screen.getByText(/Não Configurado/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Instalar e Ativar Fail2ban/i })).toBeInTheDocument();
+    });
+
+    it('executa handleSaveFail2ban com os valores do formulário', async () => {
+        const handleSave = vi.fn().mockResolvedValue();
+        render(<Fail2banCard {...baseFail2banProps} handleSaveFail2ban={handleSave} />);
+        
+        fireEvent.click(screen.getByRole('button', { name: /Salvar e Aplicar Regras/i }));
+        
+        await waitFor(() => {
+            expect(handleSave).toHaveBeenCalledWith({
+                maxretry: 5,
+                findtime: 600,
+                bantime: 3600,
+            });
+        });
+    });
+
+    it('abre modal e executa handleUnbanIp ao desbanir IP', async () => {
+        const handleUnban = vi.fn().mockResolvedValue();
+        render(<Fail2banCard {...baseFail2banProps} handleUnbanIp={handleUnban} />);
+        
+        // Clica no botão Desbanir IP
+        fireEvent.click(screen.getByRole('button', { name: /Desbanir IP/i }));
+        expect(screen.getByText(/Desbanir Endereço IP\?/i)).toBeInTheDocument();
+        
+        // Confirma
+        fireEvent.click(screen.getByRole('button', { name: /Sim, Desbanir IP/i }));
+        await waitFor(() => {
+            expect(handleUnban).toHaveBeenCalledWith('192.168.1.50', 'sshd');
+        });
+    });
+
+    it('exibe modal bloqueante de progresso quando loadingFail2ban é true', () => {
+        render(<Fail2banCard {...baseFail2banProps} loadingFail2ban={true} />);
+        expect(screen.getByText('Aplicando Regras do Fail2ban')).toBeInTheDocument();
+        expect(screen.getByText(/Verificando pacotes do Fail2ban e Firewall Linux/i)).toBeInTheDocument();
     });
 });

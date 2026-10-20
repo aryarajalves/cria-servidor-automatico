@@ -1,4 +1,4 @@
-import { Box, Database, MessageSquare, Globe, HardDrive, MessageCircle, Zap } from 'lucide-react';
+import { Box, Database, MessageSquare, Globe, HardDrive, MessageCircle, Zap, FileText, Video, GraduationCap } from 'lucide-react';
 
 export const apps = [
     {
@@ -11,9 +11,7 @@ export const apps = [
         version: "v2.10",
         colorBg: "bg-blue-600/10",
         colorText: "text-blue-500",
-        fields: [
-            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com", type: "email" }
-        ]
+        fields: []
     },
     {
         id: "portainer",
@@ -162,6 +160,55 @@ export const apps = [
             { name: "anthropic_api_key", label: "Anthropic API Key (Opcional)", placeholder: "sk-ant-...", type: "password", required: false },
             { name: "fal_key", label: "Fal.ai Key (Opcional)", placeholder: "fal-...", type: "password", required: false },
             { name: "elevenlabs_api_key", label: "ElevenLabs API Key (Opcional)", placeholder: "", type: "password", required: false },
+        ]
+    },
+    {
+        id: "formulario_personalizado",
+        stackName: "formulario-personalizado",
+        category: "custom",
+        name: "Formulário Personalizado",
+        description: "Sistema completo de criação e gestão de formulários personalizados com backend FastAPI e frontend React.",
+        icon: FileText,
+        version: "1.0.1",
+        colorBg: "bg-indigo-600/10",
+        colorText: "text-indigo-500",
+        fields: [
+            { name: "frontend_domain", label: "Domínio da Interface (Frontend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "backend_domain", label: "Domínio da API (Backend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false },
+        ]
+    },
+    {
+        id: "smartvsl",
+        stackName: "clone-vturb",
+        category: "custom",
+        name: "SmartVSL",
+        description: "Hospedagem, entrega e player otimizado de vídeos de alta conversão (VSL).",
+        icon: Video,
+        version: "1.1.4",
+        colorBg: "bg-pink-600/10",
+        colorText: "text-pink-500",
+        fields: [
+            { name: "frontend_domain", label: "Domínio do Player / Interface (Frontend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "backend_domain", label: "Domínio da API (Backend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false },
+        ]
+    },
+    {
+        id: "smartacademy",
+        stackName: "gestao-aulas",
+        category: "custom",
+        name: "Smart Academy",
+        description: "Área de membros completa com IA (Whisper + GPT-4o), gestão de turmas, alunos e streaming de aulas.",
+        icon: GraduationCap,
+        version: "1.1.1",
+        colorBg: "bg-emerald-600/10",
+        colorText: "text-emerald-500",
+        fields: [
+            { name: "frontend_domain", label: "Domínio do Aluno / Interface (Frontend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "backend_domain", label: "Domínio da API (Backend)", placeholder: "Selecione o domínio...", type: "dns_record" },
+            { name: "openai_api_key", label: "OpenAI API Key (Opcional - Whisper/GPT-4o)", placeholder: "sk-proj-... (ou deixe vazio)", type: "password", required: false },
+            { name: "postgres_password", label: "Senha Postgres (opcional)", placeholder: "Auto-preenchimento ou vazio...", type: "password", required: false },
         ]
     },
 ];

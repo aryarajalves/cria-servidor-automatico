@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Server, Layers, Settings, Globe, LogOut, AlertTriangle, X, ChevronDown, Plus, Trash2, Network, Terminal, ScrollText } from 'lucide-react';
+import { LayoutDashboard, Server, Layers, Settings, Globe, LogOut, AlertTriangle, X, ChevronDown, Plus, Trash2, Network, Terminal, ScrollText, Key } from 'lucide-react';
 import { useServer } from '../context/ServerContext';
 
 const Layout = ({ children }) => {
@@ -29,6 +29,7 @@ const Layout = ({ children }) => {
         {
             title: "Configurações",
             items: [
+                { path: '/keys', icon: Key, label: 'Chaves SSH' },
                 { path: '/dns', icon: Globe, label: 'Cloudflare DNS' },
                 { path: '/logs', icon: ScrollText, label: 'Visualizador de Logs' },
                 { path: '/settings', icon: Settings, label: 'Configurações' },
@@ -192,9 +193,15 @@ const Layout = ({ children }) => {
                         {showServerDropdown && (
                             <>
                                 <div className="fixed inset-0 z-10" onClick={() => setShowServerDropdown(false)} />
-                                <div className="absolute top-full left-0 w-full mt-2 bg-slate-800 border border-white/10 rounded-xl shadow-2xl py-2 z-20 animate-in slide-in-from-top-2 duration-200">
+                                <div 
+                                    className="absolute top-full left-0 w-full mt-2 bg-slate-800 border border-white/10 rounded-xl shadow-2xl py-2 z-20 animate-in slide-in-from-top-2 duration-200"
+                                    onWheel={(e) => e.stopPropagation()}
+                                >
                                     {servers.length > 0 ? (
-                                        <div className="max-h-60 overflow-y-auto px-2 space-y-1">
+                                        <div 
+                                            className="max-h-60 overflow-y-auto px-2 space-y-1 overscroll-contain"
+                                            onWheel={(e) => e.stopPropagation()}
+                                        >
                                             {servers.map((server) => (
                                                 <div key={server.id} className="group flex items-center">
                                                     <button
@@ -239,7 +246,7 @@ const Layout = ({ children }) => {
                 </div>
 
                 {/* Navigation - Only if server is selected */}
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                <nav className={`flex-1 p-4 space-y-2 ${showServerDropdown ? 'overflow-y-hidden' : 'overflow-y-auto'}`}>
                     {isInitializing ? (
                         <div className="flex flex-col items-center justify-center h-40 space-y-4 animate-pulse">
                             <div className="w-10 h-10 bg-slate-800 rounded-full"></div>
@@ -279,11 +286,51 @@ const Layout = ({ children }) => {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-40 px-6 text-center space-y-4">
-                            <div className="p-4 bg-slate-800/50 rounded-full text-slate-600">
-                                <AlertTriangle size={32} />
+                        <div className="space-y-6">
+                            <div className="flex flex-col items-center justify-center p-4 text-center space-y-3 bg-slate-800/20 rounded-2xl border border-white/5">
+                                <div className="p-3 bg-slate-800/50 rounded-full text-slate-500">
+                                    <AlertTriangle size={24} />
+                                </div>
+                                <p className="text-xs text-slate-400 font-medium">Nenhum servidor ativo. Conecte-se a uma VPS para liberar as ferramentas.</p>
                             </div>
-                            <p className="text-xs text-slate-500 font-medium">Nenhum servidor ativo. Conecte-se a uma VPS para liberar as ferramentas.</p>
+
+                            <div className="space-y-2">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 select-none">
+                                    Ferramentas Globais
+                                </p>
+                                <div className="space-y-1">
+                                    <Link
+                                        to="/keys"
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group ${
+                                            location.pathname === '/keys'
+                                            ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-[0_0_15px_-3px_rgba(37,99,235,0.2)]'
+                                            : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-700/50'
+                                        }`}
+                                    >
+                                        <div className={`p-2 rounded-lg transition-colors ${location.pathname === '/keys' ? 'bg-blue-600/20' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
+                                            <Key size={18} />
+                                        </div>
+                                        <span className="font-medium text-sm tracking-wide">Chaves SSH</span>
+                                        {location.pathname === '/keys' && <div className="ml-auto w-1 h-4 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" />}
+                                    </Link>
+
+                                    <Link
+                                        to="/connect"
+                                        state={{ forceAdd: true }}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group ${
+                                            location.pathname === '/connect'
+                                            ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-600/20 shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]'
+                                            : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border border-transparent hover:border-slate-700/50'
+                                        }`}
+                                    >
+                                        <div className={`p-2 rounded-lg transition-colors ${location.pathname === '/connect' ? 'bg-emerald-600/20 text-emerald-400' : 'bg-slate-800 group-hover:bg-slate-700'}`}>
+                                            <Plus size={18} />
+                                        </div>
+                                        <span className="font-medium text-sm tracking-wide">Conectar Servidor</span>
+                                        {location.pathname === '/connect' && <div className="ml-auto w-1 h-4 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" />}
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </nav>

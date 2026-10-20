@@ -45,11 +45,13 @@ def test_database_cluster_nodes():
         delete_server(server_parent_id)
         delete_server(server_child_id)
 
+@patch("app.services.docker_swarm.get_ssh_client")
 @patch("app.installer.get_ssh_client")
-def test_api_list_and_status(mock_ssh):
+def test_api_list_and_status(mock_ssh, mock_ds_ssh):
     # Mock SSH client e o docker node ls
     mock_client = MagicMock()
     mock_ssh.return_value = mock_client
+    mock_ds_ssh.return_value = mock_client
     
     # Mock retorno do comando para saber se o swarm está ativo
     # Mock para get_swarm_nodes_real_status
@@ -163,4 +165,30 @@ def test_change_swarm_node_hostname_success(mock_get_servers, mock_run_ssh, mock
     mock_run_ssh.assert_any_call(mock_client, "sudo hostnamectl set-hostname vps-new")
     mock_run_ssh.assert_any_call(mock_client, "sudo sed -i 's/vps-old/vps-new/g' /etc/hosts")
     mock_run_ssh.assert_any_call(mock_client, "sudo systemctl restart docker")
+
+@patch("app.services.docker_swarm.get_ssh_client")
+@patch("app.services.docker_swarm.run_ssh_command")
+def test_join_swarm_cluster_leaves_different_cluster_before_join(mock_run_ssh, mock_get_ssh):
+    from app.services.docker_swarm import join_swarm_cluster
+    
+    mock_client = MagicMock()
+    mock_get_ssh.return_value = mock_client
+
+    # Simula: 
+    # 1. docker info --format '{{.Swarm.LocalNodeState}}' -> "active"
+    # 2. docker info --format '{{.Swarm.Cluster.ID}}' -> "old-different-cluster-id"
+    # 3. docker swarm leave --force -> ""
+    # 4. docker swarm join --token ... -> "This node joined a swarm as a worker."
+    mock_run_ssh.side_effect = [
+        "active",
+        "old-different-cluster-id",
+        "",
+        "This node joined a swarm as a worker."
+    ]
+
+    res = join_swarm_cluster("10.0.0.2", "root", "pass", "10.0.0.1", "SWMTKN-1-new-parent-cluster-id-xyz")
+    assert res["status"] == "success"
+    mock_run_ssh.assert_any_call(mock_client, "docker swarm leave --force")
+    mock_run_ssh.assert_any_call(mock_client, "docker swarm join --token SWMTKN-1-new-parent-cluster-id-xyz 10.0.0.1:2377")
+
 

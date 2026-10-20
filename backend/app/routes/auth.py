@@ -11,13 +11,23 @@ router = APIRouter()
 
 class ServerCredentials(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    key_id: Optional[int] = None
+    private_key: Optional[str] = None
+    passphrase: Optional[str] = None
+    auth_type: Optional[str] = "password"
 
 class VerifyConnectionRequest(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    key_id: Optional[int] = None
+    private_key: Optional[str] = None
+    passphrase: Optional[str] = None
+    auth_type: Optional[str] = "password"
 
 class PasswordChangeRequest(BaseModel):
     host: str
@@ -64,15 +74,16 @@ def change_server_password_endpoint(req: PasswordChangeRequest):
 @router.post("/verify-connection", dependencies=[Depends(verify_jwt)])
 async def verify_connection(credentials: ServerCredentials):
     """
-    Verifica APENAS se é possível conectar via SSH (Login).
+    Verifica APENAS se é possível conectar via SSH (Login com Senha ou Chave).
     Rápido: ~1-3 segundos.
     """
     start_time = time.time()
     
     logger.info("="*60)
     logger.info(f"[ENDPOINT] /verify-connection recebido")
-    logger.info(f"[ENDPOINT] Host: {credentials.host}")
+    logger.info(f"[ENDPOINT] Host: {credentials.host}:{credentials.port or 22}")
     logger.info(f"[ENDPOINT] Username: {credentials.username}")
+    logger.info(f"[ENDPOINT] AuthType: {credentials.auth_type} (KeyID={credentials.key_id})")
     logger.info(f"[ENDPOINT] Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     
     from app.installer import verify_ssh_connection
@@ -84,7 +95,11 @@ async def verify_connection(credentials: ServerCredentials):
             verify_ssh_connection, 
             credentials.host, 
             credentials.username, 
-            credentials.password
+            credentials.password,
+            credentials.private_key,
+            credentials.passphrase,
+            credentials.key_id,
+            credentials.port or 22
         )
         
         elapsed = time.time() - start_time
@@ -94,7 +109,7 @@ async def verify_connection(credentials: ServerCredentials):
             return {"message": "Conectado com sucesso!"}
         else:
             logger.error(f"[ENDPOINT] ✗ Conexão falhou em {elapsed:.2f}s")
-            raise HTTPException(status_code=401, detail="Falha na autenticação ou host inacessível")
+            raise HTTPException(status_code=400, detail="Falha na autenticação SSH ou host inacessível")
             
     except HTTPException:
         raise

@@ -8,7 +8,7 @@ import time
 import uuid
 
 from app.database import init_db
-from app.routes import auth, servers, settings, cloudflare, installer, cluster, logs
+from app.routes import auth, servers, settings, cloudflare, installer, cluster, logs, ssh_keys
 from app.core.logger import setup_logging, logger
 
 # Configura logging (formato + horário de Brasília em todos os logs)
@@ -93,6 +93,7 @@ app.include_router(cloudflare.router, dependencies=[Depends(verify_jwt)])
 app.include_router(installer.router, dependencies=[Depends(verify_jwt)])
 app.include_router(cluster.router, dependencies=[Depends(verify_jwt)])
 app.include_router(logs.router, dependencies=[Depends(verify_jwt)])
+app.include_router(ssh_keys.router, dependencies=[Depends(verify_jwt)])
 
 # Configuração de arquivos estáticos
 if getattr(sys, 'frozen', False):

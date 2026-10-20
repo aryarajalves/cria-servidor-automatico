@@ -46,7 +46,7 @@ const LinkedNodesCard = ({ dbNodes, setSelectedNodeToDelete, setDeleteProgressSt
                                             onClick={() => {
                                                 setSelectedNodeToDelete(node);
                                                 setDeleteProgressStatus('idle');
-                                                setDeleteErrorMessage('');
+                                                if (setDeleteErrorMessage) setDeleteErrorMessage('');
                                                 setShowDeleteModal(true);
                                             }}
                                             className="p-2 text-slate-500 hover:text-red-400 transition-colors hover:bg-red-500/10 rounded-lg active:scale-95"

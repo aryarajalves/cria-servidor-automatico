@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, AlertTriangle } from 'lucide-react';
 import Button from './Button';
 
@@ -19,10 +20,17 @@ const Modal = ({ show, onClose, onConfirm, title, message, confirmText = 'Deleta
 
     if (!show) return null;
 
-    return (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300">
+    const modalContent = (
+        <div className="fixed inset-0 w-screen h-screen z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+            {/* Backdrop fullscreen */}
+            <div 
+                className="fixed inset-0 w-full h-full bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+            />
+
+            {/* Modal Dialog */}
             <div
-                className="bg-slate-900 border border-white/10 rounded-[32px] w-full max-w-md shadow-2xl shadow-black/50 overflow-hidden animate-in zoom-in-95 duration-300 relative"
+                className="relative z-10 bg-slate-900 border border-white/10 rounded-[32px] w-full max-w-md shadow-2xl shadow-black/80 overflow-hidden animate-in zoom-in-95 duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
@@ -66,6 +74,8 @@ const Modal = ({ show, onClose, onConfirm, title, message, confirmText = 'Deleta
             </div>
         </div>
     );
+
+    return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
 };
 
 export default Modal;

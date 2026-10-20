@@ -47,19 +47,23 @@ class TestBusinessRules(unittest.TestCase):
         self.assertEqual(creds[stack]['user'], user)
         self.assertEqual(creds[stack]['password'], pwd)
 
-    def test_settings_fallback_logic(self):
+    def test_save_and_get_portainer_settings(self):
         """
-        Verifica se configurações específicas do host sobrepõem as globais,
-        mas as globais persistem se não houver sobreposição.
+        Regra: Salvar credenciais do Portainer via SettingsRequest deve persistir no banco e sincronizar com stack_credentials.
         """
-        save_setting("global_key", "global_val", "global")
-        save_setting("override_key", "original", "global")
-        save_setting("override_key", "overridden", "host_x")
+        from app.routes.settings import save_system_settings, get_system_settings, SettingsRequest
         
-        settings = get_all_settings("host_x")
+        req = SettingsRequest(
+            portainer_user="admin_custom",
+            portainer_password="secret_custom_pwd",
+            host="192.168.1.50"
+        )
+        res = save_system_settings(req)
+        self.assertEqual(res["status"], "success")
         
-        self.assertEqual(settings.get("global_key"), "global_val")
-        self.assertEqual(settings.get("override_key"), "overridden")
+        settings = get_system_settings("192.168.1.50")
+        self.assertEqual(settings.get("portainer_user"), "admin_custom")
+        self.assertEqual(settings.get("portainer_password"), "secret_custom_pwd")
 
 if __name__ == '__main__':
     unittest.main()

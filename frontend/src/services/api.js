@@ -20,6 +20,7 @@ const log = (level, message, ...args) => {
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
+    timeout: 120000,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -54,7 +55,7 @@ api.interceptors.response.use(
         const durationMs = Date.now() - (config.metadata?.startTime || Date.now());
         const status = error.response?.status;
 
-        if (status === 401) {
+        if (status === 401 && !config.url?.includes('/verify-connection') && !config.url?.includes('/login')) {
             log('WARNING', 'Sessão expirada ou não autorizada. Limpando credenciais...');
             localStorage.removeItem('app_auth');
             localStorage.removeItem('app_token');

@@ -4,7 +4,7 @@ services:
   # Oráculo - Backend e Frontend Unificados
   oraculo:
     # Imagem oficial unificada (Vite estático servido pelo Node/Express)
-    image: aryalvesfernandes/oraculo:1.0.6
+    image: aryalvesfernandes/oraculo:1.1.2
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public

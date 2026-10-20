@@ -208,19 +208,39 @@ def get_swarm_join_tokens(host, username, password):
 def join_swarm_cluster(child_host, child_username, child_password, parent_ip, token):
     """
     Faz um servidor filho ingressar no cluster Swarm do pai.
+    Se o filho estiver em um cluster diferente ou inativo, força a saída prévia para ingressar no cluster correto.
     """
     client = get_ssh_client(child_host, child_username, child_password)
     try:
-        output_state = run_ssh_command(client, "docker info --format '{{.Swarm.LocalNodeState}}'")
-        if output_state.strip() == "active":
-            return {"status": "success", "message": "O servidor filho já faz parte do cluster."}
+        output_state = run_ssh_command(client, "docker info --format '{{.Swarm.LocalNodeState}}'").strip()
+        
+        # Extrai o Cluster ID do token do pai (formato: SWMTKN-1-<cluster_id>-<hash>)
+        token_parts = token.split("-")
+        parent_cluster_id = token_parts[2] if len(token_parts) >= 3 else None
+
+        if output_state == "active":
+            child_cluster_id = run_ssh_command(client, "docker info --format '{{.Swarm.Cluster.ID}}'").strip()
+            if parent_cluster_id and child_cluster_id == parent_cluster_id:
+                logger.info(f"Nó {child_host} já faz parte do cluster pai ({parent_cluster_id}).")
+                return {"status": "success", "message": "O servidor filho já faz parte do cluster."}
+            else:
+                logger.info(f"Nó {child_host} está em outro cluster Swarm ({child_cluster_id}). Forçando saída (leave) para ingressar no cluster correto...")
+                run_ssh_command(client, "docker swarm leave --force")
             
         join_cmd = f"docker swarm join --token {token} {parent_ip}:2377"
+        logger.info(f"Executando no filho ({child_host}): {join_cmd}")
         run_ssh_command(client, join_cmd)
         return {"status": "success", "message": "Nó adicionado ao cluster com sucesso."}
     except Exception as e:
         if "already part of a swarm" in str(e):
-            return {"status": "success", "message": "O servidor filho já faz parte do cluster."}
+            logger.info(f"Nó {child_host} reportou que já fazia parte de um swarm. Forçando leave e tentando novamente...")
+            try:
+                run_ssh_command(client, "docker swarm leave --force")
+                join_cmd = f"docker swarm join --token {token} {parent_ip}:2377"
+                run_ssh_command(client, join_cmd)
+                return {"status": "success", "message": "Nó adicionado ao cluster com sucesso após forçar leave."}
+            except Exception as retry_err:
+                raise retry_err
         raise e
     finally:
         client.close()

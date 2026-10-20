@@ -1,7 +1,17 @@
-import React from 'react';
-import { AlertTriangle, X, Check } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { AlertTriangle, Check } from 'lucide-react';
 
 const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "Confirmar", cancelText = "Cancelar", type = "info" }) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const colors = {
@@ -11,18 +21,24 @@ const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmTex
         success: "from-emerald-500 to-teal-600"
     };
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    const dialogContent = (
+        <div className="fixed inset-0 w-screen h-screen z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+            {/* Backdrop que cobre 100% da tela */}
             <div 
-                className="absolute inset-0 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300"
+                className="fixed inset-0 w-full h-full bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300 pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
             />
             
-            <div className="relative w-full max-w-[440px] bg-slate-900 border border-white/10 rounded-[40px] shadow-2xl flex flex-col items-center justify-center text-center p-10 py-12 animate-in zoom-in-95 duration-200">
+            {/* Caixa Central do Modal */}
+            <div 
+                className="relative z-10 w-full max-w-[440px] bg-slate-900 border border-white/10 rounded-[40px] shadow-2xl shadow-black/80 flex flex-col items-center justify-center text-center p-10 py-12 animate-in zoom-in-95 duration-200"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Gradient Header */}
                 <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${colors[type]}`} />
                 
                 {/* Icon Circle */}
-                <div className={`mb-6 p-6 rounded-full bg-slate-800/50 border border-white/5 relative group`}>
+                <div className="mb-6 p-6 rounded-full bg-slate-800/50 border border-white/5 relative group">
                     <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${colors[type]} opacity-20 blur-xl group-hover:opacity-40 transition-opacity`} />
                     <div className="relative z-10 text-white">
                         {type === 'danger' ? <AlertTriangle size={48} /> : <Check size={48} />}
@@ -51,10 +67,11 @@ const ConfirmDialog = ({ isOpen, title, message, onConfirm, onCancel, confirmTex
                         {cancelText}
                     </button>
                 </div>
-
             </div>
         </div>
     );
+
+    return typeof document !== 'undefined' ? createPortal(dialogContent, document.body) : dialogContent;
 };
 
 export default ConfirmDialog;

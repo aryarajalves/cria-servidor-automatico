@@ -27,48 +27,59 @@ const Dashboard = () => {
     const [stats, setStats] = useState(null);
     const navigate = useNavigate(); // Usar o hook navigate em vez de window.location.href
 
-    const fetchStatus = useCallback(async (signal) => {
-        const ctrl = signal ? null : new AbortController();
-        const actualSignal = signal || ctrl?.signal;
-        const timeoutId = ctrl ? setTimeout(() => ctrl.abort(), 30000) : null;
+    const abortControllerRef = React.useRef(null);
 
+    const fetchStatus = useCallback(async (customSignal) => {
         try {
             setLoading(true);
             setError(null);
             setIsGlobalLoading(true);
+            
+            const controller = customSignal ? null : new AbortController();
+            if (controller) abortControllerRef.current = controller;
+            const signal = customSignal || controller?.signal;
+
             const { data } = await api.post('/system-status', selectedServer, {
-                signal: actualSignal
+                signal: signal,
+                timeout: 30000
             });
             setStats(data);
             setError(null);
         } catch (err) {
             if (err.name === 'CanceledError' || err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
-                // Ignora cancelamentos intencionais (evita bugs de StrictMode / unmount)
                 return;
             }
             const msg = err.response?.data?.detail || err.message || '';
             const isOffline = msg.includes('Connection refused') || msg.includes('timed out') ||
-                msg.includes('No route to host') || msg.includes('SSH') || msg.includes('ssh');
+                msg.includes('No route to host') || msg.includes('SSH') || msg.includes('ssh') ||
+                err.code === 'ECONNABORTED';
             setError(isOffline ? '__SERVER_OFFLINE__' : (msg || 'Falha ao obter status do sistema via SSH.'));
         } finally {
-            if (timeoutId) clearTimeout(timeoutId);
             setLoading(false);
             setIsGlobalLoading(false);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedServer]);
 
+    const handleCancelVerification = () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        setLoading(false);
+        setIsGlobalLoading(false);
+        setError('__SERVER_OFFLINE__');
+    };
+
     useEffect(() => {
         if (!selectedServer) return;
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        abortControllerRef.current = controller;
 
         fetchStatus(controller.signal);
 
         return () => {
             controller.abort();
-            clearTimeout(timeoutId);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedServer]);
@@ -76,7 +87,7 @@ const Dashboard = () => {
     if (!selectedServer && !isInitializing) return <Navigate to="/connect" />;
     if (!selectedServer && isInitializing) return null;
 
-    if (error === '__SERVER_OFFLINE__') {
+    if (error) {
         return (
             <div style={{ position: 'fixed', inset: 0, zIndex: 9999 }} className="bg-slate-950 flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-500">
                 <div className="absolute inset-0 bg-red-600/3 pointer-events-none" />
@@ -87,12 +98,20 @@ const Dashboard = () => {
                 </div>
 
                 <div className="text-center space-y-3 max-w-md">
-                    <span className="text-[10px] text-red-500 uppercase font-black tracking-[0.3em]">Conexão Falhou</span>
-                    <h2 className="text-3xl font-black text-white">Servidor Inacessível</h2>
+                    <span className="text-[10px] text-red-500 uppercase font-black tracking-[0.3em]">Conexão Interrompida</span>
+                    <h2 className="text-3xl font-black text-white">
+                        {error === '__SERVER_OFFLINE__' ? 'Servidor Inacessível' : 'Falha na Verificação'}
+                    </h2>
                     <p className="text-slate-400 text-base">
-                        Não foi possível conectar ao servidor{' '}
-                        <span className="text-white font-mono font-bold">{selectedServer?.host}</span> via SSH.
-                        <br />O servidor pode estar desligado, deletado ou inacessível.
+                        {error === '__SERVER_OFFLINE__' ? (
+                            <>
+                                Não foi possível conectar ao servidor{' '}
+                                <span className="text-white font-mono font-bold">{selectedServer?.host}</span> via SSH.
+                                <br />O servidor pode estar desligado, inacessível ou a verificação foi cancelada.
+                            </>
+                        ) : (
+                            error
+                        )}
                     </p>
                 </div>
 
@@ -141,8 +160,9 @@ const Dashboard = () => {
                 </div>
 
                 <button
-                    onClick={() => { setLoading(false); setIsGlobalLoading(false); setError('Verificação cancelada pelo usuário.'); }}
-                    className="mt-4 text-slate-600 hover:text-slate-400 text-sm transition-colors underline"
+                    type="button"
+                    onClick={handleCancelVerification}
+                    className="mt-4 text-slate-400 hover:text-white text-sm transition-colors underline cursor-pointer py-2 px-4 rounded-lg hover:bg-white/5"
                 >
                     Cancelar verificação
                 </button>

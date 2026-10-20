@@ -21,65 +21,196 @@ def get_stack_path(filename):
     # Fallback padrão caso não encontre nas subpastas
     return os.path.join(base_dir, "stacks", filename)
 
-def get_ssh_client(host, username, password, timeout=30):
+def probe_ssh_port(host: str, port: int, timeout: float = 1.5) -> bool:
     """
-    Cria e retorna uma conexão SSH usando Paramiko.
+    Testa se uma porta TCP responde e se exibe um banner SSH válido (SSH-2.0...).
+    Retorna True se for um serviço SSH ativo, False caso contrário.
     """
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
+    import socket
+    s = None
     try:
-        logger.info(f"[SSH] Iniciando conexão SSH com {host}")
-        logger.info(f"[SSH] Parâmetros: User={username}, Timeout={timeout}s")
-        logger.info(f"[SSH] look_for_keys=False, allow_agent=False")
-        
-        print(f"DEBUG: [SSH] Connecting to {host} (timeout={timeout})...")
-        start = time.time()
-        client.connect(
-            hostname=host, 
-            username=username, 
-            password=password, 
-            timeout=timeout,
-            look_for_keys=False,
-            allow_agent=False,
-            banner_timeout=30,
-            auth_timeout=30
-        )
-        print(f"DEBUG: [SSH] Connected successfully!")
-        elapsed = time.time() - start
-        logger.info(f"[SSH] Conexão estabelecida em {elapsed:.2f}s")
-        return client
-        
-    except Exception as e:
-        print(f"DEBUG: [SSH] First attempt FAILED: {str(e)}")
-        logger.warning(f"[SSH] Primeira tentativa falhou via Paramiko: {e}")
-        
-        # Tentativa de fallback com parâmetros relaxados
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        if s.connect_ex((host, int(port))) == 0:
+            try:
+                banner = s.recv(128)
+                if banner and b"SSH-" in banner:
+                    return True
+            except Exception:
+                pass
+            return True
+        return False
+    except Exception:
+        return False
+    finally:
+        if s:
+            try:
+                s.close()
+            except Exception:
+                pass
+
+def detect_active_ssh_port(host: str, candidate_ports: list = None, timeout: float = 1.5):
+    """
+    Analisa e detecta a porta SSH ativa em um host remoto testando portas candidatas.
+    """
+    from app.database import get_server_by_host
+    
+    candidates = []
+    if candidate_ports:
+        for p in candidate_ports:
+            if p is not None:
+                try:
+                    p_int = int(p)
+                    if 1 <= p_int <= 65535 and p_int not in candidates:
+                        candidates.append(p_int)
+                except (ValueError, TypeError):
+                    pass
+
+    # Inclui a porta cadastrada no banco de dados se houver
+    server = get_server_by_host(host)
+    if server and server.get("port"):
         try:
-            print(f"DEBUG: [SSH] Tentando conexão de fallback com allow_agent=True e look_for_keys=True...")
-            logger.info("[SSH] Tentando conexão de fallback...")
+            db_port = int(server["port"])
+            if db_port not in candidates:
+                candidates.append(db_port)
+        except (ValueError, TypeError):
+            pass
+
+    # Portas padrão comuns de SSH
+    default_ssh_ports = [22, 22022, 2222, 5022, 22222]
+    for dp in default_ssh_ports:
+        if dp not in candidates:
+            candidates.append(dp)
+
+    logger.info(f"[SSH DETECT] Analisando portas SSH ativas para {host}. Candidatas: {candidates}")
+
+    for candidate in candidates:
+        if probe_ssh_port(host, candidate, timeout=timeout):
+            logger.info(f"[SSH DETECT] Porta SSH ATIVA confirmada em {host}:{candidate}")
+            return candidate
+
+    logger.warning(f"[SSH DETECT] Nenhuma porta respondeu com SSH ativo em {host} (candidatas: {candidates}).")
+    return None
+
+def get_ssh_client(host, username, password=None, private_key=None, passphrase=None, key_id=None, port=None, timeout=30, auto_detect_port=True):
+    """
+    Cria e retorna uma conexão SSH usando Paramiko, suportando autenticação por Senha ou Chave Privada (RSA, Ed25519, ECDSA),
+    portas customizadas e auto-detecção resiliente de porta em caso de desincronização.
+    """
+    from app.services.ssh_keys import parse_private_key
+    from app.database import get_ssh_key_by_id, get_server_by_host, update_server
+
+    pkey = None
+
+    # 1. Se foi passado key_id específico, busca no banco de dados
+    if key_id:
+        key_record = get_ssh_key_by_id(key_id)
+        if key_record:
+            pkey, _ = parse_private_key(key_record["private_key"], key_record.get("passphrase") or passphrase)
+
+    # 2. Se foi passado texto da chave privada diretamente
+    if not pkey and private_key:
+        pkey, _ = parse_private_key(private_key, passphrase)
+
+    # 3. Se não tem chave explícita, senha ou porta, tenta resolver automaticamente pelo servidor cadastrado
+    server = None
+    if not pkey or not password or port is None:
+        server = get_server_by_host(host)
+
+    if not pkey and not password and server:
+        if server.get("key_id"):
+            key_record = get_ssh_key_by_id(server["key_id"])
+            if key_record:
+                pkey, _ = parse_private_key(key_record["private_key"], key_record.get("passphrase"))
+        elif server.get("password"):
+            password = server["password"]
+
+    # Resolve porta inicial
+    target_port = None
+    if port is not None:
+        try:
+            target_port = int(port)
+        except (ValueError, TypeError):
+            target_port = 22
+    elif server and server.get("port"):
+        try:
+            target_port = int(server["port"])
+        except (ValueError, TypeError):
+            target_port = 22
+    else:
+        target_port = 22
+
+    auth_method = "Chave Privada" if pkey else "Senha"
+    logger.info(f"[SSH] Parâmetros: User={username}, Port={target_port}, Auth={auth_method}, Timeout={timeout}s")
+    
+    connect_kwargs = {
+        "hostname": host,
+        "port": target_port,
+        "username": username,
+        "timeout": timeout,
+        "look_for_keys": False,
+        "allow_agent": False,
+        "banner_timeout": 30,
+        "auth_timeout": 30
+    }
+    
+    if pkey:
+        connect_kwargs["pkey"] = pkey
+    else:
+        connect_kwargs["password"] = password
+
+    def _try_connect_on_port(p):
+        kwargs = dict(connect_kwargs)
+        kwargs["port"] = p
+        max_attempts = 2
+        for attempt in range(1, max_attempts + 1):
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            start = time.time()
+            try:
+                logger.info(f"[SSH] Conectando a {host}:{p} via {auth_method} (tentativa {attempt}/{max_attempts})...")
+                client.connect(**kwargs)
+                elapsed = time.time() - start
+                logger.info(f"[SSH] Conexão estabelecida com sucesso em {elapsed:.2f}s na porta {p}")
+                return client
+            except paramiko.AuthenticationException as e:
+                logger.warning(f"[SSH] Autenticação falhou na porta {p}: {e}")
+                if pkey:
+                    logger.error(f"[SSH] Falha de autenticação com a chave privada fornecida para {username}@{host}:{p}.")
+                    raise e
+                break
+            except Exception as e:
+                if attempt < max_attempts and ("banner" in str(e).lower() or isinstance(e, (EOFError, ConnectionResetError, paramiko.SSHException))):
+                    logger.warning(f"[SSH] Oscilação transitória de banner/socket na porta {p} (tentativa {attempt}): {e}. Retentando...")
+                    time.sleep(0.5)
+                    continue
+                logger.error(f"[SSH] Falha de conexão na porta {p} (tentativa {attempt}): {e}")
+                raise e
+
+        # Fallback para autenticação por senha
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        start = time.time()
+        try:
+            logger.info(f"[SSH] Tentando conexão de fallback na porta {p}...")
             client.connect(
-                hostname=host, 
+                hostname=host,
+                port=p,
                 username=username, 
                 password=password, 
                 timeout=timeout,
-                look_for_keys=True,  # Tenta usar chaves se existirem
-                allow_agent=True,    # Tenta usar ssh-agent
+                look_for_keys=True,
+                allow_agent=True,
                 banner_timeout=30,
                 auth_timeout=30
             )
-            print(f"DEBUG: [SSH] Fallback connected successfully!")
             elapsed = time.time() - start
-            logger.info(f"[SSH] Conexão de fallback estabelecida em {elapsed:.2f}s")
+            logger.info(f"[SSH] Conexão de fallback estabelecida em {elapsed:.2f}s na porta {p}")
             return client
         except Exception as e2:
-            print(f"DEBUG: [SSH] Fallback connection FAILED: {str(e2)}")
-            logger.warning(f"[SSH] Fallback também falhou: {e2}")
-            
+            logger.warning(f"[SSH] Fallback falhou na porta {p}: {e2}")
             # Tentativa final: Keyboard-Interactive
             try:
-                print(f"DEBUG: [SSH] Tentando conexão final via keyboard-interactive...")
-                
                 def interactive_handler(title, instructions, prompt_list):
                     resp = []
                     for prompt, echo in prompt_list:
@@ -89,32 +220,70 @@ def get_ssh_client(host, username, password, timeout=30):
                 client = paramiko.SSHClient()
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 
-                # Manual transport setup
-                t = paramiko.Transport((host, 22))
+                t = paramiko.Transport((host, p))
                 t.connect()
                 t.auth_interactive(username, interactive_handler)
                 
                 client._transport = t
-                print(f"DEBUG: [SSH] Interactive connection successful!")
-                logger.info("[SSH] Conexão interativa estabelecida com sucesso.")
+                logger.info(f"[SSH] Conexão interativa estabelecida com sucesso na porta {p}.")
                 return client
-
             except Exception as e3:
-                print(f"DEBUG: [SSH] Interactive connection FAILED: {str(e3)}")
-                elapsed = time.time() - start if 'start' in locals() else 0
-                logger.error(f"[SSH] TODAS TENTATIVAS FALHARAM após {elapsed:.2f}s: {str(e3)}")
                 raise e3
 
-def verify_ssh_connection(host, username, password):
+    # Tentativa na porta primária
+    try:
+        return _try_connect_on_port(target_port)
+    except paramiko.AuthenticationException:
+        raise
+    except Exception as primary_err:
+        if not auto_detect_port:
+            raise primary_err
+
+        logger.warning(f"[SSH] Falha ao conectar em {host}:{target_port} ({primary_err}). Iniciando auto-detecção de porta ativa...")
+        active_port = detect_active_ssh_port(
+            host=host,
+            candidate_ports=[target_port, server.get("port") if server else None, 22, 22022, 2222, 5022],
+            timeout=1.5
+        )
+
+        if active_port and active_port != target_port:
+            logger.info(f"[SSH] Auto-detecção localizou porta ativa {active_port} para {host}. Reconectando...")
+            try:
+                client = _try_connect_on_port(active_port)
+                # Auto-sincroniza o banco de dados se o servidor estiver cadastrado com a porta antiga
+                if server and server.get("id") and server.get("port") != active_port:
+                    try:
+                        update_server(server_id=server["id"], port=active_port)
+                        logger.info(f"[SSH] Banco de dados atualizado automaticamente: Servidor ID {server['id']} ({host}) agora com port={active_port}")
+                    except Exception as db_sync_err:
+                        logger.warning(f"[SSH] Não foi possível atualizar porta no banco: {db_sync_err}")
+                return client
+            except Exception as active_port_err:
+                logger.error(f"[SSH] Falha ao conectar também na porta detectada {active_port}: {active_port_err}")
+                raise active_port_err
+
+        raise primary_err
+
+def verify_ssh_connection(host, username, password=None, private_key=None, passphrase=None, key_id=None, port=None):
     """
-    Testa se as credenciais SSH são válidas.
+    Testa se as credenciais SSH (Senha ou Chave) são válidas na porta informada.
     """
     start_time = time.time()
-    logger.info(f"[VERIFY] Iniciando verificação SSH para {username}@{host}")
+    auth_desc = f"KeyID={key_id}" if key_id else ("PrivateKey" if private_key else "Password")
+    logger.info(f"[VERIFY] Iniciando verificação SSH para {username}@{host}:{port or 22} ({auth_desc})")
     
     try:
         logger.info(f"[VERIFY] Chamando get_ssh_client com timeout=30s")
-        client = get_ssh_client(host, username, password, timeout=30)
+        client = get_ssh_client(
+            host=host,
+            username=username,
+            password=password,
+            private_key=private_key,
+            passphrase=passphrase,
+            key_id=key_id,
+            port=port,
+            timeout=30
+        )
         
         elapsed = time.time() - start_time
         logger.info(f"[VERIFY] Conexão SSH estabelecida com sucesso em {elapsed:.2f}s")
@@ -132,13 +301,25 @@ def verify_ssh_connection(host, username, password):
         logger.error(f"[VERIFY] Traceback completo:\n{traceback.format_exc()}")
         return False
 
+def normalize_ssh_command(command: str) -> str:
+    """
+    Garante que comandos com 'sudo' não quebrem em servidores sem o pacote sudo instalado.
+    Se 'sudo' não estiver disponível no PATH, injeta uma função fallback inteligente
+    que extrai flags e variáveis de ambiente e executa o comando diretamente.
+    """
+    if "sudo" in command:
+        fallback = 'if ! command -v sudo >/dev/null 2>&1; then sudo() { while [ "$#" -gt 0 ]; do case "$1" in -*) shift ;; *=*) export "$1"; shift ;; *) break ;; esac; done; "$@"; }; fi; '
+        return f'{fallback}{command}'
+    return command
+
 def run_ssh_command(client, command, timeout=10, log_command=True):
     """
     Executa um comando no servidor remoto via SSH com timeout.
     """
+    command_to_run = normalize_ssh_command(command)
     if log_command:
         logger.info(f"CMD: {command}")
-    stdin, stdout, stderr = client.exec_command(command, timeout=timeout)
+    stdin, stdout, stderr = client.exec_command(command_to_run, timeout=timeout)
     
     # Define timeout no canal para leitura
     stdout.channel.settimeout(timeout)

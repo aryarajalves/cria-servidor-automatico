@@ -9,14 +9,20 @@ router = APIRouter()
 class ServerCreateRequest(BaseModel):
     name: str
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    auth_type: Optional[str] = "password"
+    key_id: Optional[int] = None
 
 class ServerUpdateRequest(BaseModel):
     name: Optional[str] = None
     host: Optional[str] = None
+    port: Optional[int] = None
     username: Optional[str] = None
     password: Optional[str] = None
+    auth_type: Optional[str] = None
+    key_id: Optional[int] = None
 
 @router.get("/servers")
 def list_servers_endpoint():
@@ -33,7 +39,15 @@ def add_server_endpoint(req: ServerCreateRequest):
     """
     from app.database import add_server
     try:
-        server_id = add_server(req.name, req.host, req.username, req.password)
+        server_id = add_server(
+            name=req.name, 
+            host=req.host,
+            port=req.port or 22,
+            username=req.username, 
+            password=req.password,
+            auth_type=req.auth_type or "password",
+            key_id=req.key_id
+        )
         return {"status": "success", "id": server_id, "message": "Servidor adicionado com sucesso!"}
     except Exception as e:
         logger.error(f"Erro ao adicionar servidor: {e}")
@@ -59,24 +73,43 @@ def update_server_endpoint(server_id: int, req: ServerUpdateRequest):
     """
     from app.database import update_server
     try:
-        update_server(server_id, req.name, req.host, req.username, req.password)
+        update_server(
+            server_id=server_id, 
+            name=req.name, 
+            host=req.host,
+            port=req.port,
+            username=req.username, 
+            password=req.password,
+            auth_type=req.auth_type,
+            key_id=req.key_id
+        )
         logger.info(f"Servidor {server_id} atualizado com sucesso no banco de dados.")
-        return {"status": "success", "message": "Servidor updated com sucesso!"}
+        return {"status": "success", "message": "Servidor atualizado com sucesso!"}
     except Exception as e:
         logger.error(f"Erro ao atualizar servidor {server_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 class CommandExecutionRequest(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
     command: str
+    key_id: Optional[int] = None
+    auth_type: Optional[str] = "password"
 
 @router.post("/servers/run-command")
 def run_command_on_server(req: CommandExecutionRequest):
     from app.services.base_ssh import get_ssh_client
     try:
-        client = get_ssh_client(req.host, req.username, req.password, timeout=15)
+        client = get_ssh_client(
+            host=req.host,
+            port=req.port,
+            username=req.username, 
+            password=req.password, 
+            key_id=req.key_id,
+            timeout=15
+        )
     except Exception as e:
         logger.error(f"Erro ao conectar via SSH: {e}")
         raise HTTPException(status_code=400, detail=f"Falha na conexão SSH: {str(e)}")

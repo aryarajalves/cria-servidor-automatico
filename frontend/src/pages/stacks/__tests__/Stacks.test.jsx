@@ -177,7 +177,7 @@ describe('Stacks Page Refactoring Tests', () => {
         expect(passwordInput.type).toBe('password');
     });
 
-    it('campo de email do Traefik Proxy no AppInstallModal deve vir vazio por padrao', () => {
+    it('campo de email do Traefik Proxy no AppInstallModal deve vir preenchido por padrao com o email de unity', () => {
         const traefikApp = {
             id: "traefik",
             name: "Traefik Proxy",
@@ -186,7 +186,7 @@ describe('Stacks Page Refactoring Tests', () => {
             icon: () => <span>Icon</span>
         };
         const fields = [
-            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com" }
+            { name: "email", label: "Email para Let's Encrypt", placeholder: "seu@email.com", defaultValue: "aryarajunity@gmail.com" }
         ];
 
         render(
@@ -200,6 +200,6 @@ describe('Stacks Page Refactoring Tests', () => {
         );
 
         const emailInput = screen.getByPlaceholderText('seu@email.com');
-        expect(emailInput.value).toBe('');
+        expect(emailInput.value).toBe('aryarajunity@gmail.com');
     });
 });

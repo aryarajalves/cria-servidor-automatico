@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   worker:
-    image: aryalvesfernandes/configuraagente:backend-1.0.2
+    image: aryalvesfernandes/configuraagente:backend-1.1.8
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     command: celery -A celery_app worker --loglevel=info --concurrency=1
     networks:
@@ -87,7 +87,7 @@ services:
   # BACKEND — FastAPI + Gunicorn
   # ----------------------------------------------------------
   backend:
-    image: aryalvesfernandes/configuraagente:backend-1.0.2
+    image: aryalvesfernandes/configuraagente:backend-1.1.8
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public
@@ -180,7 +180,7 @@ services:
   # FRONTEND — React (build estático) + Nginx
   # ----------------------------------------------------------
   frontend:
-    image: aryalvesfernandes/configuraagente:frontend-1.0.2
+    image: aryalvesfernandes/configuraagente:frontend-1.1.8
     hostname: "{{.Service.Name}}.{{.Task.Slot}}"
     networks:
       - network_swarm_public

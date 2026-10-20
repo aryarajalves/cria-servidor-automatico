@@ -6,7 +6,7 @@ services:
   # BACKEND - FastAPI (API REST)
   # =============================================================
   backend:
-    image: aryarajalves/gerenciador-zap-grupo:backend-1.4.3
+    image: aryalvesfernandes/gerenciador-grupo:backend-1.0.3
     environment:
 
       # --- Banco de Dados ---
@@ -64,7 +64,7 @@ services:
   # FRONTEND - React (Interface Web)
   # =============================================================
   frontend:
-    image: aryarajalves/gerenciador-zap-grupo:frontend-1.4.3
+    image: aryalvesfernandes/gerenciador-grupo:frontend-1.0.3
     environment:
 
       # --- Banco de Dados ---

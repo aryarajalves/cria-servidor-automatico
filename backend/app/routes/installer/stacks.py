@@ -14,7 +14,8 @@ from .schemas import (
     EnvUpdate, RestartStackRequest,
     AIAgentManagerInstallRequest, ZapVoiceRequest, GerenciadorWhatsAppInstallRequest,
     UninstallStackRequest, StackDomainUpdateRequest, ExternalStackRequest, MinioInstallRequest,
-    BackupChatwooRabbitInstallRequest, OraculoInstallRequest
+    BackupChatwooRabbitInstallRequest, OraculoInstallRequest, FormularioPersonalizadoInstallRequest,
+    SmartVSLInstallRequest, SmartAcademyInstallRequest
 )
 
 logger = logging.getLogger(__name__)
@@ -285,6 +286,94 @@ def install_gerenciador_whatsapp_endpoint(request: GerenciadorWhatsAppInstallReq
         return {"message": f"Instalação do Gerenciador Grupo WhatsApp iniciada em {request.host}"}
     except Exception as e:
         logger.error(f"Falha ao instalar Gerenciador Grupo WhatsApp: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/install-formulario-personalizado")
+def install_formulario_personalizado_endpoint(request: FormularioPersonalizadoInstallRequest, background_tasks: BackgroundTasks):
+    """
+    Endpoint para instalar o Formulário Personalizado em background.
+    """
+    try:
+        save_setting("stack_domain_formulario_personalizado", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        save_setting("stack_domain_formulario-personalizado", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        
+        if not request.postgres_password:
+            try:
+                from app.installer import get_stack_env_vars
+                pg_env = get_stack_env_vars(request.host, request.username, request.password, "postgres")
+                request.postgres_password = pg_env.get("POSTGRES_PASSWORD")
+            except Exception as e:
+                logger.warning(f"Não foi possível obter senha do Postgres para Formulário Personalizado: {e}")
+
+        from app.installer import install_formulario_personalizado
+        install_status['formulario_personalizado'] = {'status': 'pending', 'message': 'Iniciando instalação do Formulário Personalizado...'}
+        background_tasks.add_task(run_generic_install_task, 'formulario_personalizado', install_formulario_personalizado, 
+                                 request.host, request.username, request.password, 
+                                 request.postgres_password, request.backend_domain, request.frontend_domain,
+                                 request.super_admin_name, request.super_admin_email, stack_name="formulario-personalizado")
+        
+        return {"message": f"Instalação do Formulário Personalizado iniciada em {request.host}"}
+    except Exception as e:
+        logger.error(f"Falha ao instalar Formulário Personalizado: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/install-smartvsl")
+def install_smartvsl_endpoint(request: SmartVSLInstallRequest, background_tasks: BackgroundTasks):
+    """
+    Endpoint para instalar a stack do SmartVSL em background.
+    """
+    try:
+        save_setting("stack_domain_clone-vturb", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        save_setting("stack_domain_smartvsl", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        
+        if not request.postgres_password:
+            try:
+                from app.installer import get_stack_env_vars
+                pg_env = get_stack_env_vars(request.host, request.username, request.password, "postgres")
+                request.postgres_password = pg_env.get("POSTGRES_PASSWORD")
+            except Exception as e:
+                logger.warning(f"Não foi possível obter senha do Postgres para SmartVSL: {e}")
+
+        from app.installer import install_smartvsl
+        install_status['smartvsl'] = {'status': 'pending', 'message': 'Iniciando instalação do SmartVSL...'}
+        background_tasks.add_task(run_generic_install_task, 'smartvsl', install_smartvsl, 
+                                 request.host, request.username, request.password, 
+                                 request.postgres_password, request.backend_domain, request.frontend_domain,
+                                 request.super_admin_email, stack_name="clone-vturb")
+        
+        return {"message": f"Instalação do SmartVSL iniciada em {request.host}"}
+    except Exception as e:
+        logger.error(f"Falha ao instalar SmartVSL: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/install-smartacademy")
+def install_smartacademy_endpoint(request: SmartAcademyInstallRequest, background_tasks: BackgroundTasks):
+    """
+    Endpoint para instalar a stack do Smart Academy em background.
+    """
+    try:
+        save_setting("stack_domain_gestao-aulas", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        save_setting("stack_domain_smartacademy", f"{request.frontend_domain},{request.backend_domain}", request.host)
+        
+        if not request.postgres_password:
+            try:
+                from app.installer import get_stack_env_vars
+                pg_env = get_stack_env_vars(request.host, request.username, request.password, "postgres")
+                request.postgres_password = pg_env.get("POSTGRES_PASSWORD")
+            except Exception as e:
+                logger.warning(f"Não foi possível obter senha do Postgres para Smart Academy: {e}")
+
+        from app.installer import install_smartacademy
+        install_status['smartacademy'] = {'status': 'pending', 'message': 'Iniciando instalação do Smart Academy...'}
+        background_tasks.add_task(run_generic_install_task, 'smartacademy', install_smartacademy, 
+                                 request.host, request.username, request.password, 
+                                 request.postgres_password, request.backend_domain, request.frontend_domain,
+                                 request.superadmin_name, request.superadmin_email,
+                                 request.openai_api_key, stack_name="gestao-aulas")
+        
+        return {"message": f"Instalação do Smart Academy iniciada em {request.host}"}
+    except Exception as e:
+        logger.error(f"Falha ao instalar Smart Academy: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/install-backup-chatwoo-rabbit")

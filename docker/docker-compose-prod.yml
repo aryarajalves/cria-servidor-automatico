@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: autoserver-db
+    restart: always
+    ports:
+      - "5439:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME:-autoserver}
+      - POSTGRES_USER=${DB_USER:-autoserver_user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-autoserver_password}
+    volumes:
+      - autoserver-db-data:/var/lib/postgresql/data
+
+  backend:
+    image: aryalvesfernandes/oraculo:backend-1.0.7
+    container_name: autoserver-backend
+    restart: always
+    ports:
+      - "8005:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-autoserver}
+      - DB_USER=${DB_USER:-autoserver_user}
+      - DB_PASSWORD=${DB_PASSWORD:-autoserver_password}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@admin.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN:-}
+      - JWT_SECRET=${JWT_SECRET:-sua_chave_secreta_jwt_aqui}
+    volumes:
+      - autoserver-backend-data:/app/data
+      - autoserver-stacks-backups:/app/stacks_backups
+    depends_on:
+      - db
+
+  frontend:
+    image: aryalvesfernandes/oraculo:frontend-1.0.7
+    container_name: autoserver-frontend
+    restart: always
+    ports:
+      - "5505:5505"
+    environment:
+      - VITE_API_URL=http://localhost:8005
+    depends_on:
+      - backend
+
+volumes:
+  autoserver-db-data:
+  autoserver-backend-data:
+  autoserver-stacks-backups:

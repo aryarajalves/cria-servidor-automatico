@@ -34,11 +34,25 @@ export const ServerProvider = ({ children }) => {
     const fetchServers = async () => {
         try {
             const response = await api.get('/servers');
-            setServers(response.data);
+            const dbServers = response.data || [];
+            setServers(dbServers);
             
-            // Se tiver servidores mas nenhum selecionado, seleciona o primeiro
-            if (response.data.length > 0 && !selectedServer) {
-                handleSelectServer(response.data[0]);
+            if (dbServers.length > 0) {
+                // Tenta encontrar o servidor atualmente selecionado no banco
+                const currentSaved = selectedServer || (localStorage.getItem('selected_server') ? JSON.parse(localStorage.getItem('selected_server')) : null);
+                const matched = currentSaved 
+                    ? dbServers.find(s => s.id === currentSaved.id || s.host === currentSaved.host)
+                    : null;
+                
+                if (matched) {
+                    handleSelectServer(matched);
+                } else {
+                    handleSelectServer(dbServers[0]);
+                }
+            } else {
+                // Se não há servidores no banco de dados, limpa o selecionado
+                setSelectedServer(null);
+                localStorage.removeItem('selected_server');
             }
         } catch (error) {
             console.error('Erro ao buscar servidores:', error);
@@ -66,7 +80,11 @@ export const ServerProvider = ({ children }) => {
 
     const handleSelectServer = (server) => {
         setSelectedServer(server);
-        localStorage.setItem('selected_server', JSON.stringify(server));
+        if (server) {
+            localStorage.setItem('selected_server', JSON.stringify(server));
+        } else {
+            localStorage.removeItem('selected_server');
+        }
     };
 
     const addServerToList = (newServer) => {
@@ -87,9 +105,9 @@ export const ServerProvider = ({ children }) => {
         }
     };
 
-    const updateServerInList = (id, data) => {
-        setServers(prev => prev.map(s => s.id === id ? { ...s, ...data } : s));
-        if (selectedServer?.id === id) {
+    const updateServerInList = (idOrHost, data) => {
+        setServers(prev => prev.map(s => (String(s.id) === String(idOrHost) || s.host === idOrHost) ? { ...s, ...data } : s));
+        if (selectedServer && (String(selectedServer.id) === String(idOrHost) || selectedServer.host === idOrHost)) {
             const updated = { ...selectedServer, ...data };
             setSelectedServer(updated);
             localStorage.setItem('selected_server', JSON.stringify(updated));

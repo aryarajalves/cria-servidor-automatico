@@ -44,12 +44,18 @@ O AutoServer Deployer divide as stacks em duas categorias para melhor controle d
 - **PostgreSQL**: Servidor de banco de dados SQL padrão do sistema de alta performance, gerado com credenciais dinâmicas exclusivas.
 - **Redis**: Armazenamento em cache chave-valor na memória de altíssima velocidade para sessões e filas das aplicações.
 - **RabbitMQ**: Message broker (mensageria) robusto utilizado para o enfileiramento assíncrono de tarefas pesadas.
+- **MinIO S3**: Armazenamento de objetos compatível com Amazon S3 de alta velocidade com API e Console Web.
 - **Chatwoot (Admin & Sidekiq)**: Plataforma premium de atendimento omnichannel que unifica canais (WhatsApp, Instagram, Chat). A stack instala a API administrativa e os workers Sidekiq de processamento em segundo plano de forma otimizada.
 
 ### 🚀 Aplicativos Próprios / Autorais
 - **AgenteFlow (AI Agent Manager)**: Módulo autoral que gerencia e conecta fluxos complexos de agentes inteligentes de Inteligência Artificial para automação de atendimento e processos corporativos.
 - **ZapVoice**: Ferramenta premium de disparo em massa utilizando a API oficial do WhatsApp, permitindo a criação de funis de atendimento complexos de alta conversão.
 - **Gerenciador de Grupos do WhatsApp**: Sistema inteligente de distribuição de leads, monitoramento, aquecimento e administração em lote de múltiplos grupos de WhatsApp para lançamentos e funis perenes.
+- **Backup Chatwoot & RabbitMQ**: Automação periódica e backup resiliente para banco de dados e filas de mensagens.
+- **Oráculo**: Sistema inteligente de monitoramento, métricas e auditoria.
+- **Formulário Personalizado**: Construtor de formulários interativos com integração webhook e coleta de leads.
+- **SmartVSL**: Plataforma de vídeo de vendas de alta conversão com controle de retenção.
+- **Smart Academy**: Plataforma completa de área de membros, cursos e treinamentos.
 
 ---
 
@@ -110,3 +116,31 @@ npm test
 - Todas as rotas administrativas exigem autenticação de usuário e validação estrita de `client_id` para prevenção de **IDOR** (Insecure Direct Object Reference).
 - Nunca armazene ou exiba segredos em logs ou telas sem a devida máscara.
 - As variáveis de ambiente devem ser configuradas usando o `.env` baseado no `.env.example`.
+
+---
+
+## 🛡️ Auditoria Automatizada de Bibliotecas Externas
+
+O projeto conta com um sistema completo de auditoria contínua de segurança tanto para o **Backend (Python)** quanto para o **Frontend (Node.js)**:
+
+1. **GitHub Actions CI/CD (.github/workflows/audit-dependencies.yml)**:
+   - Disparado automaticamente em todo push ou pull_request na branch main (ou manualmente via workflow_dispatch).
+   - Audita o Backend com pip-audit contra o banco oficial de vulnerabilidades (PyPA / OSV).
+   - Audita o Frontend com 
+pm audit.
+   - Gera um resumo com tabelas detalhadas diretamente no **GitHub Step Summary** e armazena o artefato 
+elatorio-auditoria-dependencias.
+
+2. **Script de Auditoria Unificado Local (ackend/scripts/audit_dependencies.py)**:
+   - Executa a auditoria completa em segundos na sua máquina de desenvolvimento.
+   - Suporta flags como --fail-on=critical|high|moderate, --output-file e --github-summary.
+   `ash
+   python backend/scripts/audit_dependencies.py
+   `
+
+3. **Hook de Git Pré-Push (.git/hooks/pre-push)**:
+   - Pode ser instalado com um comando simples:
+   `ash
+   python backend/scripts/setup_git_hooks.py
+   `
+   - Impede ou avisa sobre vulnerabilidades antes mesmo de autorizar o git push.

@@ -15,7 +15,15 @@ node_modules/
 *.db
 backend/database.db
 backend/settings.db
+data/
+backend/data/
+*.log
+backend/traceback_error.txt
 settings.db
+data/
+backend/data/
+*.log
+backend/traceback_error.txt
 
 # Caches e artefatos do Python
 __pycache__/
@@ -37,3 +45,5 @@ Thumbs.db
 .agents/
 output.txt
 scratch/
+backend/C*/
+backend/app/stack/

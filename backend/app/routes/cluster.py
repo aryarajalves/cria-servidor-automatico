@@ -5,13 +5,15 @@ import asyncio
 
 from app.state import install_status
 
+from typing import Optional
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 class ClusterNodeAddRequest(BaseModel):
     parent_host: str
     parent_username: str
-    parent_password: str
+    parent_password: Optional[str] = None
     node_id: int
     role: str
     parent_ip: str
@@ -20,13 +22,13 @@ class ClusterNodeAddRequest(BaseModel):
 class ClusterNodeRemoveRequest(BaseModel):
     parent_host: str
     parent_username: str
-    parent_password: str
+    parent_password: Optional[str] = None
     node_id: int
 
 class ClusterNodeChangeHostnameRequest(BaseModel):
     parent_host: str
     parent_username: str
-    parent_password: str
+    parent_password: Optional[str] = None
     node_swarm_id: str
     old_hostname: str
     new_hostname: str
@@ -45,7 +47,7 @@ def list_cluster_nodes_endpoint(parent_host: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/api/cluster/status")
-async def get_cluster_status_endpoint(parent_host: str, parent_username: str, parent_password: str):
+async def get_cluster_status_endpoint(parent_host: str, parent_username: str, parent_password: Optional[str] = None):
     """
     Verifica se o Swarm está ativo no pai e retorna os status reais dos nós no swarm.
     """

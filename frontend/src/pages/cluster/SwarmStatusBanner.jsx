@@ -15,9 +15,14 @@ const SwarmStatusBanner = ({
                         <ShieldAlert size={28} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white">Docker Swarm Inativo no Servidor Pai</h3>
-                        <p className="text-slate-400 text-sm mt-1">
-                            Para criar um cluster, você precisa inicializar o Docker Swarm neste servidor ativo para transformá-lo em um Manager/Leader.
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                            <h3 className="text-lg font-bold text-white">Docker Swarm Inativo no Servidor Pai</h3>
+                            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold tracking-wide">
+                                Apenas no Servidor Manager
+                            </span>
+                        </div>
+                        <p className="text-slate-300 text-sm mt-1.5 leading-relaxed">
+                            Para criar um cluster, execute esta ação <strong className="text-amber-300 font-semibold underline underline-offset-2">apenas no servidor que você quer que seja o Manager (Líder principal)</strong>. Não inicialize nos servidores que serão workers (eles serão adicionados automaticamente depois).
                         </p>
                     </div>
                 </div>

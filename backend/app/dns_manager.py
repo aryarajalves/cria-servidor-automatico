@@ -17,7 +17,7 @@ def list_zones(api_token):
     }
     
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)
         data = response.json() if response.content else {}
         
         if not response.ok:
@@ -70,7 +70,7 @@ def create_dns_record(api_token, zone_id, name, content, proxied=True):
     }
     
     try:
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=10)
         data = response.json()
         
         if not data.get("success"):
@@ -113,7 +113,7 @@ def list_dns_records(api_token, zone_id, ip_filter=None):
 
     try:
         while True:
-            response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=headers, params=params, timeout=10)
             data = response.json()
             
             if not data.get("success"):
@@ -159,7 +159,7 @@ def delete_dns_record(api_token, zone_id, record_id):
     logger.info(f"[DELETE DNS] URL: {url}")
 
     try:
-        response = requests.delete(url, headers=headers)
+        response = requests.delete(url, headers=headers, timeout=10)
         data = response.json()
         
         logger.info(f"[DELETE DNS] Status HTTP: {response.status_code}")
@@ -198,7 +198,7 @@ def update_dns_record(api_token, zone_id, record_id, name, content, proxied=True
     }
 
     try:
-        response = requests.put(url, headers=headers, json=payload)
+        response = requests.put(url, headers=headers, json=payload, timeout=10)
         data = response.json()
         
         if not data.get("success"):

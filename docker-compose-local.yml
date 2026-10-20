@@ -1,3 +1,5 @@
+name: autoserver
+
 services:
   db:
     image: postgres:15-alpine
@@ -9,19 +11,18 @@ services:
       - POSTGRES_USER=autoserver_user
       - POSTGRES_PASSWORD=autoserver_password
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ../backend/data/postgres:/var/lib/postgresql/data
 
   backend:
     build:
-      context: .
-      dockerfile: backend.Dockerfile
+      context: ..
+      dockerfile: docker/backend.Dockerfile
     container_name: autoserver-backend
     ports:
       - "8005:8000"
     volumes:
-      - ./backend:/app
-      - ./data:/app/data
-      - ./stacks_backups:/app/stacks_backups
+      - ../backend:/app
+      - ../stacks_backups:/app/stacks_backups
       - /app/__pycache__
     environment:
       - PYTHONUNBUFFERED=1
@@ -31,25 +32,22 @@ services:
       - DB_USER=autoserver_user
       - DB_PASSWORD=autoserver_password
     env_file:
-      - ./backend/.env
+      - ../backend/.env
     depends_on:
       - db
 
   frontend:
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: autoserver-frontend
     ports:
       - "5505:5505"
     volumes:
-      - ./frontend:/app
+      - ../frontend:/app
       - /app/node_modules
     depends_on:
       - backend
     environment:
       - VITE_API_URL=http://localhost:8005
     command: npm run dev -- --host --port 5505
-
-# volumes:
-#   pgdata:

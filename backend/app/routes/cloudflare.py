@@ -42,15 +42,31 @@ class DNSRecordUpdateRequest(BaseModel):
     content: str
     proxied: bool = True
 
+def resolve_cf_token(auth_token: Optional[str] = None, host: Optional[str] = None) -> Optional[str]:
+    """
+    Resolve o token Cloudflare priorizando o valor enviado, configurações por host e banco global.
+    """
+    if auth_token and auth_token.strip() and auth_token.strip().lower() != "env":
+        return auth_token.strip()
+    if host:
+        token = get_setting("cloudflare_token", host)
+        if token and token.strip():
+            return token.strip()
+    global_token = get_setting("cloudflare_token", "global")
+    if global_token and global_token.strip():
+        return global_token.strip()
+    env_token = os.getenv("CLOUDFLARE_API_TOKEN")
+    if env_token and env_token.strip():
+        return env_token.strip()
+    return None
+
 @router.post("/cloudflare/zones")
 def get_cf_zones(auth: CloudflareAuth):
     try:
-        # Prioridade absoluta: .env > Token enviado > Banco de Dados (Global)
-        raw_token = os.getenv("CLOUDFLARE_API_TOKEN") or auth.api_token or get_setting("cloudflare_token", 'global')
-        if not raw_token:
-            raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado. Adicione CLOUDFLARE_API_TOKEN no .env ou vá em Configurações > Cloudflare API.")
+        token = resolve_cf_token(auth.api_token, auth.host)
+        if not token:
+            raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado. Vá em Configurações > Cloudflare API e insira o Token.")
             
-        token = raw_token.strip()
         zones = list_zones(token)
         return {"zones": zones}
     except Exception as e:
@@ -60,7 +76,7 @@ def get_cf_zones(auth: CloudflareAuth):
 @router.post("/cloudflare/create")
 def create_cf_record(req: DNSRecordRequest):
     try:
-        token = os.getenv("CLOUDFLARE_API_TOKEN") or req.api_token or get_setting("cloudflare_token", 'global')
+        token = resolve_cf_token(req.api_token, req.host)
         if not token:
             raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado.")
             
@@ -79,7 +95,7 @@ def create_cf_record(req: DNSRecordRequest):
 @router.post("/cloudflare/records")
 def list_cf_records(req: DNSListRequest):
     try:
-        token = os.getenv("CLOUDFLARE_API_TOKEN") or req.api_token or get_setting("cloudflare_token", 'global')
+        token = resolve_cf_token(req.api_token, req.host)
         if not token:
             raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado.")
 
@@ -92,7 +108,7 @@ def list_cf_records(req: DNSListRequest):
 @router.post("/cloudflare/delete")
 def delete_cf_record(req: DNSRecordDeleteRequest):
     try:
-        token = os.getenv("CLOUDFLARE_API_TOKEN") or req.api_token or get_setting("cloudflare_token", 'global')
+        token = resolve_cf_token(req.api_token, req.host)
         if not token:
             raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado.")
             
@@ -105,7 +121,7 @@ def delete_cf_record(req: DNSRecordDeleteRequest):
 @router.post("/cloudflare/update")
 def update_cf_record(req: DNSRecordUpdateRequest):
     try:
-        token = os.getenv("CLOUDFLARE_API_TOKEN") or req.api_token or get_setting("cloudflare_token", 'global')
+        token = resolve_cf_token(req.api_token, req.host)
         if not token:
             raise HTTPException(status_code=400, detail="Token da Cloudflare não configurado.")
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Box, Share2, Activity, Terminal, Check, X, Info, Zap, WifiOff, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Box, Share2, Activity, Terminal, Check, X, Info, Zap, WifiOff, RefreshCw, ArrowLeft, Sparkles } from 'lucide-react';
 import Button from '../components/ui/Button';
 import StatusModal from '../components/StatusModal';
 import AppInstallModal from '../components/AppInstallModal';
@@ -12,7 +12,10 @@ import SetupStep from './stacks/SetupStep';
 import AppCard from './stacks/AppCard';
 import ExternalAppModal from './stacks/ExternalAppModal';
 import ErrorBoundary from './stacks/ErrorBoundary';
+import AutoSetupModal from './stacks/AutoSetupModal';
+import AutoSetupProgressModal from './stacks/AutoSetupProgressModal';
 import { apps } from './stacks/constants';
+import api from '../services/api';
 
 const Stacks = () => {
     const {
@@ -53,6 +56,22 @@ const Stacks = () => {
         clearSelectedServer
     } = useStacks();
     const navigate = useNavigate();
+
+    const [showAutoSetupModal, setShowAutoSetupModal] = useState(false);
+    const [showAutoSetupProgress, setShowAutoSetupProgress] = useState(false);
+
+    const handleStartAutoSetup = async (payload) => {
+        try {
+            await api.post('/auto-setup', payload);
+            setShowAutoSetupModal(false);
+            setShowAutoSetupProgress(true);
+        } catch (err) {
+            setToast({
+                message: err.response?.data?.detail || err.message || 'Erro ao iniciar setup automático',
+                type: 'error'
+            });
+        }
+    };
 
     if (!selectedServer) return <Navigate to="/connect" />;
 
@@ -154,6 +173,28 @@ const Stacks = () => {
         <ErrorBoundary>
             <div className="space-y-12">
 
+                {/* Modais de Auto Setup */}
+                {showAutoSetupModal && (
+                    <AutoSetupModal
+                        isOpen={showAutoSetupModal}
+                        onClose={() => setShowAutoSetupModal(false)}
+                        onStartSetup={handleStartAutoSetup}
+                        selectedServer={selectedServer}
+                    />
+                )}
+
+                {showAutoSetupProgress && (
+                    <AutoSetupProgressModal
+                        isOpen={showAutoSetupProgress}
+                        onClose={() => {
+                            setShowAutoSetupProgress(false);
+                            fetchStatus();
+                        }}
+                        selectedServer={selectedServer}
+                        onFinished={() => fetchStatus()}
+                    />
+                )}
+
                 {configModal && (
                     <AppInstallModal
                         isOpen={!!configModal}
@@ -166,9 +207,18 @@ const Stacks = () => {
 
                 {/* STEPS PREPARAÇÃO */}
                 <section>
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-bold">Setup Inicial</h2>
-                        <p className="text-slate-400">Prepare sua infraestrutura antes de instalar as aplicações</p>
+                    <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 className="text-2xl font-bold">Setup Inicial</h2>
+                            <p className="text-slate-400">Prepare sua infraestrutura antes de instalar as aplicações</p>
+                        </div>
+                        <Button
+                            onClick={() => setShowAutoSetupModal(true)}
+                            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/25 flex items-center gap-2 self-start sm:self-auto border border-blue-400/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            <Sparkles size={16} className="text-amber-300 animate-pulse" />
+                            <span>⚡ Setup Automático do Servidor</span>
+                        </Button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

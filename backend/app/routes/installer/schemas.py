@@ -1,10 +1,13 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 class ServerCredentials(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    auth_type: Optional[str] = "password"
+    key_id: Optional[int] = None
 
 class NetworkCreateRequest(ServerCredentials):
     network_name: str = "network_swarm_public"
@@ -33,8 +36,11 @@ class RabbitMQInstallRequest(ServerCredentials):
 
 class EnvUpdate(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    auth_type: Optional[str] = "password"
+    key_id: Optional[int] = None
     stack_name: str
     env_vars: dict
 
@@ -55,8 +61,11 @@ class AIAgentManagerInstallRequest(ServerCredentials):
 
 class ZapVoiceRequest(BaseModel):
     host: str
+    port: Optional[int] = 22
     username: str
-    password: str
+    password: Optional[str] = None
+    auth_type: Optional[str] = "password"
+    key_id: Optional[int] = None
     chatwoot_base_url: str 
     postgres_password: str
     super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
@@ -67,6 +76,30 @@ class GerenciadorWhatsAppInstallRequest(ServerCredentials):
     super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
     backend_domain: str
     frontend_domain: str
+    overwrite: bool = False
+
+class FormularioPersonalizadoInstallRequest(ServerCredentials):
+    postgres_password: Optional[str] = None
+    super_admin_name: Optional[str] = "Aryaraj"
+    super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
+    backend_domain: str
+    frontend_domain: str
+    overwrite: bool = False
+
+class SmartVSLInstallRequest(ServerCredentials):
+    postgres_password: Optional[str] = None
+    super_admin_email: Optional[str] = "aryarajmarketing@gmail.com"
+    backend_domain: str
+    frontend_domain: str
+    overwrite: bool = False
+
+class SmartAcademyInstallRequest(ServerCredentials):
+    postgres_password: Optional[str] = None
+    superadmin_name: Optional[str] = "Aryaraj"
+    superadmin_email: Optional[str] = "aryarajmarketing@gmail.com"
+    backend_domain: str
+    frontend_domain: str
+    openai_api_key: Optional[str] = ""
     overwrite: bool = False
 
 class MinioInstallRequest(ServerCredentials):
@@ -91,6 +124,7 @@ class ExternalStackRequest(ServerCredentials):
     email: Optional[str] = None
     password: Optional[str] = None
     version: Optional[str] = None
+
 class BackupChatwooRabbitInstallRequest(ServerCredentials):
     postgres_password: Optional[str] = None
     base_url: str
@@ -119,4 +153,25 @@ class OraculoInstallRequest(ServerCredentials):
     dashboard_user_name: Optional[str] = "Admin"
     overwrite: bool = False
 
-
+class AutoSetupRequest(ServerCredentials):
+    install_docker: bool = True
+    install_swarm: bool = True
+    install_network: bool = True
+    install_ctop: bool = True
+    install_traefik: bool = True
+    traefik_email: Optional[str] = "aryarajmarketing@gmail.com"
+    install_portainer: bool = True
+    portainer_domain: Optional[str] = None
+    portainer_password: Optional[str] = None
+    install_postgres: bool = True
+    postgres_password: Optional[str] = None
+    install_redis: bool = True
+    install_rabbitmq: bool = True
+    rabbitmq_user: Optional[str] = "admin"
+    rabbitmq_password: Optional[str] = None
+    install_minio: bool = False
+    minio_console_url: Optional[str] = None
+    minio_server_url: Optional[str] = None
+    minio_root_user: Optional[str] = "admin"
+    minio_root_password: Optional[str] = None
+    custom_apps: Optional[List[Dict[str, Any]]] = []

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useServer } from '../../context/ServerContext';
+import api from '../../services/api';
 
 export const useCluster = () => {
     const { selectedServer, servers } = useServer();
@@ -26,6 +27,9 @@ export const useCluster = () => {
     
     // Status de ativação do swarm no pai
     const [isActivatingSwarm, setIsActivatingSwarm] = useState(false);
+    const [showInitSwarmModal, setShowInitSwarmModal] = useState(false);
+    const [initSwarmStatus, setInitSwarmStatus] = useState('idle'); // idle, pending, running, success, error
+    const [initSwarmMessage, setInitSwarmMessage] = useState('');
 
     // Edição de Hostname
     const [editingNodeId, setEditingNodeId] = useState(null);
@@ -58,8 +62,7 @@ export const useCluster = () => {
         if (showProgressModal && (progressStatus === 'running' || progressStatus === 'pending')) {
             interval = setInterval(async () => {
                 try {
-                    const res = await fetch(`http://localhost:8005/install-status/cluster-add`);
-                    const data = await res.json();
+                    const { data } = await api.get('/install-status/cluster-add');
                     if (data && data.status) {
                         setProgressStatus(data.status);
                         setStepMessage(data.message || 'Processando...');
@@ -83,8 +86,7 @@ export const useCluster = () => {
         if (showHostnameProgressModal && (hostnameProgressStatus === 'running' || hostnameProgressStatus === 'pending')) {
             interval = setInterval(async () => {
                 try {
-                    const res = await fetch(`http://localhost:8005/install-status/cluster-hostname`);
-                    const data = await res.json();
+                    const { data } = await api.get('/install-status/cluster-hostname');
                     if (data && data.status) {
                         setHostnameProgressStatus(data.status);
                         setHostnameProgressMessage(data.message || 'Processando...');
@@ -107,10 +109,13 @@ export const useCluster = () => {
         setIsRefreshing(true);
         try {
             // 1. Buscar status real do Swarm
-            const statusRes = await fetch(
-                `http://localhost:8005/api/cluster/status?parent_host=${selectedServer.host}&parent_username=${selectedServer.username}&parent_password=${encodeURIComponent(selectedServer.password)}`
-            );
-            const statusData = await statusRes.json();
+            const { data: statusData } = await api.get('/api/cluster/status', {
+                params: {
+                    parent_host: selectedServer.host,
+                    parent_username: selectedServer.username,
+                    parent_password: selectedServer.password || ''
+                }
+            });
             
             const childStatus = statusData.is_child || false;
             setIsChildNode(childStatus);
@@ -120,8 +125,9 @@ export const useCluster = () => {
 
             // 2. Buscar nós cadastrados no banco (apenas se não for filho)
             if (!childStatus) {
-                const dbNodesRes = await fetch(`http://localhost:8005/api/cluster/nodes?parent_host=${selectedServer.host}`);
-                const dbNodesData = await dbNodesRes.json();
+                const { data: dbNodesData } = await api.get('/api/cluster/nodes', {
+                    params: { parent_host: selectedServer.host }
+                });
                 setDbNodes(Array.isArray(dbNodesData) ? dbNodesData : []);
             } else {
                 setDbNodes([]);
@@ -137,35 +143,49 @@ export const useCluster = () => {
     const handleInitSwarm = async () => {
         if (!selectedServer) return;
         setIsActivatingSwarm(true);
+        setShowInitSwarmModal(true);
+        setInitSwarmStatus('pending');
+        setInitSwarmMessage('Conectando ao servidor e enviando comando de inicialização...');
         try {
-            const res = await fetch('http://localhost:8005/init-swarm', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    host: selectedServer.host,
-                    username: selectedServer.username,
-                    password: selectedServer.password
-                })
+            const { data } = await api.post('/init-swarm', {
+                host: selectedServer.host,
+                port: selectedServer.port || 22,
+                username: selectedServer.username,
+                password: selectedServer.password,
+                auth_type: selectedServer.auth_type,
+                key_id: selectedServer.key_id
             });
-            const data = await res.json();
+            setInitSwarmStatus('running');
+            setInitSwarmMessage(data?.message || 'Inicializando o modo cluster (docker swarm init)...');
             
             // Monitora o status de ativação (Swarm)
             let interval = setInterval(async () => {
-                const statusRes = await fetch('http://localhost:8005/install-status/swarm');
-                const statusData = await statusRes.json();
-                if (statusData.status === 'success') {
-                    clearInterval(interval);
-                    setIsActivatingSwarm(false);
-                    fetchClusterData();
-                } else if (statusData.status === 'error') {
-                    clearInterval(interval);
-                    setIsActivatingSwarm(false);
-                    alert(`Erro ao ativar Swarm: ${statusData.message}`);
+                try {
+                    const { data: statusData } = await api.get('/install-status/swarm');
+                    if (statusData.status === 'success') {
+                        clearInterval(interval);
+                        setIsActivatingSwarm(false);
+                        setInitSwarmStatus('success');
+                        setInitSwarmMessage(statusData.message || 'Swarm inicializado com sucesso!');
+                        fetchClusterData();
+                    } else if (statusData.status === 'error') {
+                        clearInterval(interval);
+                        setIsActivatingSwarm(false);
+                        setInitSwarmStatus('error');
+                        setInitSwarmMessage(statusData.message || 'Erro ao ativar Swarm.');
+                    } else if (statusData.status === 'running') {
+                        setInitSwarmMessage(statusData.message || 'Inicializando Swarm...');
+                    }
+                } catch (pollErr) {
+                    console.error("Erro no polling do Swarm:", pollErr);
                 }
             }, 2000);
         } catch (err) {
             console.error("Erro ao iniciar Swarm:", err);
             setIsActivatingSwarm(false);
+            setInitSwarmStatus('error');
+            const detailMsg = err.response?.data?.detail || err.message || 'Erro de comunicação ao inicializar o Swarm.';
+            setInitSwarmMessage(detailMsg);
         }
     };
 
@@ -180,30 +200,19 @@ export const useCluster = () => {
         setShowProgressModal(true);
 
         try {
-            const res = await fetch('http://localhost:8005/api/cluster/nodes', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    parent_host: selectedServer.host,
-                    parent_username: selectedServer.username,
-                    parent_password: selectedServer.password,
-                    node_id: parseInt(selectedChildId),
-                    role: nodeRole,
-                    parent_ip: parentIp,
-                    install_docker: installDocker
-                })
+            await api.post('/api/cluster/nodes', {
+                parent_host: selectedServer.host,
+                parent_username: selectedServer.username,
+                parent_password: selectedServer.password,
+                node_id: parseInt(selectedChildId),
+                role: nodeRole,
+                parent_ip: parentIp,
+                install_docker: installDocker
             });
-            
-            if (res.ok) {
-                setProgressStatus('running');
-            } else {
-                const data = await res.json();
-                setProgressStatus('error');
-                setStepMessage(data.detail || 'Ocorreu um erro ao processar a requisição.');
-            }
+            setProgressStatus('running');
         } catch (err) {
             setProgressStatus('error');
-            setStepMessage('Erro na comunicação com a API.');
+            setStepMessage(err.response?.data?.detail || 'Erro na comunicação com a API.');
         } finally {
             setIsSubmitting(false);
         }
@@ -216,29 +225,18 @@ export const useCluster = () => {
         setDeleteErrorMessage('');
 
         try {
-            const res = await fetch('http://localhost:8005/api/cluster/nodes/remove', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    parent_host: selectedServer.host,
-                    parent_username: selectedServer.username,
-                    parent_password: selectedServer.password,
-                    node_id: selectedNodeToDelete.node_id
-                })
+            await api.post('/api/cluster/nodes/remove', {
+                parent_host: selectedServer.host,
+                parent_username: selectedServer.username,
+                parent_password: selectedServer.password,
+                node_id: selectedNodeToDelete.node_id
             });
-            
-            if (res.ok) {
-                setDeleteProgressStatus('success');
-                setTimeout(fetchClusterData, 3000);
-            } else {
-                const data = await res.json();
-                setDeleteProgressStatus('error');
-                setDeleteErrorMessage(data.detail || 'Ocorreu um erro ao tentar remover o nó do cluster.');
-            }
+            setDeleteProgressStatus('success');
+            setTimeout(fetchClusterData, 3000);
         } catch (err) {
             console.error("Erro ao remover nó:", err);
             setDeleteProgressStatus('error');
-            setDeleteErrorMessage('Erro de comunicação com o servidor.');
+            setDeleteErrorMessage(err.response?.data?.detail || 'Erro de comunicação com o servidor.');
         }
     };
 
@@ -253,29 +251,18 @@ export const useCluster = () => {
         setEditingNodeId(null);
 
         try {
-            const res = await fetch('http://localhost:8005/api/cluster/nodes/change-hostname', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    parent_host: selectedServer.host,
-                    parent_username: selectedServer.username,
-                    parent_password: selectedServer.password,
-                    node_swarm_id: editingNodeId,
-                    old_hostname: editingOldHostname,
-                    new_hostname: newHostnameValue
-                })
+            await api.post('/api/cluster/nodes/change-hostname', {
+                parent_host: selectedServer.host,
+                parent_username: selectedServer.username,
+                parent_password: selectedServer.password,
+                node_swarm_id: editingNodeId,
+                old_hostname: editingOldHostname,
+                new_hostname: newHostnameValue
             });
-
-            if (res.ok) {
-                setHostnameProgressStatus('running');
-            } else {
-                const data = await res.json();
-                setHostnameProgressStatus('error');
-                setHostnameProgressMessage(data.detail || 'Erro ao processar alteração de hostname.');
-            }
+            setHostnameProgressStatus('running');
         } catch (err) {
             setHostnameProgressStatus('error');
-            setHostnameProgressMessage('Erro na comunicação com a API.');
+            setHostnameProgressMessage(err.response?.data?.detail || 'Erro na comunicação com a API.');
         } finally {
             setIsChangingHostname(false);
         }
@@ -309,6 +296,12 @@ export const useCluster = () => {
         progressStatus,
         setProgressStatus,
         isActivatingSwarm,
+        showInitSwarmModal,
+        setShowInitSwarmModal,
+        initSwarmStatus,
+        setInitSwarmStatus,
+        initSwarmMessage,
+        setInitSwarmMessage,
         editingNodeId,
         setEditingNodeId,
         editingOldHostname,
@@ -327,6 +320,7 @@ export const useCluster = () => {
         deleteProgressStatus,
         setDeleteProgressStatus,
         deleteErrorMessage,
+        setDeleteErrorMessage,
         fetchClusterData,
         handleInitSwarm,
         handleAddNodeSubmit,

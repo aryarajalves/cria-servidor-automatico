@@ -3,6 +3,8 @@ import os
 import time
 import json
 import secrets
+import uuid
+import base64
 import requests
 from fastapi import HTTPException
 from app.services.base_ssh import get_ssh_client, run_ssh_command, deploy_stack_remote, get_stack_path
@@ -281,6 +283,257 @@ def install_gerenciador_whatsapp(host, username, password, postgres_password, su
         return {"status": "success", "message": "Gerenciador Grupo WhatsApp instalado.", "credentials": {"user": "", "password": ""}}
     finally: client.close()
 
+def install_formulario_personalizado(host, username, password, postgres_password, backend_domain, frontend_domain, super_admin_name="Aryaraj", super_admin_email="aryarajmarketing@gmail.com"):
+    """
+    Instala a stack do Formulário Personalizado (FastAPI backend + React frontend).
+    Reutiliza credenciais existentes na reinstalação para não perder chaves de criptografia.
+    """
+    client = get_ssh_client(host, username, password)
+    try:
+        create_postgres_database(client, "formulario")
+
+        # Reutiliza credenciais existentes se a stack já foi deployada
+        existing_services = get_stack_services(client, "formulario-personalizado")
+        if not existing_services:
+            existing_services = get_stack_services(client, "formulario_personalizado")
+
+        if existing_services:
+            existing_env = get_service_env_vars(client, existing_services[0])
+            secret_key = existing_env.get("SECRET_KEY") or str(uuid.uuid4())
+            pepper = existing_env.get("SECURITY_PASSWORD_PEPPER") or str(uuid.uuid4())
+            encryption_key = existing_env.get("SECURITY_ENCRYPTION_KEY") or base64.urlsafe_b64encode(secrets.token_bytes(32)).decode()
+            superadmin_password = existing_env.get("SUPERADMIN_PASSWORD") or secrets.token_urlsafe(16)
+            if existing_env.get("SUPERADMIN_EMAIL"):
+                super_admin_email = existing_env.get("SUPERADMIN_EMAIL")
+            if existing_env.get("SUPERADMIN_NAME"):
+                super_admin_name = existing_env.get("SUPERADMIN_NAME")
+            logger.info("Formulário Personalizado: reutilizando credenciais existentes da stack.")
+        else:
+            secret_key = str(uuid.uuid4())
+            pepper = str(uuid.uuid4())
+            encryption_key = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode()
+            superadmin_password = secrets.token_urlsafe(16)
+            logger.info("Formulário Personalizado: gerando novas credenciais de segurança.")
+
+        backend_domain = backend_domain.replace("https://", "").replace("http://", "").strip("/")
+        frontend_domain = frontend_domain.replace("https://", "").replace("http://", "").strip("/")
+
+        stack_path = get_stack_path("formulario_personalizado.yml")
+        with open(stack_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        brevo_api_key = os.getenv("BREVO_API_KEY", "")
+        brevo_sender_email = "phasprodutosnaturais@gmail.com"
+        brevo_sender_name = "Formulario Personalizado"
+        backblaze_endpoint = "https://s3.us-west-004.backblazeb2.com"
+        backblaze_key_id = os.getenv("BACKBLAZE_KEY_ID", "")
+        backblaze_app_key = os.getenv("BACKBLAZE_APP_KEY", "")
+        backblaze_bucket = "zap-voice"
+        backblaze_cdn_url = "https://s3.us-west-004.backblazeb2.com/zap-voice"
+        b2_folder = "Formulario"
+        b2_retention_max = "30"
+
+        content = content.replace("{Senha_Postgres}", postgres_password or "") \
+                         .replace("{BACKEND_DOMAIN}", backend_domain) \
+                         .replace("{FRONTEND_DOMAIN}", frontend_domain) \
+                         .replace("{SECRET_KEY}", secret_key) \
+                         .replace("{SECURITY_PASSWORD_PEPPER}", pepper) \
+                         .replace("{SECURITY_ENCRYPTION_KEY}", encryption_key) \
+                         .replace("{SUPERADMIN_NAME}", super_admin_name or "Aryaraj") \
+                         .replace("{SUPERADMIN_EMAIL}", super_admin_email or "aryarajmarketing@gmail.com") \
+                         .replace("{SUPERADMIN_PASSWORD}", superadmin_password) \
+                         .replace("{BREVO_API_KEY}", brevo_api_key) \
+                         .replace("{BREVO_SENDER_EMAIL}", brevo_sender_email) \
+                         .replace("{BREVO_SENDER_NAME}", brevo_sender_name) \
+                         .replace("{BACKBLAZE_ENDPOINT_URL}", backblaze_endpoint) \
+                         .replace("{BACKBLAZE_KEY_ID}", backblaze_key_id) \
+                         .replace("{BACKBLAZE_APPLICATION_KEY}", backblaze_app_key) \
+                         .replace("{BACKBLAZE_BUCKET_NAME}", backblaze_bucket) \
+                         .replace("{BACKBLAZE_CDN_URL}", backblaze_cdn_url) \
+                         .replace("{B2_FOLDER}", b2_folder) \
+                         .replace("{B2_RETENTION_MAX}", b2_retention_max) \
+                         .replace("{GOOGLE_CLIENT_ID}", "") \
+                         .replace("{GOOGLE_CLIENT_SECRET}", "") \
+                         .replace("{GOOGLE_REDIRECT_URI}", "")
+
+        deploy_stack_remote(client, "formulario-personalizado", content)
+        save_stack_credentials(host, "formulario-personalizado", super_admin_email, superadmin_password)
+        return {
+            "status": "success",
+            "message": "Formulário Personalizado instalado com sucesso.",
+            "credentials": {
+                "user": super_admin_email,
+                "password": superadmin_password
+            }
+        }
+    finally:
+        client.close()
+
+def install_smartvsl(host, username, password, postgres_password, backend_domain, frontend_domain, super_admin_email="aryarajmarketing@gmail.com"):
+    """
+    Instala a stack do SmartVSL (FastAPI backend + React Vite frontend).
+    Em servidores novos, cria a base de dados PostgreSQL como 'smartvsl'.
+    Se a stack 'clone-vturb' já existir com 'vturb_db', preserva a base existente.
+    """
+    client = get_ssh_client(host, username, password)
+    try:
+        # Verifica se a stack clone-vturb ou smartvsl já existe
+        existing_services = get_stack_services(client, "clone-vturb")
+        if not existing_services:
+            existing_services = get_stack_services(client, "smartvsl")
+
+        db_name = "smartvsl"
+        if existing_services:
+            existing_env = get_service_env_vars(client, existing_services[0])
+            jwt_secret_key = existing_env.get("JWT_SECRET_KEY") or str(uuid.uuid4())
+            super_admin_password = existing_env.get("SUPER_ADMIN_PASSWORD") or secrets.token_urlsafe(16)
+            if existing_env.get("SUPER_ADMIN_EMAIL"):
+                super_admin_email = existing_env.get("SUPER_ADMIN_EMAIL")
+            
+            # Se já usava vturb_db, mantém vturb_db
+            db_url = existing_env.get("DATABASE_URL", "")
+            if "vturb_db" in db_url:
+                db_name = "vturb_db"
+            logger.info(f"SmartVSL: reutilizando credenciais existentes da stack (Banco: {db_name}).")
+        else:
+            jwt_secret_key = str(uuid.uuid4())
+            super_admin_password = secrets.token_urlsafe(16)
+            logger.info("SmartVSL: gerando novas credenciais e configurando banco 'smartvsl'.")
+
+        create_postgres_database(client, db_name)
+
+        backend_domain = backend_domain.replace("https://", "").replace("http://", "").strip("/")
+        frontend_domain = frontend_domain.replace("https://", "").replace("http://", "").strip("/")
+
+        stack_path = get_stack_path("smartvsl.yml")
+        with open(stack_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        brevo_api_key = os.getenv("BREVO_API_KEY", "")
+        brevo_sender_email = "phasprodutosnaturais@gmail.com"
+        backblaze_key_id = os.getenv("BACKBLAZE_KEY_ID", "")
+        backblaze_app_key = os.getenv("BACKBLAZE_APP_KEY", "")
+        backblaze_bucket = "zap-voice"
+        backblaze_endpoint = "https://s3.us-west-004.backblazeb2.com"
+        backblaze_cdn_url = "https://midia.aryaraj.shop/file/zap-voice"
+
+        content = content.replace("{DB_NAME}", db_name) \
+                         .replace("{Senha_Postgres}", postgres_password or "") \
+                         .replace("{BACKEND_DOMAIN}", backend_domain) \
+                         .replace("{FRONTEND_DOMAIN}", frontend_domain) \
+                         .replace("{JWT_SECRET_KEY}", jwt_secret_key) \
+                         .replace("{SUPER_ADMIN_EMAIL}", super_admin_email or "aryarajmarketing@gmail.com") \
+                         .replace("{SUPER_ADMIN_PASSWORD}", super_admin_password) \
+                         .replace("{BREVO_API_KEY}", brevo_api_key) \
+                         .replace("{BREVO_SENDER_EMAIL}", brevo_sender_email) \
+                         .replace("{BACKBLAZE_KEY_ID}", backblaze_key_id) \
+                         .replace("{BACKBLAZE_APPLICATION_KEY}", backblaze_app_key) \
+                         .replace("{BACKBLAZE_BUCKET_NAME}", backblaze_bucket) \
+                         .replace("{BACKBLAZE_ENDPOINT_URL}", backblaze_endpoint) \
+                         .replace("{BACKBLAZE_CDN_URL}", backblaze_cdn_url)
+
+        deploy_stack_remote(client, "clone-vturb", content)
+        save_stack_credentials(host, "clone-vturb", super_admin_email, super_admin_password)
+        return {
+            "status": "success",
+            "message": "SmartVSL instalado com sucesso.",
+            "credentials": {
+                "user": super_admin_email,
+                "password": super_admin_password
+            }
+        }
+    finally:
+        client.close()
+
+def install_smartacademy(host, username, password, postgres_password, backend_domain, frontend_domain,
+                         superadmin_name="Aryaraj", superadmin_email="aryarajmarketing@gmail.com",
+                         openai_api_key=""):
+    """
+    Instala a stack do Smart Academy (FastAPI backend + worker background + React Nginx frontend).
+    Em servidores novos, cria a base de dados PostgreSQL como 'smartacademy'.
+    Se a stack 'gestao-aulas' já existir com 'gestaoaulas', preserva a base existente e credenciais.
+    """
+    client = get_ssh_client(host, username, password)
+    try:
+        existing_services = get_stack_services(client, "gestao-aulas")
+        if not existing_services:
+            existing_services = get_stack_services(client, "smartacademy")
+
+        db_name = "smartacademy"
+        if existing_services:
+            existing_env = get_service_env_vars(client, existing_services[0])
+            secret_key = existing_env.get("SECRET_KEY") or str(uuid.uuid4())
+            security_pepper = existing_env.get("SECURITY_PASSWORD_PEPPER") or str(uuid.uuid4())
+            superadmin_password = existing_env.get("SUPERADMIN_PASSWORD") or secrets.token_urlsafe(16)
+            if existing_env.get("SUPERADMIN_EMAIL"):
+                superadmin_email = existing_env.get("SUPERADMIN_EMAIL")
+            if existing_env.get("SUPERADMIN_NAME"):
+                superadmin_name = existing_env.get("SUPERADMIN_NAME")
+            if not openai_api_key and existing_env.get("OPENAI_API_KEY"):
+                openai_api_key = existing_env.get("OPENAI_API_KEY")
+
+            db_url = existing_env.get("DATABASE_URL", "")
+            if "gestaoaulas" in db_url:
+                db_name = "gestaoaulas"
+            logger.info(f"Smart Academy: reutilizando credenciais existentes da stack (Banco: {db_name}).")
+        else:
+            secret_key = str(uuid.uuid4())
+            security_pepper = str(uuid.uuid4())
+            superadmin_password = secrets.token_urlsafe(16)
+            logger.info("Smart Academy: gerando novas credenciais e configurando banco 'smartacademy'.")
+
+        create_postgres_database(client, db_name)
+
+        backend_domain = backend_domain.replace("https://", "").replace("http://", "").strip("/")
+        frontend_domain = frontend_domain.replace("https://", "").replace("http://", "").strip("/")
+
+        stack_path = get_stack_path("smartacademy.yml")
+        with open(stack_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        brevo_api_key = os.getenv("BREVO_API_KEY", "")
+        brevo_sender_email = "phasprodutosnaturais@gmail.com"
+        brevo_sender_name = "Smart Academy"
+        backblaze_endpoint = "https://s3.us-west-004.backblazeb2.com"
+        backblaze_key_id = os.getenv("BACKBLAZE_KEY_ID", "")
+        backblaze_app_key = os.getenv("BACKBLAZE_APP_KEY", "")
+        backblaze_bucket = "zap-voice"
+        backblaze_cdn_url = "https://s3.us-west-004.backblazeb2.com/zap-voice"
+        b2_folder = "SmartAcademy/backups/"
+
+        content = content.replace("{DB_NAME}", db_name) \
+                         .replace("{Senha_Postgres}", postgres_password or "") \
+                         .replace("{BACKEND_DOMAIN}", backend_domain) \
+                         .replace("{FRONTEND_DOMAIN}", frontend_domain) \
+                         .replace("{SECRET_KEY}", secret_key) \
+                         .replace("{SECURITY_PASSWORD_PEPPER}", security_pepper) \
+                         .replace("{SUPERADMIN_NAME}", superadmin_name) \
+                         .replace("{SUPERADMIN_EMAIL}", superadmin_email) \
+                         .replace("{SUPERADMIN_PASSWORD}", superadmin_password) \
+                         .replace("{BREVO_API_KEY}", brevo_api_key) \
+                         .replace("{BREVO_SENDER_EMAIL}", brevo_sender_email) \
+                         .replace("{BREVO_SENDER_NAME}", brevo_sender_name) \
+                         .replace("{BACKBLAZE_ENDPOINT_URL}", backblaze_endpoint) \
+                         .replace("{BACKBLAZE_KEY_ID}", backblaze_key_id) \
+                         .replace("{BACKBLAZE_APPLICATION_KEY}", backblaze_app_key) \
+                         .replace("{BACKBLAZE_BUCKET_NAME}", backblaze_bucket) \
+                         .replace("{BACKBLAZE_CDN_URL}", backblaze_cdn_url) \
+                         .replace("{B2_FOLDER}", b2_folder) \
+                         .replace("{OPENAI_API_KEY}", openai_api_key or "")
+
+        deploy_stack_remote(client, "gestao-aulas", content)
+        save_stack_credentials(host, "gestao-aulas", superadmin_email, superadmin_password)
+        return {
+            "status": "success",
+            "message": "Smart Academy instalado com sucesso.",
+            "credentials": {
+                "user": superadmin_email,
+                "password": superadmin_password
+            }
+        }
+    finally:
+        client.close()
+
 def install_backup_chatwoo_rabbit(host, username, password, postgres_password, base_url,
                                   s3_endpoint_url, s3_access_key_id, s3_secret_access_key, s3_bucket_name,
                                   rabbitmq_host, rabbitmq_management_port, rabbitmq_user, rabbitmq_password,
@@ -492,6 +745,12 @@ def uninstall_stack(host, username, password, stack_id, stack_name):
             "gerenciador_whatsapp": {"volumes": [], "databases": ["zapgroup"]},
             "backup_chatwoo_rabbit": {"volumes": [], "databases": ["backup_manager"]},
             "oraculo": {"volumes": ["oraculo_data"], "databases": ["oraculo"]},
+            "formulario_personalizado": {"volumes": ["formulario_backups_local"], "databases": ["formulario"]},
+            "formulario-personalizado": {"volumes": ["formulario_backups_local"], "databases": ["formulario"]},
+            "smartvsl": {"volumes": ["backend_uploads"], "databases": ["smartvsl", "vturb_db"]},
+            "clone-vturb": {"volumes": ["backend_uploads"], "databases": ["smartvsl", "vturb_db"]},
+            "smartacademy": {"volumes": ["area_de_membros_uploads"], "databases": ["smartacademy", "gestaoaulas"]},
+            "gestao-aulas": {"volumes": ["area_de_membros_uploads"], "databases": ["smartacademy", "gestaoaulas"]},
         }
 
         target = cleanup_map.get(stack_id)

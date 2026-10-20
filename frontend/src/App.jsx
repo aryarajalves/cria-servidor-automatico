@@ -10,6 +10,7 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Cluster from './pages/Cluster';
 import LogViewer from './pages/LogViewer';
+import SshKeys from './pages/SshKeys';
 
 // Protected Route for the Application itself
 const ProtectedRoute = ({ children }) => {
@@ -49,6 +50,7 @@ function App() {
                             <Layout>
                                 <Routes>
                                     <Route path="/connect" element={<Connect />} />
+                                    <Route path="/keys" element={<SshKeys />} />
                                     
                                     <Route path="/" element={
                                         <VPSProtectedRoute>

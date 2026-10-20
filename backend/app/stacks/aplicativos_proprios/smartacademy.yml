@@ -1,0 +1,198 @@
+version: "3.7"
+
+# ==============================================================================
+# Stack de Produção - Smart Academy (Área de Membros com IA)
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Serviço de Backend (FastAPI + Python)
+  # ----------------------------------------------------------------------------
+  area_aulas_backend:
+    image: aryalvesfernandes/area-de-membros:backend-1.1.1
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    volumes:
+      - area_de_membros_uploads:/app/app/uploads
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - network_swarm_public
+    environment:
+      - TZ=America/Sao_Paulo
+      - PROJECT_NAME=Smart Academy
+      - API_V1_STR=/api/v1
+      - SERVER_URL=https://{BACKEND_DOMAIN}
+      - FRONTEND_DOMAIN={FRONTEND_DOMAIN}
+      - API_DOMAIN={BACKEND_DOMAIN}
+      - VITE_API_BASE_URL=https://{FRONTEND_DOMAIN}
+
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/{DB_NAME}
+
+      - SECRET_KEY={SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - SECURITY_PASSWORD_PEPPER={SECURITY_PASSWORD_PEPPER}
+
+      - SUPERADMIN_NAME={SUPERADMIN_NAME}
+      - SUPERADMIN_EMAIL={SUPERADMIN_EMAIL}
+      - SUPERADMIN_PASSWORD={SUPERADMIN_PASSWORD}
+
+      - BREVO_API_KEY={BREVO_API_KEY}
+      - BREVO_SENDER_EMAIL={BREVO_SENDER_EMAIL}
+      - BREVO_SENDER_NAME={BREVO_SENDER_NAME}
+
+      - BACKBLAZE_ENDPOINT_URL={BACKBLAZE_ENDPOINT_URL}
+      - BACKBLAZE_KEY_ID={BACKBLAZE_KEY_ID}
+      - BACKBLAZE_APPLICATION_KEY={BACKBLAZE_APPLICATION_KEY}
+      - BACKBLAZE_BUCKET_NAME={BACKBLAZE_BUCKET_NAME}
+      - BACKBLAZE_CDN_URL={BACKBLAZE_CDN_URL}
+      - B2_FOLDER={B2_FOLDER}
+      - B2_RETENTION_MAX=30
+
+      - WORKER_RENEWAL_CHECK_INTERVAL_HOURS=24
+      - OPENAI_API_KEY={OPENAI_API_KEY}
+      - AGENTFLOW_API_URL=
+      - AGENTFLOW_API_KEY=
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 2048M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.smart_academy_backend.rule=Host(`{BACKEND_DOMAIN}`)
+        - traefik.http.routers.smart_academy_backend.entrypoints=websecure
+        - traefik.http.routers.smart_academy_backend.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.smart_academy_backend.service=smart_academy_backend
+        - traefik.http.services.smart_academy_backend.loadbalancer.server.port=8000
+        - traefik.http.services.smart_academy_backend.loadbalancer.passHostHeader=true
+
+  # ----------------------------------------------------------------------------
+  # 2. Serviço de Worker (Verificações Periódicas e Backups em Background)
+  # ----------------------------------------------------------------------------
+  area_aulas_worker:
+    image: aryalvesfernandes/area-de-membros:backend-1.1.1
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    command: ["python", "-m", "app.worker"]
+    volumes:
+      - area_de_membros_uploads:/app/app/uploads
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - network_swarm_public
+    environment:
+      - TZ=America/Sao_Paulo
+      - PROJECT_NAME=Smart Academy
+      - API_V1_STR=/api/v1
+      - SERVER_URL=https://{BACKEND_DOMAIN}
+      - FRONTEND_DOMAIN={FRONTEND_DOMAIN}
+      - API_DOMAIN={BACKEND_DOMAIN}
+      - VITE_API_BASE_URL=https://{FRONTEND_DOMAIN}
+
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/{DB_NAME}
+
+      - SECRET_KEY={SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - SECURITY_PASSWORD_PEPPER={SECURITY_PASSWORD_PEPPER}
+
+      - SUPERADMIN_NAME={SUPERADMIN_NAME}
+      - SUPERADMIN_EMAIL={SUPERADMIN_EMAIL}
+      - SUPERADMIN_PASSWORD={SUPERADMIN_PASSWORD}
+
+      - BREVO_API_KEY={BREVO_API_KEY}
+      - BREVO_SENDER_EMAIL={BREVO_SENDER_EMAIL}
+      - BREVO_SENDER_NAME={BREVO_SENDER_NAME}
+
+      - BACKBLAZE_ENDPOINT_URL={BACKBLAZE_ENDPOINT_URL}
+      - BACKBLAZE_KEY_ID={BACKBLAZE_KEY_ID}
+      - BACKBLAZE_APPLICATION_KEY={BACKBLAZE_APPLICATION_KEY}
+      - BACKBLAZE_BUCKET_NAME={BACKBLAZE_BUCKET_NAME}
+      - BACKBLAZE_CDN_URL={BACKBLAZE_CDN_URL}
+      - B2_FOLDER={B2_FOLDER}
+      - B2_RETENTION_MAX=30
+
+      - WORKER_RENEWAL_CHECK_INTERVAL_HOURS=24
+      - OPENAI_API_KEY={OPENAI_API_KEY}
+      - AGENTFLOW_API_URL=
+      - AGENTFLOW_API_KEY=
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+  # ----------------------------------------------------------------------------
+  # 3. Serviço de Frontend (Nginx + React App Compilado)
+  # ----------------------------------------------------------------------------
+  area_aulas_frontend:
+    image: aryalvesfernandes/area-de-membros:frontend-1.1.1
+    hostname: "{{.Service.Name}}.{{.Task.Slot}}"
+    networks:
+      - network_swarm_public
+    environment:
+      - TZ=America/Sao_Paulo
+      - PROJECT_NAME=Smart Academy
+      - API_V1_STR=/api/v1
+      - SERVER_URL=https://{BACKEND_DOMAIN}
+      - FRONTEND_DOMAIN={FRONTEND_DOMAIN}
+      - API_DOMAIN={BACKEND_DOMAIN}
+      - VITE_API_BASE_URL=https://{FRONTEND_DOMAIN}
+
+      - DATABASE_URL=postgresql://postgres:{Senha_Postgres}@postgres:5432/{DB_NAME}
+
+      - SECRET_KEY={SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - SECURITY_PASSWORD_PEPPER={SECURITY_PASSWORD_PEPPER}
+
+      - SUPERADMIN_NAME={SUPERADMIN_NAME}
+      - SUPERADMIN_EMAIL={SUPERADMIN_EMAIL}
+      - SUPERADMIN_PASSWORD={SUPERADMIN_PASSWORD}
+
+      - BREVO_API_KEY={BREVO_API_KEY}
+      - BREVO_SENDER_EMAIL={BREVO_SENDER_EMAIL}
+      - BREVO_SENDER_NAME={BREVO_SENDER_NAME}
+
+      - BACKBLAZE_ENDPOINT_URL={BACKBLAZE_ENDPOINT_URL}
+      - BACKBLAZE_KEY_ID={BACKBLAZE_KEY_ID}
+      - BACKBLAZE_APPLICATION_KEY={BACKBLAZE_APPLICATION_KEY}
+      - BACKBLAZE_BUCKET_NAME={BACKBLAZE_BUCKET_NAME}
+      - BACKBLAZE_CDN_URL={BACKBLAZE_CDN_URL}
+      - B2_FOLDER={B2_FOLDER}
+      - B2_RETENTION_MAX=30
+
+      - WORKER_RENEWAL_CHECK_INTERVAL_HOURS=24
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.smart_academy_frontend.rule=Host(`{FRONTEND_DOMAIN}`)
+        - traefik.http.routers.smart_academy_frontend.entrypoints=websecure
+        - traefik.http.routers.smart_academy_frontend.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.smart_academy_frontend.service=smart_academy_frontend
+        - traefik.http.services.smart_academy_frontend.loadbalancer.server.port=80
+        - traefik.http.services.smart_academy_frontend.loadbalancer.passHostHeader=true
+
+volumes:
+  area_de_membros_uploads:
+    external: false
+    name: area_de_membros_uploads
+
+networks:
+  network_swarm_public:
+    external: true
+    name: network_swarm_public

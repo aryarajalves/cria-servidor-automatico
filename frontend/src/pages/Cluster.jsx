@@ -6,6 +6,7 @@ import SwarmStatusBanner from './cluster/SwarmStatusBanner';
 import LinkedNodesCard from './cluster/LinkedNodesCard';
 import LiveSwarmTopologyCard from './cluster/LiveSwarmTopologyCard';
 import AddNodeModal from './cluster/AddNodeModal';
+import InitSwarmModal from './cluster/InitSwarmModal';
 import { AddNodeProgressModal, HostnameProgressModal, DeleteNodeModal } from './cluster/ProgressModals';
 
 const Cluster = () => {
@@ -33,6 +34,10 @@ const Cluster = () => {
         setShowProgressModal,
         progressStatus,
         isActivatingSwarm,
+        showInitSwarmModal,
+        setShowInitSwarmModal,
+        initSwarmStatus,
+        initSwarmMessage,
         editingNodeId,
         setEditingNodeId,
         newHostnameValue,
@@ -151,6 +156,14 @@ const Cluster = () => {
                 setShowProgressModal={setShowProgressModal}
                 progressStatus={progressStatus}
                 stepMessage={stepMessage}
+                fetchClusterData={fetchClusterData}
+            />
+
+            <InitSwarmModal
+                showInitSwarmModal={showInitSwarmModal}
+                setShowInitSwarmModal={setShowInitSwarmModal}
+                initSwarmStatus={initSwarmStatus}
+                initSwarmMessage={initSwarmMessage}
                 fetchClusterData={fetchClusterData}
             />
 

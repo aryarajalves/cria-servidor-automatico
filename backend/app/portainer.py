@@ -1,11 +1,12 @@
 import requests
+import requests
 import logging
 
 # Configura o logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_portainer_token(base_url, username, password, verify=True):
+def get_portainer_token(base_url, username, password, verify=True, timeout=7):
     """
     Autentica no Portainer e retorna o token JWT.
     """
@@ -18,7 +19,7 @@ def get_portainer_token(base_url, username, password, verify=True):
     
     print(f"DEBUG: Tentando autenticar em {url} com usuário {username}")
     try:
-        response = requests.post(url, json=payload, verify=verify)
+        response = requests.post(url, json=payload, verify=verify, timeout=timeout)
         response.raise_for_status()
         print("DEBUG: Autenticação bem sucedida.")
         return response.json().get("jwt")
@@ -28,7 +29,32 @@ def get_portainer_token(base_url, username, password, verify=True):
             print(f"ERRO: Detalhes da resposta: {e.response.text}")
         raise Exception(f"Falha na autenticação do Portainer: {e}")
 
-def get_first_swarm_endpoint_id(base_url, token=None, api_key=None, verify=True):
+def init_portainer_admin(base_url, username, password, verify=False, timeout=10):
+    """
+    Inicializa o usuário administrador do Portainer no primeiro boot.
+    """
+    base_url = base_url.rstrip('/')
+    url = f"{base_url}/api/users/admin/init"
+    payload = {
+        "Username": username,
+        "Password": password
+    }
+    try:
+        response = requests.post(url, json=payload, verify=verify, timeout=timeout)
+        if response.status_code in (200, 201):
+            logger.info("Admin do Portainer inicializado com sucesso!")
+            return {"status": "success", "data": response.json()}
+        elif response.status_code == 409:
+            logger.info("Admin do Portainer já foi inicializado anteriormente.")
+            return {"status": "already_initialized"}
+        else:
+            logger.warning(f"Resposta inesperada do Portainer admin/init: {response.status_code} {response.text}")
+            return None
+    except Exception as e:
+        logger.warning(f"Falha ao chamar admin/init do Portainer em {url}: {e}")
+        return None
+
+def get_first_swarm_endpoint_id(base_url, token=None, api_key=None, verify=True, timeout=7):
     """
     Busca o ID do primeiro endpoint (environment) do tipo Swarm disponível.
     Suporta Token (Bearer) ou API Key (X-API-Key).
@@ -46,7 +72,7 @@ def get_first_swarm_endpoint_id(base_url, token=None, api_key=None, verify=True)
     
     print(f"DEBUG: Buscando endpoints em {url}")
     try:
-        response = requests.get(url, headers=headers, verify=verify)
+        response = requests.get(url, headers=headers, verify=verify, timeout=timeout)
         response.raise_for_status()
         endpoints = response.json()
         
@@ -62,7 +88,7 @@ def get_first_swarm_endpoint_id(base_url, token=None, api_key=None, verify=True)
         print(f"ERRO: Falha ao listar endpoints do Portainer: {e}")
         raise Exception(f"Falha ao listar endpoints do Portainer: {e}")
 
-def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, token=None, api_key=None, verify=True):
+def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, token=None, api_key=None, verify=True, timeout=7):
     """
     Faz o deploy de uma stack no Portainer via API.
     Suporta Token (Bearer) ou API Key (X-API-Key).
@@ -81,7 +107,7 @@ def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, tok
         
     print(f"DEBUG: Verificando se stack {stack_name} já existe...")
     try:
-        response = requests.get(check_url, headers=headers, verify=verify)
+        response = requests.get(check_url, headers=headers, verify=verify, timeout=timeout)
         response.raise_for_status()
         stacks = response.json()
         
@@ -96,7 +122,7 @@ def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, tok
     swarm_id = None
     try:
         info_url = f"{base_url}/api/endpoints/{endpoint_id}/docker/info"
-        info_response = requests.get(info_url, headers=headers, verify=verify)
+        info_response = requests.get(info_url, headers=headers, verify=verify, timeout=timeout)
         info_response.raise_for_status()
         swarm_id = info_response.json().get("Swarm", {}).get("Cluster", {}).get("ID")
         if swarm_id:
@@ -123,7 +149,7 @@ def deploy_stack_portainer(base_url, stack_name, stack_content, endpoint_id, tok
     
     try:
         # allow_redirects=False para detectar se o Portainer está redirecionando (ex: http -> https)
-        response = requests.post(url, headers=headers, params=query_params, json=payload, verify=verify, allow_redirects=False)
+        response = requests.post(url, headers=headers, params=query_params, json=payload, verify=verify, allow_redirects=False, timeout=timeout)
         
         if response.status_code in [301, 302, 307, 308]:
              print(f"AVISO: Redirect detectado para {response.headers.get('Location')}")

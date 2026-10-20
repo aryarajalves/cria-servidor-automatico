@@ -1,18 +1,22 @@
-import pytest
 import os
-from app.database import init_db
+os.environ["TESTING"] = "true"
+os.environ["DB_NAME"] = "autoserver_test"
+
+import pytest
+from app.database import init_db, get_connection, get_db_name
 from app.auth_middleware import create_access_token, verify_jwt, TokenData
 from app.main import app
 
 @pytest.fixture(autouse=True, scope="function")
 def setup_test_db():
-    # Inicializa o banco de dados de testes para garantir que todas as tabelas existam
+    # Garante que está rodando estritamente no banco de testes isolado
+    assert get_db_name() == "autoserver_test", f"ALERTA CRÍTICO: Testes estavam prestes a rodar no banco {get_db_name()} em vez de autoserver_test!"
+    # Inicializa o schema no banco de testes
     init_db()
-    # Limpa as tabelas antes de cada teste no PostgreSQL
-    from app.database import get_connection
+    # Limpa apenas as tabelas do banco autoserver_test
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("TRUNCATE TABLE cluster_nodes, stack_credentials, servers, settings CASCADE;")
+    cursor.execute("TRUNCATE TABLE cluster_nodes, stack_credentials, servers, settings, ssh_keys CASCADE;")
     conn.commit()
     cursor.close()
     conn.close()
