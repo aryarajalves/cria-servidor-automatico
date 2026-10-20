@@ -1,11 +1,11 @@
 fastapi==0.128.0      # Framework para construção da API do backend
 uvicorn==0.39.0      # Servidor de alta performance para rodar a API
-paramiko==4.0.0       # Biblioteca para conexões SSH e execução de comandos remotos
-requests==2.32.5      # Usada para fazer requisições HTTP (comunicação entre sistemas)
-python-dotenv==1.2.1  # Carrega variáveis de ambiente de arquivos .env
-pytest==9.0.2         # Ferramenta para execução de testes automatizados
+paramiko==5.1.0       # Biblioteca para conexões SSH e execução de comandos remotos
+requests==2.34.2      # Usada para fazer requisições HTTP (comunicação entre sistemas)
+python-dotenv==1.2.4  # Carrega variáveis de ambiente de arquivos .env
+pytest==9.1.1         # Ferramenta para execução de testes automatizados
 httpx==0.28.1         # Cliente HTTP moderno para python (usado em testes e chamadas assíncronas)
-PyJWT==2.8.0          # Biblioteca para geração e validação de tokens JWT (segurança)
+PyJWT==2.15.1         # Biblioteca para geração e validação de tokens JWT (segurança)
 psycopg2-binary==2.9.9 # Adaptador de banco de dados PostgreSQL para Python
 tzdata==2025.2         # Banco de fusos horários (necessário no Windows para o horário de Brasília nos logs)
 pip-audit==2.10.1     # Ferramenta para auditoria de vulnerabilidades e segurança em dependências Python
